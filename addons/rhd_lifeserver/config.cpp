@@ -8,9 +8,7 @@ class CfgPatches {
         weapons[] = {};
     };
 };
-
 class CfgFactionClasses { class NO_CATEGORY; class RHD_LifeCore : NO_CATEGORY { displayName = "RHD LifeCore"; }; };
-
 class CfgRemoteExec {
     class Functions {
         mode = 1; jip = 0;
@@ -28,11 +26,13 @@ class CfgRemoteExec {
         class RHD_fnc_createWarrant { allowedTargets = 2; jip = 0; };
         class RHD_fnc_impoundVehicle { allowedTargets = 2; jip = 0; };
         class RHD_fnc_createServiceRequest { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_manageLicense { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_business { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_hospitalBill { allowedTargets = 2; jip = 0; };
         class RHD_fnc_rpResult { allowedTargets = 1; jip = 0; };
     };
     class Commands { mode = 0; jip = 0; };
 };
-
 class CfgFunctions {
     class RHD {
         tag = "RHD";
@@ -52,11 +52,13 @@ class CfgFunctions {
             class createWarrant {};
             class impoundVehicle {};
             class createServiceRequest {};
+            class manageLicense {};
+            class business {};
+            class hospitalBill {};
             class rpResult {};
         };
     };
 };
-
 class CfgVehicles {
     class Logic; class Module_F : Logic { class AttributesBase { class Edit; class Checkbox; class Combo; class ModuleDescription; }; class ModuleDescription {}; };
     class RHD_Module_LifeCore : Module_F {
