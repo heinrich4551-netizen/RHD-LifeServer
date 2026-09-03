@@ -32,7 +32,7 @@ switch (_action) do {
         if (_near isEqualTo []) exitWith {hint 'RHD: No configured resource node is within range.';};
         _near params ['_item','_nodeIndex','_distance'];
         closeDialog 0;
-        [_item] remoteExecCall ['RHD_fnc_harvestServer',2];
+        [player,_item] remoteExecCall ['RHD_fnc_harvestServer',2];
         true
     };
     case 1: {
@@ -61,7 +61,7 @@ switch (_action) do {
         private _input = (_req select 0) select 0;
         private _output = (_give select 0) select 0;
         closeDialog 0;
-        [_input,_output,1] remoteExecCall ['RHD_fnc_refineServer',2];
+        [player,_input,_output,1] remoteExecCall ['RHD_fnc_refineServer',2];
         true
     };
     case 2: {hint 'RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts\nBusinesses'; true};
