@@ -1,0 +1,4 @@
+[submodule "framework/AsYetUntitled-Framework"]
+	path = framework/AsYetUntitled-Framework
+	url = https://github.com/AsYetUntitled/Framework.git
+	branch = v5.X.X
