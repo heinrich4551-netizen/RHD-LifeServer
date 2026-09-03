@@ -1,3 +1,7 @@
+private _lastPersistence = diag_tickTime;
+private _saveMinutes = getNumber (missionConfigFile >> 'RHD_LifeServer' >> 'Persistence' >> 'saveIntervalMinutes');
+if (_saveMinutes <= 0) then {_saveMinutes = 5;};
+
 while {true} do {
     if (missionNamespace getVariable ['RHD_LifeServer_Enabled',true]) then {
         [] call RHD_fnc_updatePopulation;
@@ -17,6 +21,13 @@ while {true} do {
         } forEach _expired;
         if (count _expired > 0) then {
             missionNamespace setVariable ['RHD_ActiveContracts',_contracts,true];
+        };
+
+        if (missionNamespace getVariable ['RHD_PersistenceEnabled',false]) then {
+            if ((diag_tickTime - _lastPersistence) >= (_saveMinutes * 60)) then {
+                [] call RHD_fnc_persistenceLoop;
+                _lastPersistence = diag_tickTime;
+            };
         };
     };
     sleep 60;
