@@ -27,6 +27,7 @@ class CfgRemoteExec {
         class RHD_fnc_impoundVehicle { allowedTargets = 2; jip = 0; };
         class RHD_fnc_createServiceRequest { allowedTargets = 2; jip = 0; };
         class RHD_fnc_manageLicense { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_getLicenses { allowedTargets = 2; jip = 0; };
         class RHD_fnc_business { allowedTargets = 2; jip = 0; };
         class RHD_fnc_hospitalBill { allowedTargets = 2; jip = 0; };
         class RHD_fnc_rpResult { allowedTargets = 1; jip = 0; };
@@ -45,7 +46,7 @@ class CfgFunctions {
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
         class RP {
             file = "RHD_LifeServer\functions\rp";
-            class initRP { postInit = 1; };
+            class initRP {};
             class dispatch {};
             class dispatchResult {};
             class createEvidence {};
@@ -53,6 +54,7 @@ class CfgFunctions {
             class impoundVehicle {};
             class createServiceRequest {};
             class manageLicense {};
+            class getLicenses {};
             class business {};
             class hospitalBill {};
             class rpResult {};
