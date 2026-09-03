@@ -40,10 +40,10 @@ _display displayAddEventHandler ["KeyDown", {
         };
         case 8: {
             _header ctrlSetText "RHD LIFE | SERVICES";
-            _a1 ctrlSetText "Vehicle Services";
-            _a2 ctrlSetText "Licenses";
-            _a3 ctrlSetText "Dispatch";
-            _a4 ctrlSetText "Marketplace / Emergency";
+            _a1 ctrlSetText "Request Vehicle Service";
+            _a2 ctrlSetText "View Licenses";
+            _a3 ctrlSetText "Send Dispatch Call";
+            _a4 ctrlSetText "Request Emergency Service";
         };
     };
     true
