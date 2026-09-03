@@ -1,0 +1,9 @@
+name = "RHD LifeServer";
+author = "LT. Toad";
+authorID = "";
+logo = "";
+logoOver = "";
+logoSmall = "";
+actionName = "RHD LifeServer";
+action = "https://github.com/heinrich4551-netizen/RHD-LifeServer";
+description = "RHD LifeServer gameplay and server systems overlay for Altis Life.";
