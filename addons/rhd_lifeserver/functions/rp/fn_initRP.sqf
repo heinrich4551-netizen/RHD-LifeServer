@@ -1,13 +1,22 @@
 /* RHD RP state bootstrap. Server authoritative; persistence adapter can consume these registries. */
 if (!isServer) exitWith {};
-missionNamespace setVariable ['RHD_DispatchCalls',createHashMap,true];
-missionNamespace setVariable ['RHD_Evidence',createHashMap,true];
-missionNamespace setVariable ['RHD_Warrants',createHashMap,true];
-missionNamespace setVariable ['RHD_Impounds',createHashMap,true];
-missionNamespace setVariable ['RHD_Licenses',createHashMap,true];
-missionNamespace setVariable ['RHD_Businesses',createHashMap,true];
-missionNamespace setVariable ['RHD_ServiceRequests',createHashMap,true];
-missionNamespace setVariable ['RHD_HospitalBills',createHashMap,true];
-missionNamespace setVariable ['RHD_Government',createHashMap,true];
+
+private _registries = [
+    'RHD_DispatchCalls',
+    'RHD_Evidence',
+    'RHD_Warrants',
+    'RHD_Impounds',
+    'RHD_Licenses',
+    'RHD_Businesses',
+    'RHD_ServiceRequests',
+    'RHD_HospitalBills',
+    'RHD_Government'
+];
+{
+    if (isNil {missionNamespace getVariable _x}) then {
+        missionNamespace setVariable [_x,createHashMap,true];
+    };
+} forEach _registries;
+
 ['RHD RP registries initialized.'] call RHD_fnc_log;
 true
