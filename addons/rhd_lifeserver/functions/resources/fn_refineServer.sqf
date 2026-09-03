@@ -7,26 +7,33 @@ params ["_player", "_input", "_output", ["_amount", 1]];
 if (isNull _player || {!isPlayer _player}) exitWith {false};
 if (_input isEqualTo "" || {_output isEqualTo ""}) exitWith {false};
 
-private _stationPrefix = format ["rhd_process_%1_", toLower _output];
+private _processRoot = missionConfigFile >> "ProcessAction";
+private _recipeCfg = configNull;
+private _processName = "";
+{
+    private _candidate = _x;
+    private _req = getArray (_candidate >> "MaterialsReq");
+    private _give = getArray (_candidate >> "MaterialsGive");
+    if (count _req > 0 && {count _give > 0}) then {
+        if (((_req select 0) select 0) isEqualTo _input && {((_give select 0) select 0) isEqualTo _output}) exitWith {
+            _recipeCfg = _candidate;
+            _processName = toLower (configName _candidate);
+        };
+    };
+} forEach configClasses _processRoot;
+if (!isClass _recipeCfg) exitWith {false};
+
+private _stationPrefix = format ["rhd_process_%1_", _processName];
 private _atStation = false;
 {
-    private _marker = toLower _x;
-    if ((_marker find _stationPrefix) isEqualTo 0 && {_player distance2D (getMarkerPos _x) < 12}) exitWith {
+    if (((toLower _x) find _stationPrefix) isEqualTo 0 && {_player distance2D (getMarkerPos _x) < 12}) exitWith {
         _atStation = true;
     };
 } forEach allMapMarkers;
 if (!_atStation) exitWith {false};
 
-private _processCfg = configFile >> "ProcessAction";
-private _recipeCfg = _processCfg >> _output;
-if (!isClass _recipeCfg) exitWith {false};
-
 private _req = getArray (_recipeCfg >> "MaterialsReq");
 private _give = getArray (_recipeCfg >> "MaterialsGive");
-if (count _req < 1 || {count _give < 1}) exitWith {false};
-if !(((_req select 0) select 0) isEqualTo _input) exitWith {false};
-if !(((_give select 0) select 0) isEqualTo _output) exitWith {false};
-
 private _reqQty = ((_req select 0) select 1) max 1;
 private _giveQty = ((_give select 0) select 1) max 1;
 private _batches = (_amount max 1) min 50;
