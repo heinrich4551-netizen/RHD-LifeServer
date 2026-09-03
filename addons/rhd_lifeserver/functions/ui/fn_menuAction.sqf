@@ -1,15 +1,12 @@
-/*
-    RHD F6/F7/F8 dispatcher.
-    Resource actions and contracts are sent to the dedicated server for validation.
-*/
+/* RHD F6/F7/F8 player interaction dispatcher. */
 if (!hasInterface) exitWith {false};
 params ['_action'];
 private _mode = missionNamespace getVariable ['RHD_MenuMode',6];
 
 if (_mode isEqualTo 7) exitWith {
     switch (_action) do {
-        case 0: {hint 'RHD FARMING JOBS\n\nUse an RHD Resource Node configured in 3DEN and press F6 to harvest.';};
-        case 1: {hint 'RHD MINING JOBS\n\nUse an RHD Resource Node configured in 3DEN and press F6 to harvest.';};
+        case 0: {hint 'RHD FARMING JOBS\n\nUse a configured RHD Resource Node and press F6 to harvest.';};
+        case 1: {hint 'RHD MINING JOBS\n\nUse a configured RHD Resource Node and press F6 to harvest.';};
         case 2: {
             closeDialog 0;
             [player] remoteExecCall ['RHD_fnc_createContract',2];
@@ -24,10 +21,30 @@ if (_mode isEqualTo 7) exitWith {
 
 if (_mode isEqualTo 8) exitWith {
     switch (_action) do {
-        case 0: {hint 'RHD VEHICLE SERVICES\n\nVehicle services integration point ready.';};
-        case 1: {hint 'RHD LICENSES\n\nUse the upstream framework license system.';};
-        case 2: {hint 'RHD DISPATCH\n\nDispatch integration point ready.';};
-        case 3: {hint 'RHD MARKETPLACE / EMERGENCY\n\nMarketplace and emergency-service integration points ready.';};
+        case 0: {
+            closeDialog 0;
+            ['VEHICLE','Vehicle service requested by civilian.',getPosATL player,2] remoteExecCall ['RHD_fnc_createServiceRequest',2];
+            hint 'RHD: Vehicle service request sent.';
+        };
+        case 1: {
+            private _licenses = missionNamespace getVariable ['RHD_Licenses',createHashMap];
+            private _owned = _licenses getOrDefault [getPlayerUID player,[]];
+            if (_owned isEqualTo []) then {
+                hint 'RHD LICENSES\n\nNo RHD licenses are currently registered.';
+            } else {
+                hint format ['RHD LICENSES\n\n%1',_owned joinString '\n'];
+            };
+        };
+        case 2: {
+            closeDialog 0;
+            ['GENERAL','Civilian dispatch call.',getPosATL player,2] remoteExecCall ['RHD_fnc_dispatch',2];
+            hint 'RHD: Dispatch call sent.';
+        };
+        case 3: {
+            closeDialog 0;
+            ['EMS','Emergency assistance requested by civilian.',getPosATL player,1] remoteExecCall ['RHD_fnc_createServiceRequest',2];
+            hint 'RHD: Emergency service request sent.';
+        };
     };
     true
 };
@@ -71,6 +88,6 @@ switch (_action) do {
         true
     };
     case 2: {hint 'RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts'; true};
-    case 3: {hint 'RHD SERVICES\n\nVehicle Services\nLicenses\nDispatch\nMarketplace\nEmergency Services'; true};
+    case 3: {hint 'RHD SERVICES\n\nVehicle Services\nLicenses\nDispatch\nEmergency Services'; true};
     default {false};
 };
