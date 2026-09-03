@@ -4,6 +4,27 @@
 */
 if (!hasInterface) exitWith {false};
 params ["_action"];
+private _mode = missionNamespace getVariable ["RHD_MenuMode", 6];
+
+if (_mode isEqualTo 7) exitWith {
+    switch (_action) do {
+        case 0: {hint "RHD FARMING JOBS\n\nTravel to a rhd_resource_<item>_<id> marker and harvest through F6.";};
+        case 1: {hint "RHD MINING JOBS\n\nTravel to a configured mining node and harvest through F6.";};
+        case 2: {hint "RHD DELIVERIES / CONTRACTS\n\nContract integration is enabled for the RHD server layer.";};
+        case 3: {hint "RHD BUSINESSES\n\nBusiness systems are available to the server economy layer.";};
+    };
+    true
+};
+
+if (_mode isEqualTo 8) exitWith {
+    switch (_action) do {
+        case 0: {hint "RHD VEHICLE SERVICES\n\nVehicle services integration point ready.";};
+        case 1: {hint "RHD LICENSES\n\nUse the upstream framework license system.";};
+        case 2: {hint "RHD DISPATCH\n\nDispatch integration point ready.";};
+        case 3: {hint "RHD MARKETPLACE / EMERGENCY\n\nMarketplace and emergency-service integration points ready.";};
+    };
+    true
+};
 
 switch (_action) do {
     case 0: {
@@ -12,7 +33,6 @@ switch (_action) do {
         _near params ["_item", "_marker", "_distance"];
         closeDialog 0;
         [_item] remoteExecCall ["RHD_fnc_harvestServer", 2];
-        hint format ["RHD: Harvest request sent for %1.", _item];
         true
     };
     case 1: {
@@ -43,16 +63,9 @@ switch (_action) do {
         private _output = (_give select 0) select 0;
         closeDialog 0;
         [_input, _output, 1] remoteExecCall ["RHD_fnc_refineServer", 2];
-        hint format ["RHD: Processing request sent: %1 -> %2.", _input, _output];
         true
     };
-    case 2: {
-        hint "RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts\nBusinesses";
-        true
-    };
-    case 3: {
-        hint "RHD SERVICES\n\nVehicle Services\nLicenses\nDispatch\nMarketplace\nEmergency Services";
-        true
-    };
+    case 2: {hint "RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts\nBusinesses"; true};
+    case 3: {hint "RHD SERVICES\n\nVehicle Services\nLicenses\nDispatch\nMarketplace\nEmergency Services"; true};
     default {false};
 };
