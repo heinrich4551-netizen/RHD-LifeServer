@@ -8,7 +8,6 @@ if (isNull _player || {!isPlayer _player}) exitWith {false};
 if (_item isEqualTo "") exitWith {false};
 
 private _nodes = missionNamespace getVariable ["RHD_ResourceNodes", []];
-private _nearNode = objNull;
 private _nearDist = 12;
 private _nodeMarker = "";
 {
@@ -29,21 +28,21 @@ if (diag_tickTime < _nextAllowed) exitWith {false};
 missionNamespace setVariable [_cooldownKey, diag_tickTime + 5];
 
 private _root = configFile >> "RHD_Resources";
-private _cfg = objNull;
+private _cfg = configNull;
 {
     private _group = _x;
     {
-        private _candidate = _group >> configName _x;
-        if (isClass _candidate && {toLower getText (_candidate >> "item") isEqualTo toLower _item}) exitWith {
+        private _candidate = _x;
+        if (isClass _candidate && {(toLower (getText (_candidate >> "item"))) isEqualTo (toLower _item)}) exitWith {
             _cfg = _candidate;
         };
     } forEach configClasses _group;
-    if (!isNull _cfg) exitWith {};
+    if (isClass _cfg) exitWith {};
 } forEach [
     _root >> "Farming",
     _root >> "Mining"
 ];
-if (isNull _cfg) exitWith {false};
+if (!isClass _cfg) exitWith {false};
 
 private _min = getNumber (_cfg >> "min");
 private _max = getNumber (_cfg >> "max");
