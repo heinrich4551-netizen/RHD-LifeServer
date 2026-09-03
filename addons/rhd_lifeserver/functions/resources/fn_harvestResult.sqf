@@ -1,6 +1,14 @@
-/* Client result handler. The temporary carry store is intentionally isolated from upstream inventory until the exact framework inventory API is selected. */
-params ["_player","_resource","_amount"];
-if (!hasInterface || {player != _player}) exitWith {};
-private _key = format ["RHD_Carry_%1",_resource];
-player setVariable [_key, player getVariable [_key,0] + _amount, true];
-hint format ["RHD: Harvested %1 x%2",_amount,_resource];
+/*
+    Client-side inventory bridge for RHD harvesting.
+    Only accepts execution originating from the dedicated server.
+*/
+if (!hasInterface || {!isRemoteExecuted} || {remoteExecutedOwner != 2}) exitWith {false};
+params ["_item", ["_amount", 1]];
+if (_item isEqualTo "") exitWith {false};
+private _give = (_amount max 1) min 50;
+if !([true, _item, _give] call life_fnc_handleInv) exitWith {
+    hint format ["RHD: You cannot carry any more %1.", _item];
+    false
+};
+hint format ["RHD: Harvested %1 x%2.", _give, _item];
+true
