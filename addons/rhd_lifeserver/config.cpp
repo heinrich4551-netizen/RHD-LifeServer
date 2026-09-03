@@ -21,7 +21,7 @@ class CfgRemoteExec {
         class RHD_fnc_completeContract { allowedTargets = 2; jip = 0; };
         class RHD_fnc_contractResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_dispatch { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_dispatchResult { allowedTargets = -2; jip = 0; };
+        class RHD_fnc_dispatchResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_createEvidence { allowedTargets = 2; jip = 0; };
         class RHD_fnc_createWarrant { allowedTargets = 2; jip = 0; };
         class RHD_fnc_impoundVehicle { allowedTargets = 2; jip = 0; };
@@ -37,7 +37,7 @@ class CfgFunctions {
     class RHD {
         tag = "RHD";
         class Core { file = "RHD_LifeServer\functions\core"; class preInit { preInit = 1; }; class postInit { postInit = 1; }; class serverLoop {}; class clientInit {}; class log {}; };
-        class Economy { file = "RHD_LifeServer\functions\economy"; class economyLoop {}; class getPrice {}; class setPrice {}; class initPrices {}; };
+        class Economy { file = "RHD_LifeServer\functions\economy"; class economyLoop {}; class getPrice {}; class setPrice {}; class initPrices {}; class recordMarket {}; };
         class Population { file = "RHD_LifeServer\functions\population"; class populationLoop {}; class updatePopulation {}; class cleanupPopulation {}; };
         class Resources { file = "RHD_LifeServer\functions\resources"; class registerNodes {}; class getResourceConfig {}; class harvestServer {}; class harvestResult {}; class refineServer {}; class refineResult {}; };
         class Contracts { file = "RHD_LifeServer\functions\contracts"; class createContract {}; class completeContract {}; class contractResult {}; };
