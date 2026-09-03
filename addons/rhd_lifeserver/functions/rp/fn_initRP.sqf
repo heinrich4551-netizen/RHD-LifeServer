@@ -7,6 +7,7 @@ missionNamespace setVariable ['RHD_Impounds',createHashMap,true];
 missionNamespace setVariable ['RHD_Licenses',createHashMap,true];
 missionNamespace setVariable ['RHD_Businesses',createHashMap,true];
 missionNamespace setVariable ['RHD_ServiceRequests',createHashMap,true];
+missionNamespace setVariable ['RHD_HospitalBills',createHashMap,true];
 missionNamespace setVariable ['RHD_Government',createHashMap,true];
 ['RHD RP registries initialized.'] call RHD_fnc_log;
 true
