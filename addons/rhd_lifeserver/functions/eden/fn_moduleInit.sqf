@@ -13,16 +13,16 @@ if (_class isEqualTo 'RHD_Module_LifeCore') then {
     private _cfg = missionNamespace getVariable ['RHD_EdenConfig', createHashMap];
     private _get = { params ['_name','_default']; _logic getVariable [_name,_default] };
 
-    _cfg set ['farmingHarvestMin', ['farmingHarvestMin',2] call _get];
-    _cfg set ['farmingHarvestMax', ['farmingHarvestMax',5] call _get];
-    _cfg set ['miningHarvestMin', ['miningHarvestMin',2] call _get];
-    _cfg set ['miningHarvestMax', ['miningHarvestMax',6] call _get];
-    _cfg set ['civiliansAtOnePlayer', ['civiliansAtOnePlayer',115] call _get];
-    _cfg set ['minimumCivilians', ['minimumCivilians',60] call _get];
-    _cfg set ['maximumCivilians', ['maximumCivilians',115] call _get];
-    _cfg set ['populationScaleWithPlayers', ['populationScaleWithPlayers',true] call _get];
-    _cfg set ['harvestCooldown', ['harvestCooldown',2] call _get];
-    _cfg set ['dynamicPricing', ['dynamicPricing',true] call _get];
+    _cfg set ['farmingHarvestMin', ['RHD_farmingHarvestMin',2] call _get];
+    _cfg set ['farmingHarvestMax', ['RHD_farmingHarvestMax',5] call _get];
+    _cfg set ['miningHarvestMin', ['RHD_miningHarvestMin',2] call _get];
+    _cfg set ['miningHarvestMax', ['RHD_miningHarvestMax',6] call _get];
+    _cfg set ['civiliansAtOnePlayer', ['RHD_civiliansAtOnePlayer',115] call _get];
+    _cfg set ['minimumCivilians', ['RHD_minimumCivilians',60] call _get];
+    _cfg set ['maximumCivilians', ['RHD_maximumCivilians',115] call _get];
+    _cfg set ['populationScaleWithPlayers', ['RHD_populationScaleWithPlayers',true] call _get];
+    _cfg set ['harvestCooldown', ['RHD_harvestCooldown',2] call _get];
+    _cfg set ['dynamicPricing', ['RHD_dynamicPricing',true] call _get];
 
     missionNamespace setVariable ['RHD_EdenConfig', _cfg, true];
     [] call RHD_fnc_applyConfig;
@@ -30,7 +30,7 @@ if (_class isEqualTo 'RHD_Module_LifeCore') then {
 };
 
 if (_class isEqualTo 'RHD_Module_ResourceNode') then {
-    private _resourceIndex = _logic getVariable ['resourceType',0];
+    private _resourceIndex = _logic getVariable ['RHD_resourceType',0];
     private _map = [
         ['apple','Apples'],
         ['peach','Peaches'],
@@ -46,11 +46,11 @@ if (_class isEqualTo 'RHD_Module_ResourceNode') then {
     private _entry = _map select _resourceIndex;
     private _item = _entry select 0;
     private _displayName = _entry select 1;
-    private _min = (_logic getVariable ['minimumYield',2]) max 1;
-    private _max = (_logic getVariable ['maximumYield',5]) max _min;
-    private _radius = (_logic getVariable ['nodeRadius',12]) max 1;
-    private _illegal = _logic getVariable ['illegal',false];
-    private _enabled = _logic getVariable ['enabled',true];
+    private _min = (_logic getVariable ['RHD_minimumYield',2]) max 1;
+    private _max = (_logic getVariable ['RHD_maximumYield',5]) max _min;
+    private _radius = (_logic getVariable ['RHD_nodeRadius',12]) max 1;
+    private _illegal = _logic getVariable ['RHD_illegal',false];
+    private _enabled = _logic getVariable ['RHD_enabled',true];
 
     private _nodes = missionNamespace getVariable ['RHD_ResourceNodes',[]];
     if (_enabled) then {
@@ -60,9 +60,9 @@ if (_class isEqualTo 'RHD_Module_ResourceNode') then {
 };
 
 if (_class isEqualTo 'RHD_Module_ProcessStation') then {
-    private _process = toLower (_logic getVariable ['processClass','iron']);
-    private _radius = (_logic getVariable ['stationRadius',12]) max 1;
-    private _enabled = _logic getVariable ['enabled',true];
+    private _process = toLower (_logic getVariable ['RHD_processClass','iron']);
+    private _radius = (_logic getVariable ['RHD_stationRadius',12]) max 1;
+    private _enabled = _logic getVariable ['RHD_enabled',true];
     private _stations = missionNamespace getVariable ['RHD_ProcessStations',[]];
     if (_enabled && {_process != ''}) then {
         _stations pushBack [getPosATL _logic, _process, _radius];
