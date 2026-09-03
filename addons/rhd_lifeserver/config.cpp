@@ -13,8 +13,9 @@ class CfgRemoteExec {
     class Functions {
         mode = 1;
         jip = 0;
-        class RHD_fnc_harvest { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_refine { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_harvestServer { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_refineServer { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_harvestResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_setPrice { allowedTargets = 2; jip = 0; };
     };
 };
@@ -46,14 +47,21 @@ class CfgFunctions {
         class Resources {
             file = "RHD_LifeServer\functions\resources";
             class registerNodes {};
-            class getResourceConfig {};
-            class harvest {};
-            class refine {};
+            class harvestServer {};
+            class harvestResult {};
+            class refineServer {};
         };
         class Contracts {
             file = "RHD_LifeServer\functions\contracts";
             class createContract {};
             class completeContract {};
         };
+        class UI {
+            file = "RHD_LifeServer\functions\ui";
+            class initMenus { postInit = 1; };
+        };
     };
 };
+
+#include "config\RHD_Resources.hpp"
+#include "config\RHD_Menus.hpp"
