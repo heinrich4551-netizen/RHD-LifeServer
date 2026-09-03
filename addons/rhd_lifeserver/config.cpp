@@ -46,6 +46,7 @@ class CfgFunctions {
         class Resources {
             file = "RHD_LifeServer\functions\resources";
             class registerNodes {};
+            class getResourceConfig {};
             class harvest {};
             class refine {};
         };
