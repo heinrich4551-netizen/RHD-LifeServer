@@ -1,0 +1,486 @@
+RHD-LIFESERVER
+PBO BUILD & INSTALLATION GUIDE
+================================
+
+Purpose
+-------
+This guide explains how to build RHD-LifeServer into an Arma 3 PBO and install it on an Arma 3 dedicated server.
+
+Repository
+----------
+https://github.com/heinrich4551-netizen/RHD-LifeServer
+
+Project
+-------
+Name: RHD-LifeServer
+Framework: AsYetUntitled Framework v5.X.X (Git submodule)
+Map: Altis
+Author: LT. Toad
+
+
+1. REQUIRED SOFTWARE
+====================
+
+Install these programs before building:
+
+[1] Steam
+    https://store.steampowered.com/
+
+[2] Arma 3
+    Install Arma 3 through Steam.
+
+[3] Arma 3 Tools
+    Install through Steam:
+    Library > Tools > Arma 3 Tools
+
+[4] Git
+    https://git-scm.com/download/win
+
+
+2. FIND ADDONBUILDER.EXE
+=========================
+
+RHD-LifeServer uses the AddonBuilder supplied with Arma 3 Tools.
+
+A common installation location is:
+
+C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder\AddonBuilder.exe
+
+The repository build script expects the -ArmaToolsPath value to point to the folder that directly contains AddonBuilder.exe.
+
+Example:
+
+-ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
+
+If your AddonBuilder.exe is installed somewhere else, use that folder instead.
+
+
+3. DOWNLOAD THE RHD-LIFESERVER SOURCE
+======================================
+
+Open PowerShell and choose a development folder.
+
+Example:
+
+cd C:\
+git clone https://github.com/heinrich4551-netizen/RHD-LifeServer.git C:\RHD-Development\RHD-LifeServer
+
+Then enter the repository:
+
+cd C:\RHD-Development\RHD-LifeServer
+
+
+4. DOWNLOAD THE FRAMEWORK SUBMODULE
+===================================
+
+RHD-LifeServer keeps the upstream AsYetUntitled Framework as a Git submodule.
+
+Run:
+
+cd C:\RHD-Development\RHD-LifeServer
+git submodule update --init --recursive
+
+Verify that this directory exists:
+
+C:\RHD-Development\RHD-LifeServer\framework\AsYetUntitled-Framework
+
+Do NOT remove the framework directory or replace it with a copied/modified version.
+
+
+5. CHECK THE RHD ADDON SOURCE
+==============================
+
+The addon source must exist here:
+
+C:\RHD-Development\RHD-LifeServer\addons\rhd_lifeserver
+
+The important addon structure includes:
+
+addons\
+  rhd_lifeserver\
+    config.cpp
+    README.md
+    config\
+    functions\
+    scripts\
+
+If addons\rhd_lifeserver is missing, stop and correct the repository checkout before attempting the build.
+
+
+6. ALLOW POWERSHELL SCRIPTS TO RUN
+===================================
+
+If Windows blocks the build script, open PowerShell and run:
+
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+
+Confirm the change if Windows asks.
+
+This changes the policy for your Windows user account only.
+
+
+7. BUILD THE PBO
+================
+
+From the repository root, run:
+
+cd C:\RHD-Development\RHD-LifeServer
+
+.\deployment\build.ps1 -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
+
+The script will:
+
+- Find AddonBuilder.exe
+- Read addons\rhd_lifeserver
+- Build the addon
+- Place the output in the dist folder
+
+Expected output location:
+
+C:\RHD-Development\RHD-LifeServer\dist\RHD_LifeServer.pbo
+
+
+8. USE A DIFFERENT OUTPUT FOLDER (OPTIONAL)
+============================================
+
+You can choose another output directory.
+
+Example:
+
+.\deployment\build.ps1 `
+  -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder" `
+  -OutputPath "C:\RHD-Builds"
+
+The resulting PBO should be:
+
+C:\RHD-Builds\RHD_LifeServer.pbo
+
+
+9. SIGN THE PBO FOR A SERVER
+============================
+
+For a public or signature-protected server, create a private signing key with the Arma 3 Tools utilities.
+
+Use:
+
+DSSignFile.exe
+
+and the key generated for your RHD-LifeServer addon.
+
+The signed addon normally contains:
+
+RHD_LifeServer.pbo
+RHD_LifeServer.pbo.<your-key>.bisign
+
+Keep the private .biprivatekey file secure.
+
+Place the public .bikey file in the server's keys folder.
+
+Example:
+
+Arma 3 Server\keys\RHD_LifeServer.bikey
+
+NEVER upload or distribute the private .biprivatekey file.
+
+
+10. CREATE THE SERVER MOD FOLDER
+================================
+
+On the dedicated server, create:
+
+@RHD-LifeServer\addons\
+
+Copy the finished PBO into that folder:
+
+@RHD-LifeServer\addons\RHD_LifeServer.pbo
+
+If the addon is signed, also copy its .bisign file beside the PBO.
+
+Example:
+
+@RHD-LifeServer\
+  addons\
+    RHD_LifeServer.pbo
+    RHD_LifeServer.pbo.RHD_LifeServer.bisign
+
+
+11. ENABLE THE MOD ON THE SERVER
+=================================
+
+Add the mod to the dedicated server startup parameters.
+
+Example:
+
+-mod=@RHD-LifeServer
+
+If other mods are installed, separate them with semicolons.
+
+Example:
+
+-mod=@CBA_A3;@OtherMod;@RHD-LifeServer
+
+Make sure the folder name on disk exactly matches the startup parameter.
+
+
+12. SERVER CONFIGURATION
+========================
+
+The repository contains:
+
+config\server.cfg
+config\basic.cfg
+config\RHD_LifeServer.hpp
+
+Before starting the production server, replace the placeholder passwords in server.cfg.
+
+Look for:
+
+CHANGE_ME_ADMIN_PASSWORD
+CHANGE_ME_COMMAND_PASSWORD
+
+Do not publish real server passwords in GitHub.
+
+
+13. 3DEN SETUP
+==============
+
+RHD-LifeServer includes 3DEN modules so you can configure the RP systems directly in the Eden Editor.
+
+New missions should use the RHD modules instead of manually creating old-style resource markers.
+
+Available modules include:
+
+RHD LifeCore
+    Main configuration module.
+    Configure farming harvest values, mining harvest values, civilian population, harvest cooldown and economy options.
+
+RHD Resource Node
+    Places a harvestable resource location.
+    Configure the resource type, yield, radius, illegal status and enabled state.
+
+RHD Processing Station
+    Places a processing/refining location.
+    Configure the processing class, station radius and enabled state.
+
+Place the required modules in the Altis mission using Eden Editor.
+
+Save the mission and test it before moving it to production.
+
+
+14. CIVILIAN POPULATION
+=======================
+
+The default RHD configuration is designed around:
+
+1 active player  = 115 civilians
+Minimum          = 60 civilians
+Maximum          = 115 civilians
+
+The population system dynamically adjusts the civilian population as the number of active players changes.
+
+The exact scaling can be changed through the RHD configuration.
+
+
+15. F6 / F7 / F8 MENUS
+======================
+
+RHD-LifeServer provides three keyboard menu groups:
+
+F6 = Civilian
+    Harvest resources
+    Process resources
+    Jobs / contracts
+    Services / marketplace
+
+F7 = Jobs
+    Farming jobs
+    Mining jobs
+    Deliveries / contracts
+    Businesses
+
+F8 = Services
+    Vehicle services
+    Licenses
+    Dispatch
+    Marketplace / emergency services
+
+These menus are intended to work with the RHD resource, processing and economy systems.
+
+
+16. TEST THE PBO
+================
+
+Start a local dedicated server or development server with:
+
+-mod=@RHD-LifeServer
+
+Load the Altis Life mission.
+
+Check the RPT log for errors.
+
+Then test:
+
+[ ] Server starts without a config error
+[ ] RHD-LifeServer loads
+[ ] Mission starts on Altis
+[ ] RHD 3DEN modules initialize
+[ ] F6 opens
+[ ] F7 opens
+[ ] F8 opens
+[ ] Resource harvesting works
+[ ] Resource processing works
+[ ] Inventory updates correctly
+[ ] Civilian population initializes
+[ ] Economy initializes
+[ ] Server remains stable after several minutes
+
+
+17. COMMON BUILD ERRORS
+=======================
+
+ERROR: AddonBuilder.exe not found
+
+Cause:
+The -ArmaToolsPath value does not point directly to the folder containing AddonBuilder.exe.
+
+Fix:
+Find AddonBuilder.exe and pass its parent folder.
+
+Example:
+
+-ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
+
+
+ERROR: Addon source not found
+
+Cause:
+The repository does not contain addons\rhd_lifeserver.
+
+Fix:
+Verify that you cloned the correct repository and are running the command from the RHD-LifeServer checkout.
+
+
+ERROR: Git submodule is empty
+
+Fix:
+
+cd C:\RHD-Development\RHD-LifeServer
+git submodule update --init --recursive
+
+
+ERROR: PowerShell script cannot run
+
+Fix:
+
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+
+
+ERROR: Server does not load the addon
+
+Check:
+
+1. The folder is named exactly @RHD-LifeServer.
+2. The PBO is inside @RHD-LifeServer\addons.
+3. The startup parameter contains -mod=@RHD-LifeServer.
+4. The PBO is not still sitting only in the development dist folder.
+5. Check the server RPT log for the actual error.
+
+
+18. REBUILD AFTER SOURCE CHANGES
+================================
+
+Whenever RHD-LifeServer source files are changed:
+
+1. Pull the latest source:
+
+cd C:\RHD-Development\RHD-LifeServer
+git pull
+
+2. Update submodules:
+
+git submodule update --init --recursive
+
+3. Rebuild:
+
+.\deployment\build.ps1 -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
+
+4. Replace the server's old PBO with:
+
+dist\RHD_LifeServer.pbo
+
+5. Restart the dedicated server.
+
+
+19. IMPORTANT FILES
+===================
+
+Repository root:
+
+README.md
+PBO-Info.txt
+.gitmodules
+
+Configuration:
+
+config\server.cfg
+config\basic.cfg
+config\RHD_LifeServer.hpp
+
+Addon:
+
+addons\rhd_lifeserver\config.cpp
+addons\rhd_lifeserver\config\
+addons\rhd_lifeserver\functions\
+addons\rhd_lifeserver\scripts\
+
+Build script:
+
+deployment\build.ps1
+
+Installation helper:
+
+deployment\install.ps1
+
+Database extensions:
+
+database\rhd_extensions.sql
+
+
+20. FINAL QUICK BUILD
+=====================
+
+Copy and run these commands in PowerShell:
+
+cd C:\RHD-Development\RHD-LifeServer
+git pull
+git submodule update --init --recursive
+.\deployment\build.ps1 -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
+
+Then copy:
+
+dist\RHD_LifeServer.pbo
+
+to:
+
+<Your Arma 3 Server>\@RHD-LifeServer\addons\RHD_LifeServer.pbo
+
+Start the server with:
+
+-mod=@RHD-LifeServer
+
+
+21. IMPORTANT SECURITY NOTES
+============================
+
+- Never commit server passwords to GitHub.
+- Never commit .biprivatekey files.
+- Keep the private signing key offline and secure.
+- Use the public .bikey in the server keys folder.
+- Keep verifySignatures enabled on production servers when appropriate.
+- Test new builds on a development server before production deployment.
+
+
+END OF GUIDE
+============
+RHD-LifeServer | Altis Life RP
+Author: LT. Toad
