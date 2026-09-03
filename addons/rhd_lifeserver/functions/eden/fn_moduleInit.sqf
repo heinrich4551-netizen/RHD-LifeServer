@@ -34,13 +34,15 @@ if (_class isEqualTo 'RHD_Module_ResourceNode') then {
     private _map = [
         ['apple','Apples'],
         ['peach','Peaches'],
+        ['grape','Grapes'],
+        ['corn','Corn Cob'],
         ['cannabis','Cannabis Plant'],
-        ['cocaine_unprocessed','Coca Leaf'],
+        ['coca_leaf','Coca Leaf'],
         ['iron_unrefined','Iron Ore'],
         ['copper_unrefined','Copper Ore'],
-        ['goldbar','Gold'],
+        ['gold_ore','Gold Ore'],
         ['diamond_uncut','Uncut Diamond'],
-        ['oil_unprocessed','Oil / Oil Sand']
+        ['oil_sand','Oil Sand']
     ];
     _resourceIndex = (_resourceIndex max 0) min ((count _map) - 1);
     private _entry = _map select _resourceIndex;
