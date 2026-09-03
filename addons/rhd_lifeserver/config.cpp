@@ -11,9 +11,7 @@ class CfgPatches {
 
 class CfgFactionClasses {
     class NO_CATEGORY;
-    class RHD_LifeCore : NO_CATEGORY {
-        displayName = "RHD LifeCore";
-    };
+    class RHD_LifeCore : NO_CATEGORY { displayName = "RHD LifeCore"; };
 };
 
 class CfgRemoteExec {
@@ -25,6 +23,9 @@ class CfgRemoteExec {
         class RHD_fnc_harvestResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_refineResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_setPrice { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_createContract { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_completeContract { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_contractResult { allowedTargets = 1; jip = 0; };
     };
     class Commands { mode = 0; jip = 0; };
 };
@@ -66,6 +67,7 @@ class CfgFunctions {
             file = "RHD_LifeServer\functions\contracts";
             class createContract {};
             class completeContract {};
+            class contractResult {};
         };
         class UI {
             file = "RHD_LifeServer\functions\ui";
@@ -84,23 +86,12 @@ class CfgFunctions {
 class CfgVehicles {
     class Logic;
     class Module_F : Logic {
-        class AttributesBase {
-            class Edit;
-            class Checkbox;
-            class Combo;
-            class ModuleDescription;
-        };
+        class AttributesBase { class Edit; class Checkbox; class Combo; class ModuleDescription; };
         class ModuleDescription {};
     };
 
     class RHD_Module_LifeCore : Module_F {
-        scope = 2;
-        displayName = "RHD LifeCore Configuration";
-        category = "RHD_LifeCore";
-        function = "RHD_fnc_moduleInit";
-        isGlobal = 1;
-        isTriggerActivated = 0;
-        is3DEN = 0;
+        scope=2; displayName="RHD LifeCore Configuration"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0;
         class Attributes : AttributesBase {
             class farmingHarvestMin : Edit { property="RHD_farmingHarvestMin"; displayName="Farming Minimum Harvest"; defaultValue="2"; typeName="NUMBER"; };
             class farmingHarvestMax : Edit { property="RHD_farmingHarvestMax"; displayName="Farming Maximum Harvest"; defaultValue="5"; typeName="NUMBER"; };
@@ -118,32 +109,15 @@ class CfgVehicles {
     };
 
     class RHD_Module_ResourceNode : Module_F {
-        scope = 2;
-        displayName = "RHD Resource Node";
-        category = "RHD_LifeCore";
-        function = "RHD_fnc_moduleInit";
-        isGlobal = 1;
-        isTriggerActivated = 0;
-        is3DEN = 0;
-        icon = "\A3\ui_f\data\map\markers\military\unknown_ca.paa";
+        scope=2; displayName="RHD Resource Node"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0;
+        icon="\A3\ui_f\data\map\markers\military\unknown_ca.paa";
         class Attributes : AttributesBase {
             class resourceType : Combo {
-                property="RHD_resourceType";
-                displayName="Resource";
-                defaultValue="0";
-                typeName="NUMBER";
+                property="RHD_resourceType"; displayName="Resource"; defaultValue="0"; typeName="NUMBER";
                 class values {
-                    class Apple {name="Apples"; value=0; default=1;};
-                    class Peach {name="Peaches"; value=1;};
-                    class Grape {name="Grapes"; value=2;};
-                    class Corn {name="Corn Cob"; value=3;};
-                    class Cannabis {name="Cannabis Plant"; value=4;};
-                    class Coca {name="Coca Leaf"; value=5;};
-                    class Iron {name="Iron Ore"; value=6;};
-                    class Copper {name="Copper Ore"; value=7;};
-                    class GoldOre {name="Gold Ore"; value=8;};
-                    class Diamond {name="Uncut Diamond"; value=9;};
-                    class OilSand {name="Oil Sand"; value=10;};
+                    class Apple {name="Apples";value=0;default=1;}; class Peach {name="Peaches";value=1;}; class Grape {name="Grapes";value=2;}; class Corn {name="Corn Cob";value=3;};
+                    class Cannabis {name="Cannabis Plant";value=4;}; class Coca {name="Coca Leaf";value=5;}; class Iron {name="Iron Ore";value=6;}; class Copper {name="Copper Ore";value=7;};
+                    class GoldOre {name="Gold Ore";value=8;}; class Diamond {name="Uncut Diamond";value=9;}; class OilSand {name="Oil Sand";value=10;};
                 };
             };
             class minimumYield : Edit { property="RHD_minimumYield"; displayName="Minimum Yield"; defaultValue="2"; typeName="NUMBER"; };
@@ -157,14 +131,8 @@ class CfgVehicles {
     };
 
     class RHD_Module_ProcessStation : Module_F {
-        scope = 2;
-        displayName = "RHD Processing Station";
-        category = "RHD_LifeCore";
-        function = "RHD_fnc_moduleInit";
-        isGlobal = 1;
-        isTriggerActivated = 0;
-        is3DEN = 0;
-        icon = "\A3\ui_f\data\map\markers\military\unknown_ca.paa";
+        scope=2; displayName="RHD Processing Station"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0;
+        icon="\A3\ui_f\data\map\markers\military\unknown_ca.paa";
         class Attributes : AttributesBase {
             class processClass : Edit { property="RHD_processClass"; displayName="ProcessAction Class"; defaultValue="iron"; typeName="STRING"; };
             class stationRadius : Edit { property="RHD_stationRadius"; displayName="Interaction Radius (m)"; defaultValue="12"; typeName="NUMBER"; };
@@ -175,9 +143,7 @@ class CfgVehicles {
     };
 };
 
-class CfgEditorCategories {
-    class RHD_LifeCore { displayName = "RHD LifeCore"; };
-};
+class CfgEditorCategories { class RHD_LifeCore { displayName="RHD LifeCore"; }; };
 
 #include "config\RHD_Resources.hpp"
 #include "config\RHD_Menus.hpp"
