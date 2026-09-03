@@ -1,6 +1,6 @@
 -- RHD-LifeServer extension schema
 -- Designed to sit alongside the upstream Altis Life database.
--- Review your framework DB connector before applying in production.
+-- Requires the upstream Framework extDB3/DB_fnc_asyncCall adapter.
 
 CREATE TABLE IF NOT EXISTS rhd_economy_prices (
     item_class VARCHAR(64) NOT NULL PRIMARY KEY,
@@ -47,3 +47,9 @@ CREATE TABLE IF NOT EXISTS rhd_vehicle_services (
     last_service TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     UNIQUE KEY uq_rhd_vehicle_service (owner_uid, vehicle_key, service_type)
 );
+
+CREATE TABLE IF NOT EXISTS rhd_state (
+    state_key VARCHAR(64) NOT NULL PRIMARY KEY,
+    payload LONGTEXT NOT NULL,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
