@@ -27,13 +27,8 @@ if (_mode isEqualTo 8) exitWith {
             hint 'RHD: Vehicle service request sent.';
         };
         case 1: {
-            private _licenses = missionNamespace getVariable ['RHD_Licenses',createHashMap];
-            private _owned = _licenses getOrDefault [getPlayerUID player,[]];
-            if (_owned isEqualTo []) then {
-                hint 'RHD LICENSES\n\nNo RHD licenses are currently registered.';
-            } else {
-                hint format ['RHD LICENSES\n\n%1',_owned joinString '\n'];
-            };
+            closeDialog 0;
+            [getPlayerUID player] remoteExecCall ['RHD_fnc_getLicenses',2];
         };
         case 2: {
             closeDialog 0;
