@@ -17,15 +17,19 @@ Upstream: https://github.com/AsYetUntitled/Framework/tree/v5.X.X
 - Virtual-item economy
 - Shops, vehicles, clothing and weapons
 - Housing and persistent wanted gameplay
-- Expandable farming, mining and refining economy
+- Farming, mining and refining economy
+- Dynamic supply/demand pricing
 - Dynamic civilian population
 - Legal and illegal jobs
 - Player businesses and faction progression
-- Server events and economy sinks
+- Contracts and logistics
+- Dispatch, emergency and event systems
+- Vehicle services and licensing
+- Government/court gameplay
 - Admin/moderation hooks
 - BattlEye-friendly configuration
 
-The upstream framework supplies the core Altis Life gameplay. RHD-LifeServer supplies deployment, server configuration, documentation and an isolated customization layer.
+The upstream framework supplies the core Altis Life gameplay. RHD-LifeServer supplies deployment, server configuration and an isolated customization addon.
 
 ## Repository layout
 
@@ -41,7 +45,14 @@ RHD-LifeServer/
 ├── database/
 │   └── rhd_extensions.sql
 ├── deployment/
-│   └── install.ps1
+│   ├── install.ps1
+│   └── build.ps1
+├── addons/
+│   └── rhd_lifeserver/
+│       ├── config.cpp
+│       ├── mod.cpp
+│       ├── README.md
+│       └── functions/
 └── custom/
     ├── README.md
     └── RHD_features.hpp
@@ -63,6 +74,55 @@ git submodule update --init --recursive
 
 The submodule is pinned to the upstream `v5.X.X` branch.
 
+## RHD addon
+
+The `addons/rhd_lifeserver` directory is an independent overlay. It uses Arma 3 `CfgFunctions` preInit/postInit hooks, so the RHD systems can be updated without rewriting the upstream framework.
+
+Current implemented systems:
+
+- Dynamic economy price registry with bounded price movement.
+- Server-authoritative resource harvesting with cooldown/quantity validation.
+- Refining recipes: iron ore → iron, copper ore → copper, gold ore → gold, oil sand → fuel.
+- Dynamic civilian population controller targeting 115 civilians at one player and scaling toward a 60-civilian floor as player count rises.
+- Marker-based resource registration.
+- RHD remote-execution whitelist.
+
+### Resource markers
+
+Place markers in the Altis Life mission using:
+
+```text
+rhd_resource_<item>_<id>
+```
+
+Examples:
+
+```text
+rhd_resource_apple_1
+rhd_resource_grape_1
+rhd_resource_cannabis_1
+rhd_resource_coca_1
+rhd_resource_corn_1
+rhd_resource_peach_1
+rhd_resource_iron_1
+rhd_resource_copper_1
+rhd_resource_gold_1
+rhd_resource_diamond_1
+rhd_resource_oil_1
+```
+
+The RHD addon discovers these at server startup and exposes them through `RHD_ResourceNodes`.
+
+### Building the PBO
+
+Install the Arma 3 Tools package and run:
+
+```powershell
+.\deployment\build.ps1 -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
+```
+
+Copy the resulting `RHD_LifeServer.pbo` into the server's `@RHD-LifeServer\addons` directory.
+
 ## Recommended server stack
 
 - Arma 3 Dedicated Server
@@ -71,11 +131,6 @@ The submodule is pinned to the upstream `v5.X.X` branch.
 - MariaDB/MySQL compatible database
 - extDB3 or the database interface supported by your selected framework build
 - BattlEye
-- CBA/Ace only if separately desired by your server design
-
-## Design principle
-
-RHD customizations should remain isolated from upstream framework files whenever possible. This makes framework updates easier and avoids creating a hard-to-maintain fork.
 
 ## Suggested roadmap
 
@@ -89,15 +144,28 @@ RHD customizations should remain isolated from upstream framework files whenever
 
 ### Phase 2 — RHD economy
 
-Add farming, mining, refining, processing and dynamic pricing as isolated extensions.
+1. Farming and mining nodes.
+2. Refining/processing chains.
+3. Dynamic supply/demand pricing.
+4. Legal/illegal job progression.
+5. Logistics and delivery contracts.
 
 ### Phase 3 — RP systems
 
-Add businesses, licenses, contracts, dispatch, courts, vehicle services, player housing upgrades and faction progression.
+1. Police dispatch, evidence, warrants and impounds.
+2. EMS dispatch, treatment, hospital billing and rescue.
+3. Player businesses and employees.
+4. Licenses, vehicle services and inspections.
+5. Courts, government and taxes.
+6. RHD phone, marketplace and service requests.
 
 ### Phase 4 — Live operations
 
-Add scheduled events, economy telemetry, restart announcements, automated backups and admin tooling.
+1. Scheduled world events.
+2. Economy telemetry and balancing.
+3. Automated backups/restart notices.
+4. Admin tools and audit logs.
+5. Performance profiling and Headless Client support.
 
 ## Security
 
