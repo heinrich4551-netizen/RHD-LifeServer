@@ -44,6 +44,7 @@ class CfgFunctions {
         class Contracts { file = "RHD_LifeServer\functions\contracts"; class createContract {}; class completeContract {}; class contractResult {}; };
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
+        class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
         class RP {
             file = "RHD_LifeServer\functions\rp";
             class initRP {};
@@ -105,6 +106,7 @@ class CfgVehicles {
     };
 };
 class CfgEditorCategories { class RHD_LifeCore { displayName="RHD LifeCore"; }; };
+#include "config\RHD_LifeServer.hpp"
 #include "config\RHD_Resources.hpp"
 #include "config\RHD_RP.hpp"
 #include "config\RHD_Menus.hpp"
