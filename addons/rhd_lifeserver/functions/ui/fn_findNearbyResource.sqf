@@ -1,25 +1,24 @@
 /*
-    Returns [virtualItem, markerName, distance] for the nearest RHD resource node.
-    Marker format: rhd_resource_<virtualItem>_<id>
+    Returns [virtualItem, nodeIndex, distance] for the nearest configured RHD node.
+    Resource nodes are normally created by 3DEN modules; legacy markers are
+    already converted into the same server registry.
 */
-params [["_unit", player, [objNull]]];
+params [['_unit',player,[objNull]]];
 if (isNull _unit) exitWith {[]};
 private _best = [];
 private _bestDist = 60;
+private _nodes = missionNamespace getVariable ['RHD_ResourceNodes',[]];
 {
-    private _marker = _x;
-    private _lower = toLower _marker;
-    if ((_lower find "rhd_resource_") isEqualTo 0) then {
-        private _pos = getMarkerPos _marker;
+    if (count _x >= 3) then {
+        private _pos = _x select 0;
+        private _item = _x select 1;
+        private _radius = (_x select 2) max 1;
         private _distance = _pos distance2D _unit;
-        if (_distance < _bestDist) then {
-            private _parts = _lower splitString "_";
-            if (count _parts >= 4) then {
-                private _item = _parts select 2;
-                _best = [_item, _marker, _distance];
-                _bestDist = _distance;
-            };
+        private _range = _radius min 60;
+        if (_distance <= _range && {_distance < _bestDist}) then {
+            _best = [_item,_forEachIndex,_distance];
+            _bestDist = _distance;
         };
     };
-} forEach allMapMarkers;
+} forEach _nodes;
 _best
