@@ -10,9 +10,15 @@ if (isClass _cfg && {getNumber (_cfg >> 'enabled') isEqualTo 0}) exitWith {
     true
 };
 
-waitUntil {time > 0 && {!isNil 'DB_fnc_asyncCall'}};
-missionNamespace setVariable ['RHD_PersistenceEnabled',true,true];
+private _deadline = diag_tickTime + 30;
+waitUntil {time > 0 && {!isNil 'DB_fnc_asyncCall'} || {diag_tickTime >= _deadline}};
+if (isNil 'DB_fnc_asyncCall') exitWith {
+    missionNamespace setVariable ['RHD_PersistenceEnabled',false,true];
+    ['RHD persistence disabled: upstream DB adapter was not available within 30 seconds.'] call RHD_fnc_log;
+    false
+};
 
+missionNamespace setVariable ['RHD_PersistenceEnabled',true,true];
 private _stateMap = [
     ['economy', 'RHD_EconomyPrices', createHashMap],
     ['dispatch', 'RHD_DispatchCalls', createHashMap],
