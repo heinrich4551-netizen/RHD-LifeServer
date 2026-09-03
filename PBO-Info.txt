@@ -36,6 +36,9 @@ Install these programs before building:
 [4] Git
     https://git-scm.com/download/win
 
+[5] MySQL/MariaDB
+    Required for the upstream Altis Life persistence layer and the RHD extension tables.
+
 
 2. FIND ADDONBUILDER.EXE
 =========================
@@ -196,13 +199,6 @@ Copy the finished PBO into that folder:
 
 If the addon is signed, also copy its .bisign file beside the PBO.
 
-Example:
-
-@RHD-LifeServer\
-  addons\
-    RHD_LifeServer.pbo
-    RHD_LifeServer.pbo.RHD_LifeServer.bisign
-
 
 11. ENABLE THE MOD ON THE SERVER
 =================================
@@ -240,8 +236,36 @@ CHANGE_ME_COMMAND_PASSWORD
 
 Do not publish real server passwords in GitHub.
 
+The addon now loads RHD_LifeServer.hpp from its addon config, so the runtime settings are available through missionConfigFile.
 
-13. 3DEN SETUP
+
+13. DATABASE SETUP
+==================
+
+RHD uses the upstream Framework database adapter. Do not configure a second extDB3 connection for RHD.
+
+1. Import the upstream Framework database schema:
+
+framework\AsYetUntitled-Framework\altislife.sql
+
+2. Apply the RHD extension schema to the same database:
+
+database\rhd_extensions.sql
+
+3. Confirm the upstream life_server extDB3 configuration is working.
+
+4. Start the server and check the RPT for the RHD persistence initialization message.
+
+RHD creates/uses the following additional persistent state table:
+
+rhd_state
+
+The table stores serialized RHD economy, contract and RP registries. Upstream player cash, bank and inventory persistence remains owned by the Framework.
+
+See database\README.md for the full persistence notes.
+
+
+14. 3DEN SETUP
 ==============
 
 RHD-LifeServer includes 3DEN modules so you can configure the RP systems directly in the Eden Editor.
@@ -267,7 +291,27 @@ Place the required modules in the Altis mission using Eden Editor.
 Save the mission and test it before moving it to production.
 
 
-14. CIVILIAN POPULATION
+15. MISSION CONFIGURATION INTEGRATION
+======================================
+
+The RHD addon cannot add new VirtualItems or ProcessAction classes to missionConfigFile after the mission has compiled.
+
+For the requested RHD resources, add the repository fragments to the actual Altis Life mission configuration:
+
+In Config_vItems.hpp, inside/alongside the existing VirtualItems definition:
+
+#include "..\..\custom\RHD_vItems.hpp"
+
+In Config_Process.hpp, inside/alongside the existing ProcessAction definition:
+
+#include "..\..\custom\RHD_ProcessAction.hpp"
+
+Adjust the relative path to your mission folder layout.
+
+Do not modify the Framework submodule itself. Copy or link the RHD custom fragments into your mission source as part of your mission overlay.
+
+
+16. CIVILIAN POPULATION
 =======================
 
 The default RHD configuration is designed around:
@@ -278,10 +322,10 @@ Maximum          = 115 civilians
 
 The population system dynamically adjusts the civilian population as the number of active players changes.
 
-The exact scaling can be changed through the RHD configuration.
+The exact scaling can be changed through the RHD configuration or the RHD LifeCore 3DEN module.
 
 
-15. F6 / F7 / F8 MENUS
+17. F6 / F7 / F8 MENUS
 ======================
 
 RHD-LifeServer provides three keyboard menu groups:
@@ -302,12 +346,10 @@ F8 = Services
     Vehicle services
     Licenses
     Dispatch
-    Marketplace / emergency services
-
-These menus are intended to work with the RHD resource, processing and economy systems.
+    Emergency services
 
 
-16. TEST THE PBO
+18. TEST THE PBO
 ================
 
 Start a local dedicated server or development server with:
@@ -332,10 +374,12 @@ Then test:
 [ ] Inventory updates correctly
 [ ] Civilian population initializes
 [ ] Economy initializes
+[ ] RHD database extension loads
+[ ] RHD state persists through a restart
 [ ] Server remains stable after several minutes
 
 
-17. COMMON BUILD ERRORS
+19. COMMON BUILD ERRORS
 =======================
 
 ERROR: AddonBuilder.exe not found
@@ -375,6 +419,15 @@ Fix:
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 
+ERROR: RHD persistence is disabled
+
+Check the server RPT for:
+
+RHD persistence disabled: upstream DB adapter was not available within 30 seconds.
+
+Verify that the upstream life_server is loaded and extDB3 is configured correctly.
+
+
 ERROR: Server does not load the addon
 
 Check:
@@ -386,7 +439,7 @@ Check:
 5. Check the server RPT log for the actual error.
 
 
-18. REBUILD AFTER SOURCE CHANGES
+20. REBUILD AFTER SOURCE CHANGES
 ================================
 
 Whenever RHD-LifeServer source files are changed:
@@ -411,7 +464,7 @@ dist\RHD_LifeServer.pbo
 5. Restart the dedicated server.
 
 
-19. IMPORTANT FILES
+21. IMPORTANT FILES
 ===================
 
 Repository root:
@@ -444,9 +497,15 @@ deployment\install.ps1
 Database extensions:
 
 database\rhd_extensions.sql
+database\README.md
+
+Mission integration fragments:
+
+custom\RHD_vItems.hpp
+custom\RHD_ProcessAction.hpp
 
 
-20. FINAL QUICK BUILD
+22. FINAL QUICK BUILD
 =====================
 
 Copy and run these commands in PowerShell:
@@ -469,7 +528,7 @@ Start the server with:
 -mod=@RHD-LifeServer
 
 
-21. IMPORTANT SECURITY NOTES
+23. IMPORTANT SECURITY NOTES
 ============================
 
 - Never commit server passwords to GitHub.
