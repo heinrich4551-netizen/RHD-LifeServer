@@ -9,6 +9,16 @@ class CfgPatches {
     };
 };
 
+class CfgRemoteExec {
+    class Functions {
+        mode = 1;
+        jip = 0;
+        class RHD_fnc_harvest { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_refine { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_setPrice { allowedTargets = 2; jip = 0; };
+    };
+};
+
 class CfgFunctions {
     class RHD {
         tag = "RHD";
