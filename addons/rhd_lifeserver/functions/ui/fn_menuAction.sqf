@@ -1,6 +1,6 @@
 /*
     RHD F6/F7/F8 dispatcher.
-    Resource actions are sent to the dedicated server for validation.
+    Resource actions and contracts are sent to the dedicated server for validation.
 */
 if (!hasInterface) exitWith {false};
 params ['_action'];
@@ -10,8 +10,14 @@ if (_mode isEqualTo 7) exitWith {
     switch (_action) do {
         case 0: {hint 'RHD FARMING JOBS\n\nUse an RHD Resource Node configured in 3DEN and press F6 to harvest.';};
         case 1: {hint 'RHD MINING JOBS\n\nUse an RHD Resource Node configured in 3DEN and press F6 to harvest.';};
-        case 2: {hint 'RHD DELIVERIES / CONTRACTS\n\nContract integration is enabled for the RHD server layer.';};
-        case 3: {hint 'RHD BUSINESSES\n\nBusiness systems are available to the server economy layer.';};
+        case 2: {
+            closeDialog 0;
+            [player] remoteExecCall ['RHD_fnc_createContract',2];
+        };
+        case 3: {
+            closeDialog 0;
+            [player] remoteExecCall ['RHD_fnc_completeContract',2];
+        };
     };
     true
 };
@@ -64,7 +70,7 @@ switch (_action) do {
         [player,_input,_output,1] remoteExecCall ['RHD_fnc_refineServer',2];
         true
     };
-    case 2: {hint 'RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts\nBusinesses'; true};
+    case 2: {hint 'RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts'; true};
     case 3: {hint 'RHD SERVICES\n\nVehicle Services\nLicenses\nDispatch\nMarketplace\nEmergency Services'; true};
     default {false};
 };
