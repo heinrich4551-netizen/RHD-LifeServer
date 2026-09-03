@@ -4,6 +4,7 @@ A feature is marked implemented only when its code and integration path exist. P
 
 ## Phase 1 — Core
 - [ ] Upstream Framework deployment verified
+- [x] RHD persistence adapter integrated with the upstream Framework DB_fnc_asyncCall layer
 - [ ] Production database configuration externalized
 - [ ] Server identity, mission rotation and BattlEye validated
 - [ ] Police/civilian/medic integration validated
@@ -51,3 +52,7 @@ The RHD addon is an independent overlay around the upstream AsYetUntitled Framew
 Additional RHD-only virtual items are supplied in `custom/RHD_vItems.hpp`, and additional processing recipes are supplied in `custom/RHD_ProcessAction.hpp`. These fragments must be included by the actual Altis Life mission configuration because the Framework inventory system reads `missionConfigFile`.
 
 The F6/F7/F8 UI is wired to server-side harvesting, processing and delivery-contract requests. Resource and processing requests validate the player, location, configured node/station and cooldown on the dedicated server before returning inventory changes to the client.
+
+RHD state persistence now stores the economy price map, active contracts, dispatch calls, evidence, warrants, impounds, licenses, businesses, service requests, hospital bills and government registry in the `rhd_state` table. Player cash/bank/inventory persistence remains the responsibility of the upstream Framework and has not been duplicated by RHD.
+
+Privileged RP mutation functions (licenses, businesses, hospital billing and impounds) are server-internal entrypoints. Client-facing service requests are bound to the remote caller's player object and server-side position.
