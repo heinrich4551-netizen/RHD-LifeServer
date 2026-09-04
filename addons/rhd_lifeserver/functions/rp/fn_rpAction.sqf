@@ -30,5 +30,19 @@ switch (_action) do {
         if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false};
         _args call RHD_fnc_hospitalBill;
     };
+    case 'DISPATCH_ACK': {
+        private _authorized = ['COP',1] call RHD_fnc_authorizeRole;
+        if (!_authorized) then {_authorized = ['MEDIC',1] call RHD_fnc_authorizeRole;};
+        if (!_authorized) exitWith {false};
+        _args pushBack 'ACK';
+        _args call RHD_fnc_dispatchAction;
+    };
+    case 'DISPATCH_CLOSE': {
+        private _authorized = ['COP',1] call RHD_fnc_authorizeRole;
+        if (!_authorized) then {_authorized = ['MEDIC',1] call RHD_fnc_authorizeRole;};
+        if (!_authorized) exitWith {false};
+        _args pushBack 'CLOSE';
+        _args call RHD_fnc_dispatchAction;
+    };
     default {false};
 };
