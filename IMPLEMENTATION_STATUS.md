@@ -22,7 +22,8 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Shop transaction caller/price/rate validation
 
 ## Phase 3 — RP Systems
-- [ ] Police dispatch
+- [x] Police/EMS dispatch registry and lifecycle state
+- [x] Authenticated dispatch acknowledge/close actions
 - [x] Evidence registry foundation
 - [x] Warrant registry foundation
 - [x] Impound registry foundation
@@ -45,6 +46,14 @@ A feature is marked implemented only when its code and integration path exist. P
 - [ ] Performance profiling
 - [ ] Headless Client support
 
+## Steam Workshop dependencies
+
+The base RHD addon currently has **zero mandatory third-party Steam Workshop dependencies**. A manifest supports up to 25 dependency slots so future integrations can be declared explicitly without making unrelated mods mandatory.
+
+## Legacy project and attribution
+
+RHD-LifeServer is a legacy-respect modernization project. It preserves attribution to the Altis Life RP lineage, including TAW_Tonic and the AsYetUntitled Framework contributors, while keeping upstream code as a separate dependency. RHD-specific implementation remains under the LT. Toad / RHD-LifeServer project identity.
+
 ## Current implementation notes
 
 The RHD addon is an independent overlay around the upstream AsYetUntitled Framework. The upstream framework remains a separate submodule and is not copied or modified by RHD.
@@ -59,6 +68,8 @@ RHD state persistence includes economy state, contracts, RP registries and job p
 
 The standard Framework virtual shop dialog is intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display effective prices in the normal shop lists, and send completed transaction telemetry through a server-side validation endpoint. The endpoint binds the request to the actual remote caller UID, verifies the reported total against the current RHD price, validates tracked items and rate-limits telemetry. Direct client access to the lower-level market mutation function is no longer whitelisted.
 
-The RP layer now includes a server-side authorization router. Police and EMS actions can be requested through `RHD_fnc_rpAction`; the server resolves the caller from the remote owner ID and checks the caller's `coplevel`, `mediclevel`, and `adminlevel` against the upstream `players` table before invoking protected RHD registries. Client-side rank variables are not trusted for authorization.
+Dispatch records now carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
+
+The RP layer uses server-side authorization against the upstream `players` table for privileged actions. Client-side rank variables are not trusted for authorization.
 
 The remaining production gate is still an actual Arma 3 dedicated-server/PBO/in-game validation pass, including database connectivity and the complete upstream mission integration.
