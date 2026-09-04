@@ -22,17 +22,8 @@ class CfgRemoteExec {
         class RHD_fnc_contractResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_dispatch { allowedTargets = 2; jip = 0; };
         class RHD_fnc_dispatchResult { allowedTargets = 1; jip = 0; };
-        class RHD_fnc_createEvidence { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_createWarrant { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_impoundVehicle { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_releaseImpound { allowedTargets = 2; jip = 0; };
         class RHD_fnc_createServiceRequest { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_manageLicense { allowedTargets = 2; jip = 0; };
         class RHD_fnc_getLicenses { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_business { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_hospitalBill { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_treatPlayer { allowedTargets = 2; jip = 0; };
-        class RHD_fnc_vehicleService { allowedTargets = 2; jip = 0; };
         class RHD_fnc_rpResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_shopTransaction { allowedTargets = 2; jip = 0; };
         class RHD_fnc_rpAction { allowedTargets = 2; jip = 0; };
