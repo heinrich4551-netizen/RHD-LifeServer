@@ -30,6 +30,7 @@ class CfgRemoteExec {
         class RHD_fnc_getLicenses { allowedTargets = 2; jip = 0; };
         class RHD_fnc_business { allowedTargets = 2; jip = 0; };
         class RHD_fnc_hospitalBill { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_treatPlayer { allowedTargets = 2; jip = 0; };
         class RHD_fnc_rpResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_shopTransaction { allowedTargets = 2; jip = 0; };
         class RHD_fnc_rpAction { allowedTargets = 2; jip = 0; };
@@ -47,7 +48,7 @@ class CfgFunctions {
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
         class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
-        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class hospitalBill {}; class rpResult {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
+        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class hospitalBill {}; class treatPlayer {}; class rpResult {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
     };
 };
 class CfgVehicles {
@@ -77,7 +78,7 @@ class CfgVehicles {
             class maximumYield : Edit { property="RHD_maximumYield"; displayName="Maximum Yield"; defaultValue="5"; typeName="NUMBER"; };
             class nodeRadius : Edit { property="RHD_nodeRadius"; displayName="Interaction Radius (m)"; defaultValue="12"; typeName="NUMBER"; };
             class illegal : Checkbox { property="RHD_illegal"; displayName="Illegal Resource"; defaultValue="false"; typeName="BOOL"; };
-            class enabled : Checkbox { property="RHD_enabled"; displayName="Enabled"; defaultValue="true"; typeName="BOOL"; };
+            class enabled : Checkbox { property="RHD_enabled"; displayName="Enabled"; displayName="Enabled"; defaultValue="true"; typeName="BOOL"; };
             class ModuleDescription : ModuleDescription {};
         };
         class ModuleDescription : ModuleDescription { description="Place at a farming or mining location."; };
