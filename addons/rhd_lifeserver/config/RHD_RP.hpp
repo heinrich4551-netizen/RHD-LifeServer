@@ -23,5 +23,15 @@ class RHD_RP {
         oil = 250;
         tires = 500;
         full = 1500;
+        businessStartup = 25000;
+    };
+
+    class Taxes {
+        enabled = 1;
+        salesRate = 0.05;
+        businessRate = 0.10;
+        transactionMinimum = 0;
+        minimumCharge = 1;
+        intervalMinutes = 30;
     };
 };
