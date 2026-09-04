@@ -31,5 +31,5 @@ if (!_paid) exitWith {
 
 _contracts deleteAt _uid;
 missionNamespace setVariable ['RHD_ActiveContracts',_contracts,true];
-['paid',_reward] remoteExecCall ['RHD_fnc_contractResult',_caller];
+['paid','',0,_reward] remoteExecCall ['RHD_fnc_contractResult',_caller];
 true
