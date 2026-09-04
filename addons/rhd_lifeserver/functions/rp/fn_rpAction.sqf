@@ -29,6 +29,7 @@ switch (_action) do {
     case 'GOVERNMENT_INFO': { [_caller] call RHD_fnc_governmentInfo; };
     case 'COURT_CASE': { _args = [_caller] + _args; _args call RHD_fnc_courtCase; };
     case 'ADMIN_AUDIT': { [_caller] call RHD_fnc_adminAudit; };
+    case 'ECONOMY_DASHBOARD': { [_caller] call RHD_fnc_economyDashboard; };
     case 'DISPATCH_ACK': {
         private _authorized = ['COP',1] call RHD_fnc_authorizeRole;
         if (!_authorized) then {_authorized = ['MEDIC',1] call RHD_fnc_authorizeRole;};
