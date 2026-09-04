@@ -30,6 +30,10 @@ class CfgRemoteExec {
         class RHD_fnc_playerTransferResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_shopTransaction { allowedTargets = 2; jip = 0; };
         class RHD_fnc_rpAction { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_phone { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_marketplace { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_governmentInfo { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_courtCase { allowedTargets = 2; jip = 0; };
     };
     class Commands { mode = 0; jip = 0; };
 };
@@ -46,14 +50,12 @@ class CfgFunctions {
         class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
         class RP {
             file = "RHD_LifeServer\functions\rp";
-            class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {};
-            class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class releaseImpound {};
-            class releaseImpoundByVehicle {}; class getImpounds {}; class createServiceRequest {};
-            class manageLicense {}; class getLicenses {}; class business {}; class businessCreate {};
-            class businessInfo {}; class businessTransaction {}; class hospitalBill {}; class treatPlayer {};
-            class vehicleService {}; class rpResult {}; class financialTransaction {}; class financialResult {};
-            class playerTransfer {}; class playerTransferResult {}; class taxTransaction {}; class governmentInfo {};
-            class courtCase {}; class phone {}; class marketplace {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {};
+            class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {};
+            class impoundVehicle {}; class releaseImpound {}; class releaseImpoundByVehicle {}; class getImpounds {}; class createServiceRequest {};
+            class manageLicense {}; class getLicenses {}; class business {}; class businessCreate {}; class businessInfo {}; class businessTransaction {};
+            class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class financialTransaction {}; class financialResult {};
+            class playerTransfer {}; class playerTransferResult {}; class taxTransaction {}; class governmentInfo {}; class courtCase {}; class phone {}; class marketplace {};
+            class authorizeRole {}; class rpAction {}; class rpMaintenance {};
         };
     };
 };
