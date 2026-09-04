@@ -61,7 +61,7 @@ class RHD_LifeServer
     class Performance
     {
         enabled = 1;
-        logServerLoop = 1;
+        logServerLoop = 0;
         logSlowSection = 1;
         slowSectionMilliseconds = 50;
     };
