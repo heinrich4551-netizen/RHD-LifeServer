@@ -61,6 +61,8 @@ if (!_isMining && {_min isEqualTo 2 && {_max isEqualTo 5}}) then {
 _min = _min max 1;
 _max = _max max _min;
 private _amount = floor (_min + random (_max - _min + 1));
+private _harvestMultiplier = (missionNamespace getVariable ['RHD_HarvestMultiplier',1]) max 1;
+_amount = round (_amount * _harvestMultiplier);
 missionNamespace setVariable [_cooldownKey,diag_tickTime + (_cooldown max 0.1)];
 
 private _illegal = getNumber (_cfg >> 'illegal') isEqualTo 1;
@@ -70,7 +72,6 @@ if (_eden getOrDefault ['dynamicPricing',true]) then {
     [_item,_amount,0] call RHD_fnc_recordMarket;
 };
 
-/* Progression is kept server-side and persisted with the other RHD state. */
 private _uid = getPlayerUID _player;
 private _jobs = missionNamespace getVariable ['RHD_JobProgress',createHashMap];
 private _state = _jobs getOrDefault [_uid,[0,0,1,1,0]];
