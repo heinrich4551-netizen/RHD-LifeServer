@@ -15,6 +15,8 @@ if (_mode isEqualTo 7) exitWith {
         case 1: { hint format ['RHD MINING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured mining resource node and press F6 to harvest.',_legalLevel,_legalXP]; };
         case 2: { closeDialog 0; [player] remoteExecCall ['RHD_fnc_createContract',2]; };
         case 3: { closeDialog 0; ['BUSINESS_INFO',[]] remoteExecCall ['RHD_fnc_rpAction',2]; };
+        case 4: { closeDialog 0; ['MARKETPLACE',['VIEW']] remoteExecCall ['RHD_fnc_rpAction',2]; };
+        case 5: { closeDialog 0; ['MARKETPLACE',['LIST_HELP']] remoteExecCall ['RHD_fnc_rpAction',2]; };
     };
     true
 };
@@ -75,6 +77,8 @@ if (_mode isEqualTo 8) exitWith {
                     hint 'RHD: Treatment request sent to the EMS server.';
                 };
             };
+            case 4: { closeDialog 0; ['ADMIN_AUDIT',[]] remoteExecCall ['RHD_fnc_rpAction',2]; };
+            case 5: { closeDialog 0; ['ECONOMY_DASHBOARD',[]] remoteExecCall ['RHD_fnc_rpAction',2]; };
         };
         true
     };
@@ -84,6 +88,7 @@ if (_mode isEqualTo 8) exitWith {
         case 1: { closeDialog 0; [getPlayerUID player] remoteExecCall ['RHD_fnc_getLicenses',2]; };
         case 2: { closeDialog 0; ['GENERAL','Civilian dispatch call.',getPosATL player,2] remoteExecCall ['RHD_fnc_dispatch',2]; hint 'RHD: Dispatch call sent.'; };
         case 3: { closeDialog 0; ['EMS','Emergency assistance requested by civilian.',getPosATL player,1] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Emergency assistance request sent.'; };
+        case 4: { closeDialog 0; ['MARKETPLACE',['VIEW']] remoteExecCall ['RHD_fnc_rpAction',2]; };
     };
     true
 };
@@ -108,7 +113,7 @@ switch (_action) do {
     };
     case 2: {hint 'RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts'; true};
     case 3: {
-        private _prices=missionNamespace getVariable ['RHD_EconomyPrices',createHashMap]; private _lines=['RHD MARKETPLACE',''];
+        private _prices=missionNamespace getVariable ['RHD_EconomyPrices',createHashMap]; private _lines=['RHD MARKETPLACE / ECONOMY',''];
         { private _entry=_prices get _x; if !(_entry isEqualTo []) then {private _display=getText (missionConfigFile >> 'VirtualItems' >> _x >> 'displayName'); if (_display isEqualTo '') then {_display=_x;}; _lines pushBack format ['%1: $%2',_display,round (_entry param [1,0])];}; } forEach keys _prices;
         hint (_lines joinString '\n'); true
     };
