@@ -2,6 +2,10 @@
 if (!hasInterface) exitWith {false};
 params ['_action'];
 private _mode = missionNamespace getVariable ['RHD_MenuMode',6];
+private _copLevel = missionNamespace getVariable ['life_coplevel',0];
+private _medicLevel = missionNamespace getVariable ['life_mediclevel',0];
+private _isCop = _copLevel > 0;
+private _isMedic = _medicLevel > 0;
 
 if (_mode isEqualTo 7) exitWith {
     private _progress = missionNamespace getVariable ['RHD_MyJobProgress',[0,0,1,1]];
@@ -10,12 +14,62 @@ if (_mode isEqualTo 7) exitWith {
         case 0: { hint format ['RHD FARMING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured farming resource node and press F6 to harvest.',_legalLevel,_legalXP]; };
         case 1: { hint format ['RHD MINING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured mining resource node and press F6 to harvest.',_legalLevel,_legalXP]; };
         case 2: { closeDialog 0; [player] remoteExecCall ['RHD_fnc_createContract',2]; };
-        case 3: { closeDialog 0; [player] remoteExecCall ['RHD_fnc_completeContract',2]; };
+        case 3: { hint format ['RHD JOB PROGRESS\n\nLegal Level: %1\nLegal XP: %2\nIllegal Level: %3\nIllegal XP: %4',_legalLevel,_legalXP,_illegalLevel,_illegalXP]; };
     };
     true
 };
 
 if (_mode isEqualTo 8) exitWith {
+    if (_isCop || _isMedic) exitWith {
+        private _calls = missionNamespace getVariable ['RHD_DispatchCalls',createHashMap];
+        private _open = [];
+        {
+            private _entry = _calls getOrDefault [_x,[]];
+            if !(_entry isEqualTo []) then {
+                private _status = _entry param [7,'OPEN'];
+                if (_status in ['OPEN','ACK']) then {_open pushBack [_entry param [1,0],_x,_entry];};
+            };
+        } forEach keys _calls;
+        _open sort true;
+        switch (_action) do {
+            case 0: {
+                if (_open isEqualTo []) exitWith {hint 'RHD DISPATCH\n\nNo open or acknowledged calls.';};
+                private _lines = ['RHD DISPATCH CONSOLE',''];
+                {
+                    private _e = _x param [2,[]];
+                    if !(_e isEqualTo []) then {
+                        _lines pushBack format ['%1 | P%2 | %3 | %4 | %5',_e param [0,''],_e param [5,2],_e param [2,'GENERAL'],_e param [7,'OPEN'],_e param [3,'']];
+                    };
+                } forEach _open;
+                hint (_lines joinString '\n');
+            };
+            case 1: {
+                if (_open isEqualTo []) exitWith {hint 'RHD: No dispatch calls to acknowledge.';};
+                private _latest = (_open select ((count _open) - 1));
+                private _id = _latest param [1,''];
+                closeDialog 0;
+                ['DISPATCH_ACK',[_id]] remoteExecCall ['RHD_fnc_rpAction',2];
+                hint format ['RHD: Dispatch %1 acknowledgement sent.',_id];
+            };
+            case 2: {
+                if (_open isEqualTo []) exitWith {hint 'RHD: No dispatch calls to close.';};
+                private _latest = (_open select ((count _open) - 1));
+                private _id = _latest param [1,''];
+                closeDialog 0;
+                ['DISPATCH_CLOSE',[_id]] remoteExecCall ['RHD_fnc_rpAction',2];
+                hint format ['RHD: Dispatch %1 close request sent.',_id];
+            };
+            case 3: {
+                if (_isCop) then {
+                    hint 'RHD POLICE SERVICES\n\nDispatch management is available from this menu.\nUse the upstream Altis Life police tools for arresting, searching and other core police actions.\n\nRHD adds dispatch, warrants, evidence, impounds and DMV services.';
+                } else {
+                    hint 'RHD EMS SERVICES\n\nDispatch management is available from this menu.\nUse the upstream Altis Life medical/revive tools for core treatment.\n\nRHD adds service requests, treatment records and hospital billing.';
+                };
+            };
+        };
+        true
+    };
+
     switch (_action) do {
         case 0: { closeDialog 0; ['VEHICLE','Vehicle service requested by civilian.',getPosATL player,2] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Vehicle service request sent.'; };
         case 1: { closeDialog 0; [getPlayerUID player] remoteExecCall ['RHD_fnc_getLicenses',2]; };
