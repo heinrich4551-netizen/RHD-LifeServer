@@ -1,5 +1,5 @@
 /* Server-internal warrant creation. [targetUID,reason,durationSeconds] call RHD_fnc_createWarrant */
-if (!isServer || {isRemoteExecuted}) exitWith {false};
+if (!isServer) exitWith {false};
 params [['_uid',''],['_reason',''],['_duration',3600,[0]]];
 if (_uid isEqualTo '' || {_reason isEqualTo ''}) exitWith {false};
 if (count _uid != 17) exitWith {false};
