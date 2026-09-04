@@ -7,45 +7,20 @@ if (_mode isEqualTo 7) exitWith {
     private _progress = missionNamespace getVariable ['RHD_MyJobProgress',[0,0,1,1]];
     _progress params ['_legalXP','_illegalXP','_legalLevel','_illegalLevel'];
     switch (_action) do {
-        case 0: {
-            hint format ['RHD FARMING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured farming resource node and press F6 to harvest.',_legalLevel,_legalXP];
-        };
-        case 1: {
-            hint format ['RHD MINING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured mining resource node and press F6 to harvest.',_legalLevel,_legalXP];
-        };
-        case 2: {
-            closeDialog 0;
-            [player] remoteExecCall ['RHD_fnc_createContract',2];
-        };
-        case 3: {
-            closeDialog 0;
-            [player] remoteExecCall ['RHD_fnc_completeContract',2];
-        };
+        case 0: { hint format ['RHD FARMING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured farming resource node and press F6 to harvest.',_legalLevel,_legalXP]; };
+        case 1: { hint format ['RHD MINING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured mining resource node and press F6 to harvest.',_legalLevel,_legalXP]; };
+        case 2: { closeDialog 0; [player] remoteExecCall ['RHD_fnc_createContract',2]; };
+        case 3: { closeDialog 0; [player] remoteExecCall ['RHD_fnc_completeContract',2]; };
     };
     true
 };
 
 if (_mode isEqualTo 8) exitWith {
     switch (_action) do {
-        case 0: {
-            closeDialog 0;
-            ['VEHICLE','Vehicle service requested by civilian.',getPosATL player,2] remoteExecCall ['RHD_fnc_createServiceRequest',2];
-            hint 'RHD: Vehicle service request sent.';
-        };
-        case 1: {
-            closeDialog 0;
-            [getPlayerUID player] remoteExecCall ['RHD_fnc_getLicenses',2];
-        };
-        case 2: {
-            closeDialog 0;
-            ['GENERAL','Civilian dispatch call.',getPosATL player,2] remoteExecCall ['RHD_fnc_dispatch',2];
-            hint 'RHD: Dispatch call sent.';
-        };
-        case 3: {
-            closeDialog 0;
-            ['EMS','Emergency assistance requested by civilian.',getPosATL player,1] remoteExecCall ['RHD_fnc_createServiceRequest',2];
-            hint 'RHD: Emergency service request sent.';
-        };
+        case 0: { closeDialog 0; ['VEHICLE','Vehicle service requested by civilian.',getPosATL player,2] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Vehicle service request sent.'; };
+        case 1: { closeDialog 0; [getPlayerUID player] remoteExecCall ['RHD_fnc_getLicenses',2]; };
+        case 2: { closeDialog 0; ['GENERAL','Civilian dispatch call.',getPosATL player,2] remoteExecCall ['RHD_fnc_dispatch',2]; hint 'RHD: Dispatch call sent.'; };
+        case 3: { closeDialog 0; ['EMS','Emergency assistance requested by civilian.',getPosATL player,1] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Emergency service request sent.'; };
     };
     true
 };
@@ -63,45 +38,21 @@ switch (_action) do {
         private _stations = missionNamespace getVariable ['RHD_ProcessStations',[]];
         private _best = [];
         private _bestDist = 60;
-        {
-            if (count _x >= 3) then {
-                private _pos = _x select 0;
-                private _process = toLower (_x select 1);
-                private _radius = (_x select 2) max 1;
-                private _d = player distance2D _pos;
-                if (_d <= (_radius min 60) && {_d < _bestDist}) then {
-                    _best = [_process,_d];
-                    _bestDist = _d;
-                };
-            };
-        } forEach _stations;
+        { if (count _x >= 3) then { private _pos=_x select 0; private _process=toLower (_x select 1); private _radius=(_x select 2) max 1; private _d=player distance2D _pos; if (_d <= (_radius min 60) && {_d < _bestDist}) then {_best=[_process,_d];_bestDist=_d;}; }; } forEach _stations;
         if (_best isEqualTo []) exitWith {hint 'RHD: No processing station is within range.';};
         _best params ['_process','_distance'];
         private _recipeCfg = missionConfigFile >> 'ProcessAction' >> _process;
         if (!isClass _recipeCfg) exitWith {hint format ['RHD: No ProcessAction recipe named %1.',_process];};
-        private _req = getArray (_recipeCfg >> 'MaterialsReq');
-        private _give = getArray (_recipeCfg >> 'MaterialsGive');
+        private _req=getArray (_recipeCfg >> 'MaterialsReq'); private _give=getArray (_recipeCfg >> 'MaterialsGive');
         if (count _req < 1 || {count _give < 1}) exitWith {hint 'RHD: Invalid processing recipe.';};
-        private _input = (_req select 0) select 0;
-        private _output = (_give select 0) select 0;
-        closeDialog 0;
-        [player,_input,_output,1] remoteExecCall ['RHD_fnc_refineServer',2];
-        true
+        private _input=(_req select 0) select 0; private _output=(_give select 0) select 0;
+        closeDialog 0; [player,_input,_output,1] remoteExecCall ['RHD_fnc_refineServer',2]; true
     };
     case 2: {hint 'RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts'; true};
     case 3: {
-        private _prices = missionNamespace getVariable ['RHD_EconomyPrices',createHashMap];
-        private _lines = ['RHD MARKETPLACE',''];
-        {
-            private _entry = _prices get _x;
-            if !(_entry isEqualTo []) then {
-                private _display = getText (missionConfigFile >> 'VirtualItems' >> _x >> 'displayName');
-                if (_display isEqualTo '') then {_display = _x;};
-                _lines pushBack format ['%1: $%2',_display,round (_entry param [1,0])];
-            };
-        } forEach keys _prices;
-        hint (_lines joinString '\n');
-        true
+        private _prices=missionNamespace getVariable ['RHD_EconomyPrices',createHashMap]; private _lines=['RHD MARKETPLACE',''];
+        { private _entry=_prices get _x; if !(_entry isEqualTo []) then {private _display=getText (missionConfigFile >> 'VirtualItems' >> _x >> 'displayName'); if (_display isEqualTo '') then {_display=_x;}; _lines pushBack format ['%1: $%2',_display,round (_entry param [1,0])];}; } forEach keys _prices;
+        hint (_lines joinString '\n'); true
     };
     default {false};
 };
