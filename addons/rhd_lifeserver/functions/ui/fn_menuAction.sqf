@@ -29,41 +29,38 @@ if (_mode isEqualTo 8) exitWith {
                     private _e = _calls getOrDefault [_x,[]];
                     if !(_e isEqualTo []) then {
                         private _status = _e param [7,'OPEN'];
-                        if (_status in ['OPEN','ACK']) then {
-                            _lines pushBack format ['%1 | P%2 | %3 | %4 | %5',_e param [0,''],_e param [5,2],_e param [2,'GENERAL'],_status,_e param [3,'']];
-                        };
+                        if (_status in ['OPEN','ACK']) then {_lines pushBack format ['%1 | P%2 | %3 | %4 | %5',_e param [0,''],_e param [5,2],_e param [2,'GENERAL'],_status,_e param [3,'']];};
                     };
                 } forEach keys _calls;
                 if (count _lines <= 2) then {_lines pushBack 'No open or acknowledged calls.';};
                 hint (_lines joinString '\n');
             };
             case 1: {
-                private _calls = missionNamespace getVariable ['RHD_DispatchCalls',createHashMap];
-                private _open = [];
+                private _calls = missionNamespace getVariable ['RHD_DispatchCalls',createHashMap]; private _open = [];
                 {private _e=_calls getOrDefault [_x,[]]; if !(_e isEqualTo []) then {if ((_e param [7,'OPEN']) in ['OPEN','ACK']) then {_open pushBack [_e param [1,0],_x];};};} forEach keys _calls;
                 if (_open isEqualTo []) exitWith {hint 'RHD: No dispatch calls to acknowledge.';};
-                _open sort true;
-                private _id = (_open select ((count _open)-1)) param [1,''];
-                closeDialog 0;
-                ['DISPATCH_ACK',[_id]] remoteExecCall ['RHD_fnc_rpAction',2];
+                _open sort true; private _id = (_open select ((count _open)-1)) param [1,''];
+                closeDialog 0; ['DISPATCH_ACK',[_id]] remoteExecCall ['RHD_fnc_rpAction',2];
             };
             case 2: {
-                private _calls = missionNamespace getVariable ['RHD_DispatchCalls',createHashMap];
-                private _open = [];
+                private _calls = missionNamespace getVariable ['RHD_DispatchCalls',createHashMap]; private _open = [];
                 {private _e=_calls getOrDefault [_x,[]]; if !(_e isEqualTo []) then {if ((_e param [7,'OPEN']) in ['OPEN','ACK']) then {_open pushBack [_e param [1,0],_x];};};} forEach keys _calls;
                 if (_open isEqualTo []) exitWith {hint 'RHD: No dispatch calls to close.';};
-                _open sort true;
-                private _id = (_open select ((count _open)-1)) param [1,''];
-                closeDialog 0;
-                ['DISPATCH_CLOSE',[_id]] remoteExecCall ['RHD_fnc_rpAction',2];
+                _open sort true; private _id = (_open select ((count _open)-1)) param [1,''];
+                closeDialog 0; ['DISPATCH_CLOSE',[_id]] remoteExecCall ['RHD_fnc_rpAction',2];
             };
             case 3: {
                 if (_isCop) then {
                     private _target = cursorTarget;
-                    if (isNull _target || {!(_target isKindOf 'LandVehicle')}) exitWith {hint 'RHD: Look directly at a land vehicle to impound it.';};
-                    closeDialog 0;
-                    ['IMPOUND',[_target,'Police impound',500]] remoteExecCall ['RHD_fnc_rpAction',2];
-                    hint 'RHD: Impound request sent to server.';
+                    if (!isNull _target && {_target isKindOf 'LandVehicle'}) then {
+                        closeDialog 0;
+                        ['IMPOUND',[_target,'Police impound',500]] remoteExecCall ['RHD_fnc_rpAction',2];
+                        hint 'RHD: Impound request sent to server.';
+                    } else {
+                        closeDialog 0;
+                        ['LIST_IMPOUNDS',[]] remoteExecCall ['RHD_fnc_rpAction',2];
+                        hint 'RHD: Requesting current impound registry...';
+                    };
                 } else {
                     private _target = cursorTarget;
                     if (isNull _target || {!(_target isKindOf 'CAManBase')}) exitWith {hint 'RHD: Look directly at the patient.';};
@@ -81,7 +78,7 @@ if (_mode isEqualTo 8) exitWith {
         case 0: { closeDialog 0; ['VEHICLE','Vehicle service requested by civilian.',getPosATL player,2] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Vehicle service request sent.'; };
         case 1: { closeDialog 0; [getPlayerUID player] remoteExecCall ['RHD_fnc_getLicenses',2]; };
         case 2: { closeDialog 0; ['GENERAL','Civilian dispatch call.',getPosATL player,2] remoteExecCall ['RHD_fnc_dispatch',2]; hint 'RHD: Dispatch call sent.'; };
-        case 3: { closeDialog 0; ['EMS','Emergency assistance requested by civilian.',getPosATL player,1] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Emergency service request sent.'; };
+        case 3: { closeDialog 0; ['EMS','Emergency assistance requested by civilian.',getPosATL player,1] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Emergency assistance request sent.'; };
     };
     true
 };
@@ -91,18 +88,13 @@ switch (_action) do {
         private _near = [] call RHD_fnc_findNearbyResource;
         if (_near isEqualTo []) exitWith {hint 'RHD: No configured resource node is within range.';};
         _near params ['_item','_nodeIndex','_distance'];
-        closeDialog 0;
-        [player,_item] remoteExecCall ['RHD_fnc_harvestServer',2];
-        true
+        closeDialog 0; [player,_item] remoteExecCall ['RHD_fnc_harvestServer',2]; true
     };
     case 1: {
-        private _stations = missionNamespace getVariable ['RHD_ProcessStations',[]];
-        private _best = [];
-        private _bestDist = 60;
+        private _stations = missionNamespace getVariable ['RHD_ProcessStations',[]]; private _best = []; private _bestDist = 60;
         { if (count _x >= 3) then { private _pos=_x select 0; private _process=toLower (_x select 1); private _radius=(_x select 2) max 1; private _d=player distance2D _pos; if (_d <= (_radius min 60) && {_d < _bestDist}) then {_best=[_process,_d];_bestDist=_d;}; }; } forEach _stations;
         if (_best isEqualTo []) exitWith {hint 'RHD: No processing station is within range.';};
-        _best params ['_process','_distance'];
-        private _recipeCfg = missionConfigFile >> 'ProcessAction' >> _process;
+        _best params ['_process','_distance']; private _recipeCfg = missionConfigFile >> 'ProcessAction' >> _process;
         if (!isClass _recipeCfg) exitWith {hint format ['RHD: No ProcessAction recipe named %1.',_process];};
         private _req=getArray (_recipeCfg >> 'MaterialsReq'); private _give=getArray (_recipeCfg >> 'MaterialsGive');
         if (count _req < 1 || {count _give < 1}) exitWith {hint 'RHD: Invalid processing recipe.';};
