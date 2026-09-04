@@ -34,6 +34,7 @@ class CfgRemoteExec {
         class RHD_fnc_marketplace { allowedTargets = 2; jip = 0; };
         class RHD_fnc_governmentInfo { allowedTargets = 2; jip = 0; };
         class RHD_fnc_courtCase { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_worldEventResult { allowedTargets = 1; jip = 0; };
     };
     class Commands { mode = 0; jip = 0; };
 };
@@ -55,6 +56,7 @@ class CfgFunctions {
             class manageLicense {}; class getLicenses {}; class business {}; class businessCreate {}; class businessInfo {}; class businessTransaction {};
             class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class financialTransaction {}; class financialResult {};
             class playerTransfer {}; class playerTransferResult {}; class taxTransaction {}; class governmentInfo {}; class courtCase {}; class phone {}; class marketplace {};
+            class worldEvents {}; class worldEventResult {}; class adminAudit {};
             class authorizeRole {}; class rpAction {}; class rpMaintenance {};
         };
     };
