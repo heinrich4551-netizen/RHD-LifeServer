@@ -19,10 +19,20 @@ if (_netId isEqualTo '') exitWith {false};
 
 private _services = missionNamespace getVariable ['RHD_VehicleServices',createHashMap];
 private _charge = round ((_fee max 0) min 100000);
+
+private _paid = true;
+if (_charge > 0) then {
+    _paid = [_caller,'CHARGE','CASH',_charge,format ['Vehicle service: %1',_service]] call RHD_fnc_financialTransaction;
+};
+if (!_paid) exitWith {
+    [['VEHICLE_SERVICE_DENIED',_netId,_service,_charge,damage _vehicle]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+    false
+};
+
 private _entry = [_netId,_uid,_service,_charge,diag_tickTime,getPosATL _vehicle,damage _vehicle];
 _services set [_netId,_entry];
 missionNamespace setVariable ['RHD_VehicleServices',_services,true];
 
 if (_service in ['REPAIR','FULL']) then {_vehicle setDamage 0;};
-[_netId,_service,_charge,damage _vehicle] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+[['VEHICLE_SERVICE',_netId,_service,_charge,damage _vehicle]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
 true
