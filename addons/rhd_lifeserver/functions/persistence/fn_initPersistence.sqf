@@ -29,7 +29,9 @@ private _stateMap = [
     ['businesses', 'RHD_Businesses', createHashMap],
     ['services', 'RHD_ServiceRequests', createHashMap],
     ['hospitalBills', 'RHD_HospitalBills', createHashMap],
-    ['government', 'RHD_Government', createHashMap]
+    ['government', 'RHD_Government', createHashMap],
+    ['contracts', 'RHD_ActiveContracts', createHashMap],
+    ['jobs', 'RHD_JobProgress', createHashMap]
 ];
 
 {
