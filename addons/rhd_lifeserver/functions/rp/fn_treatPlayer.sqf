@@ -13,12 +13,20 @@ private _uid = getPlayerUID _target;
 if (_uid isEqualTo '' || {count _uid != 17}) exitWith {false};
 private _damage = damage _target;
 if (_damage <= 0.01) exitWith {false};
-_target setDamage 0;
 private _charge = round ((_fee max 0) min 100000);
+
+if (_charge > 0) then {
+    if !([_target,'CHARGE','CASH',_charge,'EMS treatment'] call RHD_fnc_financialTransaction) exitWith {
+        [['TREATMENT_DENIED',_charge]] remoteExecCall ['RHD_fnc_rpResult',owner _medic];
+        false
+    };
+};
+
+_target setDamage 0;
 if (_charge > 0) then {
     private _bills = missionNamespace getVariable ['RHD_HospitalBills',createHashMap];
     private _id = format ['HB-%1-%2',floor diag_tickTime,floor random 10000];
-    _bills set [_id,[_id,_uid,_charge,'EMS treatment',diag_tickTime,false,2]];
+    _bills set [_id,[_id,_uid,_charge,'EMS treatment',diag_tickTime,true,2]];
     missionNamespace setVariable ['RHD_HospitalBills',_bills,true];
 };
 [['TREATMENT',_charge]] remoteExecCall ['RHD_fnc_rpResult',owner _medic];
