@@ -4,9 +4,15 @@ params ['_action'];
 private _mode = missionNamespace getVariable ['RHD_MenuMode',6];
 
 if (_mode isEqualTo 7) exitWith {
+    private _progress = missionNamespace getVariable ['RHD_MyJobProgress',[0,0,1,1]];
+    _progress params ['_legalXP','_illegalXP','_legalLevel','_illegalLevel'];
     switch (_action) do {
-        case 0: {hint 'RHD FARMING JOBS\n\nUse a configured RHD Resource Node and press F6 to harvest.';};
-        case 1: {hint 'RHD MINING JOBS\n\nUse a configured RHD Resource Node and press F6 to harvest.';};
+        case 0: {
+            hint format ['RHD FARMING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured farming resource node and press F6 to harvest.',_legalLevel,_legalXP];
+        };
+        case 1: {
+            hint format ['RHD MINING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured mining resource node and press F6 to harvest.',_legalLevel,_legalXP];
+        };
         case 2: {
             closeDialog 0;
             [player] remoteExecCall ['RHD_fnc_createContract',2];
@@ -83,6 +89,19 @@ switch (_action) do {
         true
     };
     case 2: {hint 'RHD JOBS\n\nFarming\nMining\nDeliveries\nContracts'; true};
-    case 3: {hint 'RHD SERVICES\n\nVehicle Services\nLicenses\nDispatch\nEmergency Services'; true};
+    case 3: {
+        private _prices = missionNamespace getVariable ['RHD_EconomyPrices',createHashMap];
+        private _lines = ['RHD MARKETPLACE',''];
+        {
+            private _entry = _prices get _x;
+            if !(_entry isEqualTo []) then {
+                private _display = getText (missionConfigFile >> 'VirtualItems' >> _x >> 'displayName');
+                if (_display isEqualTo '') then {_display = _x;};
+                _lines pushBack format ['%1: $%2',_display,round (_entry param [1,0])];
+            };
+        } forEach keys _prices;
+        hint (_lines joinString '\n');
+        true
+    };
     default {false};
 };
