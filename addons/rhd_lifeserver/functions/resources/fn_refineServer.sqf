@@ -3,9 +3,12 @@
     3DEN processing stations define their ProcessAction class and radius.
     Legacy rhd_process_<ProcessActionClass>_<id> markers remain supported.
 */
-if (!isServer) exitWith {false};
+if (!isServer || {!isRemoteExecuted}) exitWith {false};
 params ['_player','_input','_output',['_amount',1]];
-if (isNull _player || {!isPlayer _player} || {!alive _player}) exitWith {false};
+private _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull];
+if (isNull _caller || {_player isNotEqualTo _caller}) exitWith {false};
+_player = _caller;
+if (!isPlayer _player || {!alive _player}) exitWith {false};
 if (_input isEqualTo '' || {_output isEqualTo ''}) exitWith {false};
 
 private _processRoot = missionConfigFile >> 'ProcessAction';
