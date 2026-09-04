@@ -34,5 +34,5 @@ private _id = format ['S-%1-%2',floor diag_tickTime,floor random 10000];
 _r set [_id,[_id,diag_tickTime,_safeService,_safeDescription,_safePosition,_safePriority,_owner,_uid,'OPEN']];
 missionNamespace setVariable ['RHD_ServiceRequests',_r,true];
 
-[_id,_safeService] remoteExecCall ['RHD_fnc_rpResult',_owner];
+[[_id,_safeService]] remoteExecCall ['RHD_fnc_rpResult',_owner];
 true
