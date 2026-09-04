@@ -41,7 +41,7 @@ class CfgFunctions {
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
         class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
-        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class releaseImpound {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
+        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class releaseImpound {}; class getImpounds {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
     };
 };
 class CfgVehicles {
@@ -77,7 +77,7 @@ class CfgVehicles {
         class ModuleDescription : ModuleDescription { description="Place at a farming or mining location."; };
     };
     class RHD_Module_ProcessStation : Module_F {
-        scope=2; displayName="RHD Processing Station"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0;
+        scope=2; displayName="RHD Processing Station"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0;
         class Attributes : AttributesBase {
             class processClass : Edit { property="RHD_processClass"; displayName="ProcessAction Class"; defaultValue="iron"; typeName="STRING"; };
             class stationRadius : Edit { property="RHD_stationRadius"; displayName="Interaction Radius (m)"; defaultValue="12"; typeName="NUMBER"; };
