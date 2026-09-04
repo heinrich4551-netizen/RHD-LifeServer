@@ -48,6 +48,19 @@ CREATE TABLE IF NOT EXISTS rhd_vehicle_services (
     UNIQUE KEY uq_rhd_vehicle_service (owner_uid, vehicle_key, service_type)
 );
 
+CREATE TABLE IF NOT EXISTS rhd_financial_transactions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    uid VARCHAR(32) NOT NULL,
+    transaction_mode VARCHAR(16) NOT NULL,
+    account_type VARCHAR(8) NOT NULL,
+    amount DECIMAL(14,2) NOT NULL,
+    balance_before DECIMAL(14,2) NOT NULL,
+    balance_after DECIMAL(14,2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_rhd_fin_uid (uid),
+    INDEX idx_rhd_fin_created (created_at)
+);
+
 CREATE TABLE IF NOT EXISTS rhd_state (
     state_key VARCHAR(64) NOT NULL PRIMARY KEY,
     payload LONGTEXT NOT NULL,
