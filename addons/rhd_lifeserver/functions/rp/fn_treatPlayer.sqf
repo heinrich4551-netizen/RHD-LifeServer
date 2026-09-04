@@ -1,6 +1,7 @@
 /*
     Authenticated EMS treatment action.
     [medic,target] call RHD_fnc_treatPlayer
+    The treatment fee is server-configured; client-provided fees are ignored.
 */
 if (!isServer) exitWith {false};
 params [['_medic',objNull,[objNull]],['_target',objNull,[objNull]]];
@@ -14,7 +15,7 @@ if (_uid isEqualTo '' || {count _uid != 17}) exitWith {false};
 private _damage = damage _target;
 if (_damage <= 0.01) exitWith {false};
 private _charge = round (getNumber (missionConfigFile >> 'RHD_RP' >> 'Fees' >> 'treatment'));
-_charge = (_charge max 0) min 100000;
+_charge = (_charge max 0) min 1000000;
 
 private _paid = true;
 if (_charge > 0) then {
