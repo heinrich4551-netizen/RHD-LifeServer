@@ -33,15 +33,33 @@ https://creativecommons.org/licenses/by-nc-nd/4.0/
 
 RHD keeps this Framework as a Git submodule rather than copying its source into the RHD implementation. Users distributing or using the upstream Framework must comply with its own license and attribution requirements.
 
+## SimplePersist dependency
+
+RHD-LifeServer requires **SimplePersist** as an external Steam Workshop dependency for player-state persistence.
+
+- Project: **SimplePersist**
+- Creator / copyright holder: **Tom Daykin / Toakan-Network**
+- Steam Workshop ID: **3006691432**
+- Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+- Source: https://github.com/Toakan-Network/SimplePersist
+- License: https://github.com/Toakan-Network/SimplePersist/blob/main/LICENSE
+
+RHD does **not** copy, bundle, rehost, or redistribute SimplePersist source. The published Workshop release must be installed separately by the server owner. Its own license and distribution terms remain applicable.
+
+SimplePersist and RHD have separate responsibilities. RHD must not present SimplePersist code as RHD code or duplicate/overwrite SimplePersist's supported player-state persistence.
+
 ## Contributor recognition
 
-Using an upstream dependency does not make its authors RHD authors. Conversely, RHD integration and new code does not claim ownership of the upstream Framework.
+Using an upstream dependency does not make its authors RHD authors. Conversely, RHD integration and new code does not claim ownership of the upstream Framework or SimplePersist.
 
 The repository therefore separates:
 
 - **Upstream legacy/framework work:** TAW_Tonic, AsYetUntitled and applicable upstream contributors.
+- **Player persistence dependency:** Tom Daykin / Toakan-Network / SimplePersist.
 - **RHD modernization/integration:** LT. Toad / RHD-LifeServer contributors.
 
 ## Steam Workshop dependencies
 
-The base RHD addon currently has no mandatory third-party Steam Workshop dependency. Future Workshop dependencies must be explicitly listed in `STEAM_WORKSHOP_DEPENDENCIES.md` and must remain subject to the respective creator's license and distribution terms.
+SimplePersist is currently the only mandatory third-party Steam Workshop dependency. Future Workshop dependencies must be explicitly listed in `STEAM_WORKSHOP_DEPENDENCIES.md` and must remain subject to the respective creator's license and distribution terms.
+
+See [`SETUP.txt`](SETUP.txt) for the complete server-owner setup checklist.
