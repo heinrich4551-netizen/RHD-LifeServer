@@ -19,13 +19,19 @@ private _direction = if (_side isEqualTo 1) then {1} else {0};
 private _unitPrice = [_item,_direction] call RHD_fnc_shopPrice;
 if (_unitPrice < 0 || {_total isNotEqualTo (_unitPrice * _amount)}) exitWith {false};
 
-/* Rate-limit telemetry per player to prevent artificial market pressure. */
 private _rate = missionNamespace getVariable ['RHD_ShopTelemetryRate',createHashMap];
 private _last = _rate getOrDefault [_uid,0];
 if ((diag_tickTime - _last) < 0.25) exitWith {false};
 _rate set [_uid,diag_tickTime];
 missionNamespace setVariable ['RHD_ShopTelemetryRate',_rate];
 
+private _taxable = round (_total max 0);
+if (_taxable > 0) then {
+    /* Sales tax is collected server-side after a validated shop operation. */
+    [_caller,'SALES',_taxable,format ['Virtual shop %1',_item]] call RHD_fnc_taxTransaction;
+};
+
 private _supply = if (_side isEqualTo 1) then {_amount} else {0};
 private _demand = if (_side isEqualTo 0) then {_amount} else {0};
-[_item,_supply,_demand] call RHD_fnc_recordMarket
+[_item,_supply,_demand] call RHD_fnc_recordMarket;
+true
