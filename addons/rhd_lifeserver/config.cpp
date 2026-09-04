@@ -25,6 +25,7 @@ class CfgRemoteExec {
         class RHD_fnc_createEvidence { allowedTargets = 2; jip = 0; };
         class RHD_fnc_createWarrant { allowedTargets = 2; jip = 0; };
         class RHD_fnc_impoundVehicle { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_releaseImpound { allowedTargets = 2; jip = 0; };
         class RHD_fnc_createServiceRequest { allowedTargets = 2; jip = 0; };
         class RHD_fnc_manageLicense { allowedTargets = 2; jip = 0; };
         class RHD_fnc_getLicenses { allowedTargets = 2; jip = 0; };
@@ -49,7 +50,7 @@ class CfgFunctions {
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
         class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
-        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
+        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class releaseImpound {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
     };
 };
 class CfgVehicles {
