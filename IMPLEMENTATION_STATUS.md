@@ -4,7 +4,6 @@ A feature is marked implemented only when its code and integration path exist. P
 
 ## Phase 1 — Core
 - [ ] Upstream Framework deployment verified
-- [x] RHD persistence adapter integrated with the upstream Framework DB_fnc_asyncCall layer
 - [ ] Production database configuration externalized
 - [ ] Server identity, mission rotation and BattlEye validated
 - [ ] Police/civilian/medic integration validated
@@ -17,9 +16,9 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Refining/processing framework
 - [x] Dynamic supply/demand pricing engine
 - [x] Delivery contract generation/completion framework
-- [ ] Legal/illegal job progression
+- [x] Legal/illegal job progression
 - [ ] Full economy shop price integration
-- [ ] Persistent economy telemetry
+- [x] Persistent economy telemetry/state
 
 ## Phase 3 — RP Systems
 - [ ] Police dispatch
@@ -35,11 +34,11 @@ A feature is marked implemented only when its code and integration path exist. P
 - [ ] Courts/government/taxes
 - [ ] RHD phone
 - [ ] Marketplace
-- [ ] Service requests
+- [x] Service request foundation
 
 ## Phase 4 — Live Operations
 - [ ] Scheduled world events
-- [ ] Economy telemetry
+- [ ] Economy telemetry dashboard
 - [ ] Automated backups/restart notices
 - [ ] Admin tools/audit logs
 - [ ] Performance profiling
@@ -53,6 +52,8 @@ Additional RHD-only virtual items are supplied in `custom/RHD_vItems.hpp`, and a
 
 The F6/F7/F8 UI is wired to server-side harvesting, processing and delivery-contract requests. Resource and processing requests validate the player, location, configured node/station and cooldown on the dedicated server before returning inventory changes to the client.
 
-RHD state persistence now stores the economy price map, active contracts, dispatch calls, evidence, warrants, impounds, licenses, businesses, service requests, hospital bills and government registry in the `rhd_state` table. Player cash/bank/inventory persistence remains the responsibility of the upstream Framework and has not been duplicated by RHD.
+Legal and illegal resource activity now maintains per-player progression with separate XP/levels. Harvesting contributes progression server-side, with periodic progression bonuses returned through the existing Framework cash/persistence mechanism.
 
-Privileged RP mutation functions (licenses, businesses, hospital billing and impounds) are server-internal entrypoints. Client-facing service requests are bound to the remote caller's player object and server-side position.
+RHD state persistence now includes economy state, contracts, RP registries and job progression through the upstream Framework database adapter. The server scheduler performs persistence according to the configured save interval.
+
+The F6 marketplace view displays the current RHD dynamic price table. Full interception of the upstream Framework's native virtual-shop buy/sell transactions remains intentionally separate until a mission-side shop hook is installed; the upstream Framework submodule is not modified by RHD.
