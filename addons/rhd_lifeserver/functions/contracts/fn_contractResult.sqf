@@ -3,7 +3,7 @@
     Only the dedicated server may invoke this function.
 */
 if (!hasInterface || {!isRemoteExecuted} || {remoteExecutedOwner != 2}) exitWith {false};
-params [['_mode','', ['']],['_item','', ['']],['_amount',0,[0]],['_reward',0,[0]],['_display','', ['']],['_destination',[],[[]]]];
+params [['_mode','', ['']],['_item','', ['']],['_amount',0,[0]],['_reward',0,[0]],['_display','', ['']],['_destination',[],[[]]],['_contractId','',['']]];
 
 switch (_mode) do {
     case 'new': {
@@ -22,16 +22,24 @@ switch (_mode) do {
         true
     };
     case 'complete': {
-        if (_item isEqualTo '' || {_amount <= 0}) exitWith {false};
+        if (_item isEqualTo '' || {_amount <= 0} || {_contractId isEqualTo ''}) exitWith {false};
         if !([false,_item,_amount] call life_fnc_handleInv) exitWith {
             hint format ['RHD: You do not have the required %1 x%2.',_display,_amount];
             false
         };
-        life_cash = life_cash + (_reward max 0);
         deleteMarkerLocal 'RHD_ContractDestination';
         player setVariable ['RHD_ContractDestination',nil,false];
-        hint format ['RHD CONTRACT COMPLETE\n\nDelivered %1 x%2.\nPayment: $%3',_display,_amount,_reward];
+        [_contractId] remoteExecCall ['RHD_fnc_contractCompleteAck',2];
+        hint format ['RHD CONTRACT\n\nDelivered %1 x%2.\nPayment is being processed by the server.',_display,_amount];
         true
+    };
+    case 'paid': {
+        hint format ['RHD CONTRACT COMPLETE\n\nContract payment received: $%1.',_reward];
+        true
+    };
+    case 'message': {
+        hint _display;
+        false
     };
     default {
         hint _mode;
