@@ -50,7 +50,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Authenticated police/EMS RP action router
 
 ## Phase 4 — Live Operations
-- [x] Scheduled world events
+- [x] Scheduled world events with active gameplay effects
 - [ ] Economy telemetry dashboard
 - [ ] Automated backups/restart notices
 - [x] Admin tools/audit logs
@@ -97,7 +97,7 @@ Delivery contract completion uses a pending server state and a client cargo-remo
 
 Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
 
-Scheduled world events now run from the dedicated-server scheduler and broadcast server-created event notifications to connected clients. The initial event set provides resource, market and civilian-activity events; gameplay-effect expansion remains part of the live-operations backlog.
+Scheduled world events run from the dedicated-server scheduler and now apply bounded effects for their duration: DOUBLE_HARVEST doubles server-calculated harvest quantities, MARKET_BOOM applies a temporary 15% shop-price multiplier, and CIVIL_ALERT increases the civilian population target up to the configured maximum. Event timing and duration are configurable in `config/RHD_LifeServer.hpp`.
 
 Authenticated administrator audit summaries now expose bounded recent financial activity and current dispatch, business, marketplace and world-event registry counts through the RP result channel.
 
