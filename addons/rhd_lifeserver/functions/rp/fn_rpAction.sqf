@@ -7,6 +7,7 @@ params [['_action',''],['_args',[],[[]]]];
 _action = toUpper _action;
 private _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull];
 if (isNull _caller || {getPlayerUID _caller isEqualTo ''}) exitWith {false};
+private _callerUID = getPlayerUID _caller;
 
 switch (_action) do {
     case 'EVIDENCE': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_createEvidence; };
@@ -17,7 +18,6 @@ switch (_action) do {
     case 'HOSPITAL_BILL': { if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_hospitalBill; };
     case 'TREAT': { if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_treatPlayer; };
     case 'VEHICLE_SERVICE': {
-        private _service = toUpper (_args param [1,'INSPECTION']);
         if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
         _args call RHD_fnc_vehicleService;
     };
@@ -25,13 +25,19 @@ switch (_action) do {
         private _authorized = ['COP',1] call RHD_fnc_authorizeRole;
         if (!_authorized) then {_authorized = ['MEDIC',1] call RHD_fnc_authorizeRole;};
         if (!_authorized) exitWith {false};
-        _args pushBack 'ACK'; _args call RHD_fnc_dispatchAction;
+        private _dispatchArgs = +_args;
+        _dispatchArgs pushBack 'ACK';
+        _dispatchArgs pushBack _callerUID;
+        _dispatchArgs call RHD_fnc_dispatchAction;
     };
     case 'DISPATCH_CLOSE': {
         private _authorized = ['COP',1] call RHD_fnc_authorizeRole;
         if (!_authorized) then {_authorized = ['MEDIC',1] call RHD_fnc_authorizeRole;};
         if (!_authorized) exitWith {false};
-        _args pushBack 'CLOSE'; _args call RHD_fnc_dispatchAction;
+        private _dispatchArgs = +_args;
+        _dispatchArgs pushBack 'CLOSE';
+        _dispatchArgs pushBack _callerUID;
+        _dispatchArgs call RHD_fnc_dispatchAction;
     };
     default {false};
 };
