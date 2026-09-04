@@ -23,6 +23,31 @@ CREATE TABLE IF NOT EXISTS rhd_businesses (
     INDEX idx_rhd_business_owner (owner_uid)
 );
 
+CREATE TABLE IF NOT EXISTS rhd_business_accounts (
+    business_key VARCHAR(96) NOT NULL PRIMARY KEY,
+    owner_uid VARCHAR(32) NOT NULL,
+    business_name VARCHAR(64) NOT NULL,
+    balance DECIMAL(14,2) NOT NULL DEFAULT 0,
+    active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_rhd_business_account_owner (owner_uid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS rhd_business_transactions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    business_key VARCHAR(96) NOT NULL,
+    owner_uid VARCHAR(32) NOT NULL,
+    transaction_mode VARCHAR(16) NOT NULL,
+    amount DECIMAL(14,2) NOT NULL,
+    balance_before DECIMAL(14,2) NOT NULL,
+    balance_after DECIMAL(14,2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_rhd_business_tx_business (business_key),
+    INDEX idx_rhd_business_tx_owner (owner_uid),
+    INDEX idx_rhd_business_tx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS rhd_contracts (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     issuer_uid VARCHAR(64) NOT NULL,
