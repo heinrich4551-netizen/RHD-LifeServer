@@ -46,7 +46,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Government tax ledger and administrator summary
 - [x] Court case registry with authenticated police/admin creation and admin closure
 - [x] RHD phone foundation: registration, calls and SMS
-- [ ] Marketplace
+- [x] Marketplace listing, purchase, cancellation and server-side financial settlement foundation
 - [x] Authenticated police/EMS RP action router
 
 ## Phase 4 — Live Operations
@@ -91,7 +91,7 @@ The RHD financial adapter reads the selected player's Framework `cash` or `banka
 
 Player businesses now have a server-owned registry and persistent business account table. Business owners can use authenticated server transactions to deposit or withdraw cash from their business account, with transaction audit rows and server-side owner validation. Business creation uses the configured startup fee before registration. The F7 Businesses action retrieves the owner's current business accounts. Business creation and account operations remain behind the authenticated RP router; no client-supplied owner UID or business balance is trusted.
 
-Government taxation now has configurable sales, business and income rates, minimum-charge controls, a server-side tax transaction function, tax audit records and a government revenue ledger. Authorized administrators can request a government tax summary. Court cases have a server-owned registry with authenticated police creation and administrator closure. The RHD phone foundation assigns persistent-in-session numbers and supports authenticated player calls and SMS. Marketplace listings have a server-owned listing registry with owner-controlled cancellation; final item ownership transfer remains gated because the upstream virtual inventory is client-managed and must not be falsely represented as server-verified.
+Government taxation now has configurable sales, business and income rates, minimum-charge controls, a server-side tax transaction function, tax audit records and a government revenue ledger. Authorized administrators can request a government tax summary. Court cases have a server-owned registry with authenticated police creation and administrator closure. The RHD phone foundation assigns persistent-in-session numbers and supports authenticated player calls and SMS. Marketplace listings now reserve seller inventory through an upstream `life_fnc_handleInv` acknowledgement, hold listings in explicit pending states, charge buyers before delivery, refund failed inventory delivery, credit sellers only after successful buyer acknowledgement, and return reserved inventory through an acknowledgement-based cancellation path. Because the underlying Framework virtual inventory remains client-managed, these acknowledgements are an integration boundary rather than an independently verifiable server inventory ledger.
 
 Delivery contract completion uses a pending server state and a client cargo-removal acknowledgement before the server awards the contract reward, reducing the previous client-side reward duplication path.
 
