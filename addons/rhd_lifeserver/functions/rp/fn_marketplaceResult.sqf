@@ -4,6 +4,21 @@ if (!hasInterface || {!isRemoteExecuted} || {remoteExecutedOwner != 2}) exitWith
 params [['_id',''],['_value',''],['_amount',0],['_total',0],['_sellerUID','']];
 if (_id isEqualTo '') exitWith {false};
 
+/* Negative total is the server's cancellation/refund marker. */
+if (_total isEqualTo -1) exitWith {
+    private _item = _value;
+    private _qty = _amount max 0;
+    if (_item isEqualTo '' || {_qty < 1}) exitWith {false};
+    private _returned = [true,_item,_qty] call life_fnc_handleInv;
+    [_id,_returned] remoteExecCall ['RHD_fnc_marketplace',2];
+    if (_returned) then {
+        hint format ['RHD MARKETPLACE\nReturned %1 x%2 from the cancelled listing.',_item,_qty];
+    } else {
+        hint 'RHD MARKETPLACE\nThe reserved items could not be returned. The listing remains open while the server awaits another attempt.';
+    };
+    true
+};
+
 /* Four arguments = listing request: remove the listed quantity, then ACK. */
 if (_sellerUID isEqualTo '') then {
     private _item = _value;
