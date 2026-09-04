@@ -16,6 +16,9 @@ private _states = [
     ['services','RHD_ServiceRequests'],
     ['hospitalBills','RHD_HospitalBills'],
     ['government','RHD_Government'],
+    ['courtCases','RHD_CourtCases'],
+    ['phoneRegistry','RHD_PhoneRegistry'],
+    ['marketplace','RHD_Marketplace'],
     ['contracts','RHD_ActiveContracts'],
     ['jobs','RHD_JobProgress']
 ];
