@@ -24,7 +24,7 @@ switch (_action) do {
     };
     case 'LIST_IMPOUNDS': {
         if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
-        [] call RHD_fnc_getImpounds;
+        [_caller] call RHD_fnc_getImpounds;
     };
     case 'LICENSE': {
         if !(['COP',2] call RHD_fnc_authorizeRole) exitWith {false};
