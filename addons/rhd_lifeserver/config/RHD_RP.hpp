@@ -30,6 +30,7 @@ class RHD_RP {
         enabled = 1;
         salesRate = 0.05;
         businessRate = 0.10;
+        incomeRate = 0.10;
         transactionMinimum = 0;
         minimumCharge = 1;
         intervalMinutes = 30;
