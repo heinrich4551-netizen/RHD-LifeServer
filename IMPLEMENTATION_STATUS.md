@@ -8,6 +8,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [ ] Server identity, mission rotation and BattlEye validated
 - [ ] Police/civilian/medic integration validated
 - [ ] Persistence, banking, inventory and shops validated
+- [x] SimplePersist dependency documented and deployment-integrated as an external Workshop requirement
 
 ## Phase 2 — RHD Economy
 - [x] Farming and mining node framework
@@ -48,11 +49,19 @@ A feature is marked implemented only when its code and integration path exist. P
 
 ## Steam Workshop dependencies
 
-The base RHD addon currently has **zero mandatory third-party Steam Workshop dependencies**. A manifest supports up to 25 dependency slots so future integrations can be declared explicitly without making unrelated mods mandatory.
+The base RHD deployment currently has **one mandatory third-party Steam Workshop dependency**:
+
+- **SimplePersist** — Workshop ID **3006691432** — required for the external player-state persistence component.
+
+SimplePersist is installed separately from its published Workshop release. RHD does not copy or redistribute its source. Slots 2-25 remain reserved for future genuine runtime dependencies.
+
+See `STEAM_WORKSHOP_DEPENDENCIES.md` and `SETUP.txt` for installation details and attribution.
 
 ## Legacy project and attribution
 
 RHD-LifeServer is a legacy-respect modernization project. It preserves attribution to the Altis Life RP lineage, including TAW_Tonic and the AsYetUntitled Framework contributors, while keeping upstream code as a separate dependency. RHD-specific implementation remains under the LT. Toad / RHD-LifeServer project identity.
+
+SimplePersist remains credited to Tom Daykin / Toakan-Network and is kept as a separate external dependency under its own license.
 
 ## Current implementation notes
 
@@ -64,7 +73,7 @@ The F6/F7/F8 UI is wired to server-side harvesting, processing and delivery-cont
 
 Legal and illegal resource activity maintains per-player progression with separate XP/levels. Harvesting contributes progression server-side, with periodic progression bonuses returned through the existing Framework cash/persistence mechanism.
 
-RHD state persistence includes economy state, contracts, RP registries and job progression through the upstream Framework database adapter. The server scheduler performs persistence according to the configured save interval.
+RHD state persistence includes economy state, contracts, RP registries and job progression through the upstream Framework database adapter. The server scheduler performs persistence according to the configured save interval. SimplePersist remains responsible for its supported player-state persistence and is loaded separately.
 
 The standard Framework virtual shop dialog is intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display effective prices in the normal shop lists, and send completed transaction telemetry through a server-side validation endpoint. The endpoint binds the request to the actual remote caller UID, verifies the reported total against the current RHD price, validates tracked items and rate-limits telemetry. Direct client access to the lower-level market mutation function is no longer whitelisted.
 
@@ -74,4 +83,6 @@ EMS treatment is routed through the same authenticated RP path. The server deriv
 
 The RP layer uses server-side authorization against the upstream `players` table for privileged actions. Client-side rank variables are not trusted for authorization.
 
-The remaining production gate is still an actual Arma 3 dedicated-server/PBO/in-game validation pass, including database connectivity and the complete upstream mission integration.
+The new `SETUP.txt` is the primary server-owner deployment checklist and collects required manual configuration, dependency installation, database setup, mission configuration, 3DEN setup, startup order, first-run tests, security checks and troubleshooting in one place.
+
+The remaining production gate is still an actual Arma 3 dedicated-server/PBO/in-game validation pass, including database connectivity, the complete upstream mission integration and the selected SimplePersist release.
