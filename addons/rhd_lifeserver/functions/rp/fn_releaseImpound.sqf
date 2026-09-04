@@ -34,11 +34,13 @@ if (_fee > 0 && {isNull _payer || {!alive _payer}}) exitWith {
     false
 };
 
+private _paid = true;
 if (_fee > 0) then {
-    if !([_payer,'CHARGE','CASH',_fee,'Impound release fee'] call RHD_fnc_financialTransaction) exitWith {
-        [['IMPOUND_PAYMENT_DENIED',_id,_fee]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
-        false
-    };
+    _paid = [_payer,'CHARGE','CASH',_fee,'Impound release fee'] call RHD_fnc_financialTransaction;
+};
+if (!_paid) exitWith {
+    [['IMPOUND_PAYMENT_DENIED',_id,_fee]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+    false
 };
 
 _vehicle setVariable ['RHD_Impounded',false,true];
