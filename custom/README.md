@@ -33,9 +33,30 @@ Existing upstream items such as `apple`, `peach`, `cannabis`, `iron_unrefined`, 
 - `mining` — iron, copper, gold ore, diamonds and oil sand
 - `refining` — iron, copper, cannabis, coca, gold ore and oil-sand processing
 - `economy` — bounded dynamic pricing
+- `shop integration` — the standard Framework virtual-shop callbacks are replaced at runtime by RHD market-aware buy, sell and list handlers without modifying the upstream submodule
 - `contracts` — server-generated delivery contracts
 - `population` — adaptive civilian density
 - `services` — RHD integration points for vehicle and emergency systems
+
+## Dynamic shop integration
+
+The standard Framework shop dialog remains in use. RHD installs its handlers from `functions/core/fn_clientInit.sqf` after the Framework shop functions are available.
+
+- Buy prices use the live RHD market price for tracked resources.
+- Sell prices use the live RHD market price multiplied by `shopSellMultiplier`.
+- Non-RHD virtual items fall back to their normal `VirtualItems` prices.
+- Buy transactions add demand telemetry.
+- Sell transactions add supply telemetry.
+- Shop lists display the current effective prices.
+
+Default economy settings are:
+
+```cpp
+shopBuyMultiplier = 1.00;
+shopSellMultiplier = 0.80;
+```
+
+These values are configured in `config/RHD_LifeServer.hpp`.
 
 ## 3DEN
 
