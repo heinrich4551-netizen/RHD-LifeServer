@@ -41,11 +41,25 @@ Upstream license: https://creativecommons.org/licenses/by-nc-nd/4.0/
 
 ## Steam Workshop dependencies
 
-The base RHD-LifeServer addon currently requires **no third-party Steam Workshop mod**. Its `CfgPatches` dependency is limited to Arma 3 engine components, while the Altis Life Framework is supplied separately as the upstream Git submodule/mission dependency.
+**SimplePersist is a required external Steam Workshop dependency.**
 
-RHD supports a dependency manifest with **up to 25 Steam Workshop entries** for future optional or required integrations. Do not add a Workshop dependency merely for convenience; only a genuine runtime requirement should be marked required.
+- Mod: **SimplePersist**
+- Workshop ID: **3006691432**
+- Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+- Creator/copyright holder: **Tom Daykin / Toakan-Network**
+- Source: https://github.com/Toakan-Network/SimplePersist
 
-See [`STEAM_WORKSHOP_DEPENDENCIES.md`](STEAM_WORKSHOP_DEPENDENCIES.md) for the current list and 25 available slots.
+RHD does not copy or redistribute SimplePersist source. Install the published Workshop release separately and load it before RHD-LifeServer, for example:
+
+```text
+-mod=@SimplePersist;@RHD-LifeServer
+```
+
+SimplePersist is responsible for its supported player-state persistence. RHD remains responsible for its own economy, RP, contracts, businesses, jobs and database state. Do not duplicate or overwrite SimplePersist's player-state storage from RHD.
+
+RHD supports a dependency manifest with **up to 25 Steam Workshop entries**. Only genuine runtime requirements should be marked required. Slots 2-25 are currently reserved.
+
+See [`STEAM_WORKSHOP_DEPENDENCIES.md`](STEAM_WORKSHOP_DEPENDENCIES.md) and [`SETUP.txt`](SETUP.txt) for the complete dependency and installation procedure.
 
 Antistasi Ultimate and other gameplay projects remain integration targets rather than mandatory dependencies of the base RHD addon.
 
@@ -55,6 +69,7 @@ Antistasi Ultimate and other gameplay projects remain integration targets rather
 RHD-LifeServer/
 ├── .gitmodules
 ├── README.md
+├── SETUP.txt
 ├── STEAM_WORKSHOP_DEPENDENCIES.md
 ├── IMPLEMENTATION_STATUS.md
 ├── LICENSE-RHD.md
@@ -100,6 +115,7 @@ Copy `dist\RHD_LifeServer.pbo` into `@RHD-LifeServer\addons` on the dedicated se
 - Arma 3 Dedicated Server
 - Altis
 - AsYetUntitled Framework v5.X.X
+- SimplePersist Workshop ID 3006691432
 - MariaDB/MySQL-compatible database
 - extDB3 or the database interface supported by the selected Framework build
 - BattlEye
