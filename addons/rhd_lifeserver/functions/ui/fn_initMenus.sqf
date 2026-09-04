@@ -23,6 +23,8 @@ _display displayAddEventHandler ["KeyDown", {
     private _a2 = _menu displayCtrl 1602;
     private _a3 = _menu displayCtrl 1603;
     private _a4 = _menu displayCtrl 1604;
+    private _a5 = _menu displayCtrl 1605;
+    private _a6 = _menu displayCtrl 1606;
 
     private _copLevel = missionNamespace getVariable ["life_coplevel",0];
     private _medicLevel = missionNamespace getVariable ["life_mediclevel",0];
@@ -36,13 +38,17 @@ _display displayAddEventHandler ["KeyDown", {
             _a2 ctrlSetText "Process Resources";
             _a3 ctrlSetText "Jobs / Contracts";
             _a4 ctrlSetText "Marketplace";
+            _a5 ctrlSetText "Business Information";
+            _a6 ctrlSetText "Close / Return";
         };
         case 7: {
             _header ctrlSetText "RHD LIFE | JOBS";
             _a1 ctrlSetText "Farming Jobs";
             _a2 ctrlSetText "Mining Jobs";
             _a3 ctrlSetText "Deliveries / Contracts";
-            _a4 ctrlSetText "Job Progress";
+            _a4 ctrlSetText "Business Information";
+            _a5 ctrlSetText "Marketplace";
+            _a6 ctrlSetText "Marketplace Help";
         };
         case 8: {
             if (_isCop || _isMedic) then {
@@ -56,12 +62,16 @@ _display displayAddEventHandler ["KeyDown", {
                 } else {
                     _a4 ctrlSetText "EMS Services";
                 };
+                _a5 ctrlSetText "Admin Audit";
+                _a6 ctrlSetText "Economy Dashboard";
             } else {
                 _header ctrlSetText "RHD LIFE | SERVICES";
                 _a1 ctrlSetText "Request Vehicle Service";
                 _a2 ctrlSetText "View Licenses";
                 _a3 ctrlSetText "Send Dispatch Call";
                 _a4 ctrlSetText "Request Emergency Service";
+                _a5 ctrlSetText "Marketplace";
+                _a6 ctrlSetText "Business Information";
             };
         };
     };
