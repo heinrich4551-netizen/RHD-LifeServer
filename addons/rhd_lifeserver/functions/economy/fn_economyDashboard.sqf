@@ -36,5 +36,5 @@ if (count _rows > 25) then {_rows resize 25;};
 private _marketEvent = missionNamespace getVariable ['RHD_MarketEventMultiplier',1];
 private _event = missionNamespace getVariable ['RHD_CurrentWorldEvent',[]];
 private _summary = [count _prices,round (_marketEvent * 100) / 100,_event,_rows];
-[['ECONOMY_DASHBOARD',_summary]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+['ECONOMY_DASHBOARD',_summary] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
 true
