@@ -19,22 +19,23 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Legal/illegal job progression
 - [x] Full economy shop price integration
 - [x] Persistent economy telemetry/state
+- [x] Shop transaction caller/price/rate validation
 
 ## Phase 3 — RP Systems
 - [ ] Police dispatch
-- [ ] Evidence
-- [ ] Warrants
-- [ ] Impounds
-- [ ] EMS dispatch
+- [x] Evidence registry foundation
+- [x] Warrant registry foundation
+- [x] Impound registry foundation
+- [x] EMS/service request foundation
 - [ ] Treatment/rescue
-- [ ] Hospital billing
-- [ ] Player businesses/employees
-- [ ] Licenses
+- [x] Hospital billing registry foundation
+- [x] Player business registry foundation
+- [x] License registry foundation
 - [ ] Vehicle services/inspections
 - [ ] Courts/government/taxes
 - [ ] RHD phone
 - [ ] Marketplace
-- [x] Service request foundation
+- [x] Authenticated police/EMS RP action router
 
 ## Phase 4 — Live Operations
 - [ ] Scheduled world events
@@ -52,10 +53,12 @@ Additional RHD-only virtual items are supplied in `custom/RHD_vItems.hpp`, and a
 
 The F6/F7/F8 UI is wired to server-side harvesting, processing and delivery-contract requests. Resource and processing requests validate the player, location, configured node/station and cooldown on the dedicated server before returning inventory changes to the client.
 
-Legal and illegal resource activity now maintains per-player progression with separate XP/levels. Harvesting contributes progression server-side, with periodic progression bonuses returned through the existing Framework cash/persistence mechanism.
+Legal and illegal resource activity maintains per-player progression with separate XP/levels. Harvesting contributes progression server-side, with periodic progression bonuses returned through the existing Framework cash/persistence mechanism.
 
-RHD state persistence now includes economy state, contracts, RP registries and job progression through the upstream Framework database adapter. The server scheduler performs persistence according to the configured save interval.
+RHD state persistence includes economy state, contracts, RP registries and job progression through the upstream Framework database adapter. The server scheduler performs persistence according to the configured save interval.
 
-The standard Framework virtual shop dialog is now intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display the effective prices in the normal shop lists, and record shop transaction telemetry on the dedicated server. Non-RHD virtual items fall back to their mission-configured Framework prices. Shop buy/sell multipliers are configurable in `config/RHD_LifeServer.hpp`.
+The standard Framework virtual shop dialog is intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display effective prices in the normal shop lists, and send completed transaction telemetry through a server-side validation endpoint. The endpoint binds the request to the actual remote caller UID, verifies the reported total against the current RHD price, validates tracked items and rate-limits telemetry. Direct client access to the lower-level market mutation function is no longer whitelisted.
 
-The shop hook is implemented in `functions/economy/fn_virtBuy.sqf`, `fn_virtSell.sqf` and `fn_virtUpdate.sqf`, with runtime installation in `functions/core/fn_clientInit.sqf`. Production validation of the full Framework mission, database, banking, inventory and shop path is still required.
+The RP layer now includes a server-side authorization router. Police and EMS actions can be requested through `RHD_fnc_rpAction`; the server resolves the caller from the remote owner ID and checks the caller's `coplevel`, `mediclevel`, and `adminlevel` against the upstream `players` table before invoking protected RHD registries. Client-side rank variables are not trusted for authorization.
+
+The remaining production gate is still an actual Arma 3 dedicated-server/PBO/in-game validation pass, including database connectivity and the complete upstream mission integration.
