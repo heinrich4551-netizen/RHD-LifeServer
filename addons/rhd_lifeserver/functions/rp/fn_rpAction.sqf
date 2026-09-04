@@ -12,17 +12,13 @@ switch (_action) do {
     case 'EVIDENCE': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_createEvidence; };
     case 'WARRANT': { if !(['COP',2] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_createWarrant; };
     case 'IMPOUND': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_impoundVehicle; };
+    case 'RELEASE_IMPOUND': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_releaseImpound; };
     case 'LICENSE': { if !(['COP',2] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_manageLicense; };
     case 'HOSPITAL_BILL': { if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_hospitalBill; };
     case 'TREAT': { if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_treatPlayer; };
     case 'VEHICLE_SERVICE': {
-        private _service = _args param [1,'INSPECTION'];
-        if (toUpper _service isEqualTo 'INSPECTION') then {
-            if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
-        } else {
-            if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
-        };
-        _args = [_args param [0,objNull],_service,_args param [2,0]];
+        private _service = toUpper (_args param [1,'INSPECTION']);
+        if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
         _args call RHD_fnc_vehicleService;
     };
     case 'DISPATCH_ACK': {
