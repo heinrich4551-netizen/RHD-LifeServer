@@ -1,9 +1,4 @@
-/*
-    RHD virtual-shop buy transaction.
-
-    This is an independent RHD shop handler. It replaces the Framework's
-    virtual-buy callback at runtime without modifying the upstream submodule.
-*/
+/* RHD market-aware replacement for the Framework virtual buy callback. */
 disableSerialization;
 if (!hasInterface || {isNull player}) exitWith {false};
 private _display = findDisplay 2400;
@@ -25,8 +20,6 @@ if (_price < 0) exitWith {hint 'This item cannot be purchased here.'; false};
 private _diff = [_item,_amount,life_carryWeight,life_maxWeight] call life_fnc_calWeightDiff;
 if (_diff <= 0) exitWith {hint localize 'STR_NOTF_NoSpace'; false};
 _amount = floor _diff;
-if (_amount <= 0) exitWith {hint localize 'STR_NOTF_NoSpace'; false};
-
 private _total = _price * _amount;
 if (_total > CASH) exitWith {hint localize 'STR_NOTF_NotEnoughMoney'; false};
 if ((time - life_action_delay) < 0.2) exitWith {hint localize 'STR_NOTF_ActionDelay'; false};
@@ -38,7 +31,7 @@ CASH = CASH - _total;
 [3] call SOCK_fnc_updatePartial;
 [] call RHD_fnc_virtUpdate;
 
-[_item,0,_amount] remoteExecCall ['RHD_fnc_recordMarket',2];
+[getPlayerUID player,_item,0,_amount,_total] remoteExecCall ['RHD_fnc_shopTransaction',2];
 private _name = getText (missionConfigFile >> 'VirtualItems' >> _item >> 'displayName');
 if (_name isEqualTo '') then {_name = _item;};
 hint format ['Bought %1 x%2 for $%3.',_name,_amount,[_total] call life_fnc_numberText];
