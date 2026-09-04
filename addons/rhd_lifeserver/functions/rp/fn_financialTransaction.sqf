@@ -60,6 +60,9 @@ if (_result isEqualType [] && {count _result >= 2}) then {
         };
         [_query,1] call DB_fnc_asyncCall;
 
+        private _auditQuery = format ["INSERT INTO rhd_financial_transactions (uid,transaction_mode,account_type,amount,balance_before,balance_after) VALUES ('%1','%2','%3','%4','%5','%6')",_uid,_mode,_account,_amount,_oldBalance,_newBalance];
+        [_auditQuery,1] call DB_fnc_asyncCall;
+
         private _audit = missionNamespace getVariable ['RHD_FinancialLedger',[]];
         _audit pushBack [diag_tickTime,_uid,_mode,_account,_amount,_oldBalance,_newBalance,_reason select [0,128]];
         if (count _audit > 5000) then {_audit deleteRange [0,count _audit - 5000];};
