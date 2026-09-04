@@ -9,6 +9,7 @@ if (_payload isEqualType [] && {count _payload > 0} && {(_payload select 0) isEq
     private _rows = _payload;
     if (_rows isEqualTo []) exitWith {
         missionNamespace setVariable ['RHD_MyLicenses',[]];
+        missionNamespace setVariable ['RHD_VisibleImpounds',[]];
         hint 'RHD LICENSES / IMPOUNDS\n\nNo records were returned.';
         true
     };
@@ -26,6 +27,12 @@ if (_payload isEqualType [] && {count _payload > 0} && {(_payload select 0) isEq
         hint (_lines joinString '\n');
     };
 } else {
-    hint format ['RHD: %1',_payload];
+    private _type = _payload param [0,''];
+    switch (_type) do {
+        case 'LICENSE_UPDATED': {hint format ['RHD DMV\n\nLicense: %1\nStatus: %2',_payload param [1,''],if (_payload param [2,false]) then {'GRANTED'} else {'REVOKED'}];};
+        case 'IMPOUND_RELEASED': {hint format ['RHD IMPOUND\n\n%1 released.\nFee: $%2',_payload param [1,''],_payload param [2,0]];};
+        case 'TREATMENT': {hint format ['RHD EMS\n\nTreatment completed.\nRecorded charge: $%1',_payload param [1,0]];};
+        default {hint format ['RHD: %1',_payload];};
+    };
 };
 true
