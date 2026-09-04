@@ -10,7 +10,10 @@ private _registries = [
     'RHD_Businesses',
     'RHD_ServiceRequests',
     'RHD_HospitalBills',
-    'RHD_Government'
+    'RHD_Government',
+    'RHD_CourtCases',
+    'RHD_PhoneRegistry',
+    'RHD_Marketplace'
 ];
 {
     if (isNil {missionNamespace getVariable _x}) then {
