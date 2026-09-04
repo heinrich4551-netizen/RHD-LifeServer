@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS rhd_business_accounts (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS rhd_business_transactions (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     business_key VARCHAR(96) NOT NULL,
     owner_uid VARCHAR(32) NOT NULL,
     transaction_mode VARCHAR(16) NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS rhd_business_transactions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS rhd_contracts (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     issuer_uid VARCHAR(64) NOT NULL,
     accepted_uid VARCHAR(64) NULL,
     contract_type VARCHAR(64) NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS rhd_contracts (
 );
 
 CREATE TABLE IF NOT EXISTS rhd_vehicle_services (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     owner_uid VARCHAR(64) NOT NULL,
     vehicle_key VARCHAR(128) NOT NULL,
     service_type VARCHAR(32) NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS rhd_vehicle_services (
 );
 
 CREATE TABLE IF NOT EXISTS rhd_financial_transactions (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     uid VARCHAR(32) NOT NULL,
     transaction_mode VARCHAR(16) NOT NULL,
     account_type VARCHAR(8) NOT NULL,
@@ -108,6 +108,22 @@ CREATE TABLE IF NOT EXISTS rhd_government_ledger (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_rhd_gov_created (created_at),
     INDEX idx_rhd_gov_uid (uid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS rhd_player_transfers (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sender_uid VARCHAR(32) NOT NULL,
+    receiver_uid VARCHAR(32) NOT NULL,
+    account_type VARCHAR(8) NOT NULL,
+    amount DECIMAL(14,2) NOT NULL,
+    sender_before DECIMAL(14,2) NOT NULL,
+    sender_after DECIMAL(14,2) NOT NULL,
+    receiver_before DECIMAL(14,2) NOT NULL,
+    receiver_after DECIMAL(14,2) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_rhd_transfer_sender (sender_uid),
+    INDEX idx_rhd_transfer_receiver (receiver_uid),
+    INDEX idx_rhd_transfer_created (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS rhd_state (
