@@ -79,7 +79,7 @@ The RHD addon is an independent overlay around the upstream AsYetUntitled Framew
 
 Additional RHD-only virtual items are supplied in `custom/RHD_vItems.hpp`, and additional processing recipes are supplied in `custom/RHD_ProcessAction.hpp`. These fragments must be included by the actual Altis Life mission configuration because the Framework inventory system reads `missionConfigFile`.
 
-The F6/F7/F8 UI is wired to server-side harvesting, processing and delivery-contract requests. Resource and processing requests validate the player, location, configured node/station and cooldown on the dedicated server before returning inventory changes to the client.
+The F6/F7/F8 UI is wired to server-side harvesting, processing and delivery-contract requests. Resource and processing requests validate the player, location, configured node/station and cooldown on the dedicated server before returning inventory changes to the client. The menus now expose all configured actions instead of leaving the fifth/sixth F7/F8 routes inaccessible behind a four-button dialog.
 
 Legal and illegal resource activity maintains per-player progression with separate XP/levels. Harvesting contributes progression server-side, with periodic progression bonuses returned through the existing Framework cash/persistence mechanism.
 
@@ -97,18 +97,18 @@ Delivery contract completion uses a pending server state and a client cargo-remo
 
 Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
 
-Scheduled world events run from the dedicated-server scheduler and now apply bounded effects for their duration: DOUBLE_HARVEST doubles server-calculated harvest quantities, MARKET_BOOM applies a temporary 15% shop-price multiplier, and CIVIL_ALERT increases the civilian population target up to the configured maximum. Event timing and duration are configurable in `config/RHD_LifeServer.hpp`.
+Scheduled world events run from the dedicated-server scheduler and apply bounded effects for their duration: DOUBLE_HARVEST doubles server-calculated harvest quantities, MARKET_BOOM applies a temporary 15% shop-price multiplier, and CIVIL_ALERT increases the civilian population target up to the configured maximum. Event timing and duration are configurable in `config/RHD_LifeServer.hpp`.
 
-Authenticated administrator audit summaries now expose bounded recent financial activity and current dispatch, business, marketplace and world-event registry counts through the RP result channel.
+Authenticated administrator audit summaries expose bounded recent financial activity and current dispatch, business, marketplace and world-event registry counts through the RP result channel.
 
-The economy dashboard now returns tracked-item base/current prices, bounded supply/demand telemetry, the active market-event multiplier and current world-event state through the authenticated administrator RP channel.
+The economy dashboard returns tracked-item base/current prices, bounded supply/demand telemetry, the active market-event multiplier and current world-event state through the authenticated administrator RP channel. Its result payload is now shaped directly for `RHD_fnc_rpResult` so the dashboard is not mistaken for a generic row-list response.
 
-Server-loop performance instrumentation records section timings for population, economy, RP maintenance, world events, contract expiry and persistence. Configurable slow-section logging is available through `config/RHD_LifeServer.hpp`, while the latest measurements are published as `RHD_PerformanceLast` for future admin tooling.
+Server-loop performance instrumentation records section timings for population, economy, RP maintenance, world events, contract expiry and persistence. Configurable slow-section logging is available through `config/RHD_LifeServer.hpp`, while the latest measurements are published as `RHD_PerformanceLast` for future admin tooling. Full server-loop logging is disabled by default to reduce RPT noise; slow-section logging remains enabled.
 
-The deployment folder now includes `deployment/backup.ps1`. It requires database connection values through environment variables rather than storing credentials in the repository, creates timestamped SQL/configuration backups, and records a backup manifest. Windows Task Scheduler or the host's equivalent scheduler can invoke it at the desired interval.
+The deployment folder includes `deployment/backup.ps1`. It requires database connection values through environment variables rather than storing credentials in the repository, creates timestamped SQL/configuration backups, and records a backup manifest. Windows Task Scheduler or the host's equivalent scheduler can invoke it at the desired interval. `SETUP.txt` now documents the environment variables and scheduler setup.
 
 The RP layer uses server-side authorization against the upstream `players` table for privileged actions. Client-side rank variables are not trusted for authorization.
 
-The new `SETUP.txt` is the primary server-owner deployment checklist and collects required manual configuration, dependency installation, database setup, mission configuration, 3DEN setup, startup order, first-run tests, security checks and troubleshooting.
+The new `SETUP.txt` is the primary server-owner deployment checklist and collects required manual configuration, dependency installation, database setup, mission configuration, 3DEN setup, startup order, backup operation, first-run tests, security checks and troubleshooting.
 
 The remaining production gate is still an actual Arma 3 dedicated-server/PBO/in-game validation pass, including database connectivity, the complete upstream mission integration and the selected SimplePersist release.
