@@ -26,4 +26,6 @@ private _buyMultiplier = getNumber (missionConfigFile >> 'RHD_LifeServer' >> 'Ec
 if (_buyMultiplier <= 0) then {_buyMultiplier = 1.00;};
 
 private _price = if (_direction isEqualTo 1) then {_base * _sellMultiplier} else {_base * _buyMultiplier};
+private _eventMultiplier = (missionNamespace getVariable ['RHD_MarketEventMultiplier',1]) max 0.1;
+_price = _price * _eventMultiplier;
 round (_price max 0)
