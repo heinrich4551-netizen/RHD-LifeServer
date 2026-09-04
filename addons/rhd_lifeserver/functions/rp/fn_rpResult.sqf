@@ -30,8 +30,15 @@ if (_payload isEqualType [] && {count _payload > 0} && {(_payload select 0) isEq
     private _type = _payload param [0,''];
     switch (_type) do {
         case 'LICENSE_UPDATED': {hint format ['RHD DMV\n\nLicense: %1\nStatus: %2',_payload param [1,''],if (_payload param [2,false]) then {'GRANTED'} else {'REVOKED'}];};
+        case 'IMPOUNDED': {hint format ['RHD POLICE\n\nVehicle impounded.\nImpound ID: %1\nRelease fee: $%2',_payload param [1,''],_payload param [3,0]];};
         case 'IMPOUND_RELEASED': {hint format ['RHD IMPOUND\n\n%1 released.\nFee: $%2',_payload param [1,''],_payload param [2,0]];};
+        case 'IMPOUND_PAYMENT_DENIED': {hint format ['RHD IMPOUND\n\nRelease denied.\nRequired fee: $%2\nThe vehicle owner must have sufficient cash and be online.',_payload param [1,''],_payload param [2,0]];};
+        case 'HOSPITAL_BILL': {hint format ['RHD EMS\n\nHospital bill charged: $%1.',_payload param [1,0]];};
+        case 'HOSPITAL_BILL_DENIED': {hint format ['RHD EMS\n\nHospital billing denied.\nAmount: $%1',_payload param [1,0]];};
         case 'TREATMENT': {hint format ['RHD EMS\n\nTreatment completed.\nRecorded charge: $%1',_payload param [1,0]];};
+        case 'TREATMENT_DENIED': {hint format ['RHD EMS\n\nTreatment denied.\nCharge required: $%1',_payload param [1,0]];};
+        case 'VEHICLE_SERVICE': {hint format ['RHD VEHICLE SERVICE\n\n%1 completed.\nCharge: $%3\nDamage after service: %4',_payload param [2,'Service'],_payload param [1,''],_payload param [3,0],_payload param [4,0]];};
+        case 'VEHICLE_SERVICE_DENIED': {hint format ['RHD VEHICLE SERVICE\n\nService denied.\nCharge required: $%3',_payload param [2,'Service'],_payload param [1,''],_payload param [3,0]];};
         default {hint format ['RHD: %1',_payload];};
     };
 };
