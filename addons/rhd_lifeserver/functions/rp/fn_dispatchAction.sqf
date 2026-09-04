@@ -1,13 +1,16 @@
 /*
     Authenticated dispatch state transition.
     Called only by RHD_fnc_rpAction after server-side role authorization.
-    [dispatchId, action] call RHD_fnc_dispatchAction
+    [dispatchId, action, authenticatedUID] call RHD_fnc_dispatchAction
     action: ACK or CLOSE
 */
 if (!isServer) exitWith {false};
-params [['_id',''],['_action','']];
+params [['_id',''],['_action',''],['_uid','']];
 _action = toUpper _action;
 if (_id isEqualTo '' || {!(_action in ['ACK','CLOSE'])}) exitWith {false};
+if (_uid isEqualTo '' || {count _uid != 17}) exitWith {false};
+private _safeUid = _uid select {(_x >= '0') && (_x <= '9')};
+if (_safeUid != _uid) exitWith {false};
 
 private _calls = missionNamespace getVariable ['RHD_DispatchCalls',createHashMap];
 private _entry = _calls getOrDefault [_id,[]];
@@ -16,9 +19,6 @@ if (_entry isEqualTo []) exitWith {false};
 private _status = _entry param [7,'OPEN'];
 if (_action isEqualTo 'ACK' && {!(_status isEqualTo 'OPEN')}) exitWith {false};
 if (_action isEqualTo 'CLOSE' && {!(_status in ['OPEN','ACK'])}) exitWith {false};
-
-private _uid = getPlayerUID (allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull]);
-if (_uid isEqualTo '') exitWith {false};
 
 _entry set [7,if (_action isEqualTo 'ACK') then {'ACK'} else {'CLOSED'}];
 _entry set [8,_uid];
