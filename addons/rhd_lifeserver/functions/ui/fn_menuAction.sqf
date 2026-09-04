@@ -14,10 +14,7 @@ if (_mode isEqualTo 7) exitWith {
         case 0: { hint format ['RHD FARMING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured farming resource node and press F6 to harvest.',_legalLevel,_legalXP]; };
         case 1: { hint format ['RHD MINING JOBS\n\nLegal Level: %1\nLegal XP: %2\n\nUse a configured mining resource node and press F6 to harvest.',_legalLevel,_legalXP]; };
         case 2: { closeDialog 0; [player] remoteExecCall ['RHD_fnc_createContract',2]; };
-        case 3: {
-            closeDialog 0;
-            [player] remoteExecCall ['RHD_fnc_businessInfo',2];
-        };
+        case 3: { closeDialog 0; ['BUSINESS_INFO',[]] remoteExecCall ['RHD_fnc_rpAction',2]; };
     };
     true
 };
