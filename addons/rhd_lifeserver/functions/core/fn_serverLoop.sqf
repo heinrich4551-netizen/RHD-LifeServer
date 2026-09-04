@@ -7,6 +7,7 @@ while {true} do {
         [] call RHD_fnc_updatePopulation;
         [] call RHD_fnc_economyLoop;
         [] call RHD_fnc_rpMaintenance;
+        [] call RHD_fnc_worldEvents;
 
         private _contracts = missionNamespace getVariable ['RHD_ActiveContracts',createHashMap];
         private _expired = [];
