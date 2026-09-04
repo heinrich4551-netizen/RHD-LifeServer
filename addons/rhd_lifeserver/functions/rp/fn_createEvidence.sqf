@@ -1,5 +1,5 @@
 /* Server-internal evidence creation. [type,description,position] call RHD_fnc_createEvidence */
-if (!isServer || {isRemoteExecuted}) exitWith {false};
+if (!isServer) exitWith {false};
 params [['_type','UNKNOWN'],['_description',''],['_position',[0,0,0]]];
 private _e = missionNamespace getVariable ['RHD_Evidence',createHashMap];
 private _id = format ['E-%1-%2',floor diag_tickTime,floor random 10000];
