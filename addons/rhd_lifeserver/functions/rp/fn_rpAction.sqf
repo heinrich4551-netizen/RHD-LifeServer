@@ -22,6 +22,11 @@ switch (_action) do {
         _args = [_caller] + _args;
         _args call RHD_fnc_releaseImpound;
     };
+    case 'RELEASE_IMPOUND_TARGET': {
+        if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
+        _args = [_caller] + _args;
+        _args call RHD_fnc_releaseImpoundByVehicle;
+    };
     case 'LIST_IMPOUNDS': {
         if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
         [_caller] call RHD_fnc_getImpounds;
