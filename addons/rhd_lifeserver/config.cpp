@@ -18,6 +18,7 @@ class CfgRemoteExec {
         class RHD_fnc_refineResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_createContract { allowedTargets = 2; jip = 0; };
         class RHD_fnc_completeContract { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_contractCompleteAck { allowedTargets = 2; jip = 0; };
         class RHD_fnc_contractResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_dispatch { allowedTargets = 2; jip = 0; };
         class RHD_fnc_dispatchResult { allowedTargets = 1; jip = 0; };
@@ -37,7 +38,7 @@ class CfgFunctions {
         class Economy { file = "RHD_LifeServer\functions\economy"; class economyLoop {}; class getPrice {}; class shopPrice {}; class setPrice {}; class initPrices {}; class recordMarket {}; class shopTransaction {}; class validateShopTransaction {}; class virtBuy {}; class virtSell {}; class virtUpdate {}; };
         class Population { file = "RHD_LifeServer\functions\population"; class populationLoop {}; class updatePopulation {}; class cleanupPopulation {}; };
         class Resources { file = "RHD_LifeServer\functions\resources"; class registerNodes {}; class getResourceConfig {}; class harvestServer {}; class harvestResult {}; class refineServer {}; class refineResult {}; };
-        class Contracts { file = "RHD_LifeServer\functions\contracts"; class createContract {}; class completeContract {}; class contractResult {}; };
+        class Contracts { file = "RHD_LifeServer\functions\contracts"; class createContract {}; class completeContract {}; class contractCompleteAck {}; class contractResult {}; };
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
         class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
