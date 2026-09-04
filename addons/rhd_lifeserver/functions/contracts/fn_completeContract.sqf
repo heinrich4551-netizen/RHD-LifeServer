@@ -1,7 +1,10 @@
 /* Server-authoritative contract completion check. */
-if (!isServer) exitWith {false};
+if (!isServer || {!isRemoteExecuted}) exitWith {false};
 params [['_player',objNull,[objNull]]];
-if (isNull _player || {!isPlayer _player} || {!alive _player}) exitWith {false};
+private _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull];
+if (isNull _caller || {_player isNotEqualTo _caller}) exitWith {false};
+_player = _caller;
+if (!isPlayer _player || {!alive _player}) exitWith {false};
 
 private _uid = getPlayerUID _player;
 private _contracts = missionNamespace getVariable ['RHD_ActiveContracts',createHashMap];
@@ -17,6 +20,7 @@ if (count _contract >= 8 && {(_contract param [7,'']) isEqualTo 'PENDING'}) exit
 };
 
 _contract params ['_owner','_created','_item','_display','_amount','_destination','_reward'];
+if (_owner isNotEqualTo _uid) exitWith {false};
 if (_player distance2D _destination > 35) exitWith {
     ['message','','',0,'Move within 35m of the delivery destination.'] remoteExecCall ['RHD_fnc_contractResult',_player];
     false
