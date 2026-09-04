@@ -71,7 +71,7 @@ class CfgVehicles {
             class farmingHarvestMin : Edit { property="RHD_farmingHarvestMin"; displayName="Farming Minimum Harvest"; defaultValue="2"; typeName="NUMBER"; };
             class farmingHarvestMax : Edit { property="RHD_farmingHarvestMax"; displayName="Farming Maximum Harvest"; defaultValue="5"; typeName="NUMBER"; };
             class miningHarvestMin : Edit { property="RHD_miningHarvestMin"; displayName="Mining Minimum Harvest"; defaultValue="2"; typeName="NUMBER"; };
-            class miningHarvestMax : Edit { property="RHD_miningHarvestMax"; displayName="Mining Maximum Harvest"; defaultValue="2"; typeName="NUMBER"; };
+            class miningHarvestMax : Edit { property="RHD_miningHarvestMax"; displayName="Mining Maximum Harvest"; defaultValue="6"; typeName="NUMBER"; };
             class civiliansAtOnePlayer : Edit { property="RHD_civiliansAtOnePlayer"; displayName="Civilians at 1 Player"; defaultValue="115"; typeName="NUMBER"; };
             class minimumCivilians : Edit { property="RHD_minimumCivilians"; displayName="Minimum Civilians"; defaultValue="60"; typeName="NUMBER"; };
             class maximumCivilians : Edit { property="RHD_maximumCivilians"; displayName="Maximum Civilians"; defaultValue="115"; typeName="NUMBER"; };
@@ -96,7 +96,7 @@ class CfgVehicles {
         class ModuleDescription : ModuleDescription { description="Place at a farming or mining location."; };
     };
     class RHD_Module_ProcessStation : Module_F {
-        scope=2; displayName="RHD Processing Station"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0;
+        scope=2; displayName="RHD Processing Station"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0;
         class Attributes : AttributesBase {
             class processClass : Edit { property="RHD_processClass"; displayName="ProcessAction Class"; defaultValue="iron"; typeName="STRING"; };
             class stationRadius : Edit { property="RHD_stationRadius"; displayName="Interaction Radius (m)"; defaultValue="12"; typeName="NUMBER"; };
