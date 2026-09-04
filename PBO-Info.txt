@@ -39,6 +39,18 @@ Install these programs before building:
 [5] MySQL/MariaDB
     Required for the upstream Altis Life persistence layer and the RHD extension tables.
 
+[6] SimplePersist
+    REQUIRED Steam Workshop dependency for RHD-LifeServer player-state persistence integration.
+
+    Steam Workshop:
+    https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+
+    Workshop ID: 3006691432
+    Project: Toakan-Network/SimplePersist
+    Copyright holder: Tom Daykin
+
+    RHD does not redistribute SimplePersist source code. Install the published Workshop mod separately.
+
 
 2. FIND ADDONBUILDER.EXE
 =========================
@@ -90,7 +102,30 @@ C:\RHD-Development\RHD-LifeServer\framework\AsYetUntitled-Framework
 Do NOT remove the framework directory or replace it with a copied/modified version.
 
 
-5. CHECK THE RHD ADDON SOURCE
+5. INSTALL SIMPLEPERSIST FROM STEAM WORKSHOP
+==============================================
+
+RHD-LifeServer requires SimplePersist as an external Workshop dependency for player-state persistence.
+
+Open the Steam Workshop page:
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+
+Subscribe to the item and allow Steam to download it.
+
+Confirm the mod is installed in your Arma 3 Workshop content before starting the server.
+
+The dependency is:
+
+@SimplePersist
+Steam Workshop ID: 3006691432
+
+The exact local folder name may be determined by the Workshop installation. Use the actual installed mod folder in your server's startup configuration.
+
+SimplePersist is authored by Tom Daykin / Toakan-Network. Its source is licensed separately; RHD calls on the published Workshop mod and does not copy its source into this repository.
+
+
+6. CHECK THE RHD ADDON SOURCE
 ==============================
 
 The addon source must exist here:
@@ -110,7 +145,7 @@ addons\
 If addons\rhd_lifeserver is missing, stop and correct the repository checkout before attempting the build.
 
 
-6. ALLOW POWERSHELL SCRIPTS TO RUN
+7. ALLOW POWERSHELL SCRIPTS TO RUN
 ===================================
 
 If Windows blocks the build script, open PowerShell and run:
@@ -122,7 +157,7 @@ Confirm the change if Windows asks.
 This changes the policy for your Windows user account only.
 
 
-7. BUILD THE PBO
+8. BUILD THE PBO
 ================
 
 From the repository root, run:
@@ -143,7 +178,7 @@ Expected output location:
 C:\RHD-Development\RHD-LifeServer\dist\RHD_LifeServer.pbo
 
 
-8. USE A DIFFERENT OUTPUT FOLDER (OPTIONAL)
+9. USE A DIFFERENT OUTPUT FOLDER (OPTIONAL)
 ============================================
 
 You can choose another output directory.
@@ -159,7 +194,7 @@ The resulting PBO should be:
 C:\RHD-Builds\RHD_LifeServer.pbo
 
 
-9. SIGN THE PBO FOR A SERVER
+10. SIGN THE PBO FOR A SERVER
 ============================
 
 For a public or signature-protected server, create a private signing key with the Arma 3 Tools utilities.
@@ -186,7 +221,7 @@ Arma 3 Server\keys\RHD_LifeServer.bikey
 NEVER upload or distribute the private .biprivatekey file.
 
 
-10. CREATE THE SERVER MOD FOLDER
+11. CREATE THE SERVER MOD FOLDER
 ================================
 
 On the dedicated server, create:
@@ -199,26 +234,24 @@ Copy the finished PBO into that folder:
 
 If the addon is signed, also copy its .bisign file beside the PBO.
 
+SimplePersist must also be installed on the server as a separate Workshop mod.
 
-11. ENABLE THE MOD ON THE SERVER
-=================================
 
-Add the mod to the dedicated server startup parameters.
+12. ENABLE THE MODS ON THE SERVER
+==================================
 
-Example:
-
--mod=@RHD-LifeServer
-
-If other mods are installed, separate them with semicolons.
+Add both mods to the dedicated server startup parameters.
 
 Example:
 
--mod=@CBA_A3;@OtherMod;@RHD-LifeServer
+-mod=@SimplePersist;@RHD-LifeServer
 
-Make sure the folder name on disk exactly matches the startup parameter.
+If the actual Steam Workshop installation uses a different local folder name, substitute that installed folder name for @SimplePersist.
+
+The RHD dependency manifest records SimplePersist Workshop ID 3006691432 as required.
 
 
-12. SERVER CONFIGURATION
+13. SERVER CONFIGURATION
 ========================
 
 The repository contains:
@@ -239,7 +272,7 @@ Do not publish real server passwords in GitHub.
 The addon now loads RHD_LifeServer.hpp from its addon config, so the runtime settings are available through missionConfigFile.
 
 
-13. DATABASE SETUP
+14. DATABASE SETUP
 ==================
 
 RHD uses the upstream Framework database adapter. Do not configure a second extDB3 connection for RHD.
@@ -262,10 +295,12 @@ rhd_state
 
 The table stores serialized RHD economy, contract and RP registries. Upstream player cash, bank and inventory persistence remains owned by the Framework.
 
+SimplePersist is a separate player-state persistence layer and should be allowed to manage the player-state features supplied by that mod. RHD should not duplicate or overwrite SimplePersist's player loadout/health/position storage.
+
 See database\README.md for the full persistence notes.
 
 
-14. 3DEN SETUP
+15. 3DEN SETUP
 ==============
 
 RHD-LifeServer includes 3DEN modules so you can configure the RP systems directly in the Eden Editor.
@@ -291,7 +326,7 @@ Place the required modules in the Altis mission using Eden Editor.
 Save the mission and test it before moving it to production.
 
 
-15. MISSION CONFIGURATION INTEGRATION
+16. MISSION CONFIGURATION INTEGRATION
 ======================================
 
 The RHD addon cannot add new VirtualItems or ProcessAction classes to missionConfigFile after the mission has compiled.
@@ -311,7 +346,7 @@ Adjust the relative path to your mission folder layout.
 Do not modify the Framework submodule itself. Copy or link the RHD custom fragments into your mission source as part of your mission overlay.
 
 
-16. CIVILIAN POPULATION
+17. CIVILIAN POPULATION
 =======================
 
 The default RHD configuration is designed around:
@@ -325,7 +360,7 @@ The population system dynamically adjusts the civilian population as the number 
 The exact scaling can be changed through the RHD configuration or the RHD LifeCore 3DEN module.
 
 
-17. F6 / F7 / F8 MENUS
+18. F6 / F7 / F8 MENUS
 ======================
 
 RHD-LifeServer provides three keyboard menu groups:
@@ -349,12 +384,12 @@ F8 = Services
     Emergency services
 
 
-18. TEST THE PBO
+19. TEST THE PBO
 ================
 
 Start a local dedicated server or development server with:
 
--mod=@RHD-LifeServer
+-mod=@SimplePersist;@RHD-LifeServer
 
 Load the Altis Life mission.
 
@@ -362,7 +397,7 @@ Check the RPT log for errors.
 
 Then test:
 
-[ ] Server starts without a config error
+[ ] SimplePersist loads without an addon/config error
 [ ] RHD-LifeServer loads
 [ ] Mission starts on Altis
 [ ] RHD 3DEN modules initialize
@@ -376,10 +411,11 @@ Then test:
 [ ] Economy initializes
 [ ] RHD database extension loads
 [ ] RHD state persists through a restart
+[ ] SimplePersist restores its supported player state after reconnect
 [ ] Server remains stable after several minutes
 
 
-19. COMMON BUILD ERRORS
+20. COMMON BUILD ERRORS
 =======================
 
 ERROR: AddonBuilder.exe not found
@@ -419,6 +455,19 @@ Fix:
 Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
 
+ERROR: SimplePersist is missing
+
+Cause:
+The required Workshop dependency is not installed on the server.
+
+Fix:
+Subscribe/install Workshop item 3006691432:
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+
+Then make sure its installed mod folder is included in the server startup -mod list.
+
+
 ERROR: RHD persistence is disabled
 
 Check the server RPT for:
@@ -434,12 +483,12 @@ Check:
 
 1. The folder is named exactly @RHD-LifeServer.
 2. The PBO is inside @RHD-LifeServer\addons.
-3. The startup parameter contains -mod=@RHD-LifeServer.
+3. The startup parameter contains -mod=@SimplePersist;@RHD-LifeServer.
 4. The PBO is not still sitting only in the development dist folder.
 5. Check the server RPT log for the actual error.
 
 
-20. REBUILD AFTER SOURCE CHANGES
+21. REBUILD AFTER SOURCE CHANGES
 ================================
 
 Whenever RHD-LifeServer source files are changed:
@@ -464,7 +513,7 @@ dist\RHD_LifeServer.pbo
 5. Restart the dedicated server.
 
 
-21. IMPORTANT FILES
+22. IMPORTANT FILES
 ===================
 
 Repository root:
@@ -472,6 +521,7 @@ Repository root:
 README.md
 PBO-Info.txt
 .gitmodules
+STEAM_WORKSHOP_DEPENDENCIES.md
 
 Configuration:
 
@@ -505,7 +555,7 @@ custom\RHD_vItems.hpp
 custom\RHD_ProcessAction.hpp
 
 
-22. FINAL QUICK BUILD
+23. FINAL QUICK BUILD
 =====================
 
 Copy and run these commands in PowerShell:
@@ -523,12 +573,12 @@ to:
 
 <Your Arma 3 Server>\@RHD-LifeServer\addons\RHD_LifeServer.pbo
 
-Start the server with:
+Install SimplePersist separately from Workshop item 3006691432 and start the server with both mods, for example:
 
--mod=@RHD-LifeServer
+-mod=@SimplePersist;@RHD-LifeServer
 
 
-23. IMPORTANT SECURITY NOTES
+24. IMPORTANT SECURITY NOTES
 ============================
 
 - Never commit server passwords to GitHub.
@@ -537,6 +587,19 @@ Start the server with:
 - Use the public .bikey in the server keys folder.
 - Keep verifySignatures enabled on production servers when appropriate.
 - Test new builds on a development server before production deployment.
+- Do not copy SimplePersist source into RHD-LifeServer without written permission from its copyright holder.
+
+
+25. THIRD-PARTY CREDIT
+======================
+
+SimplePersist
+    Created by Tom Daykin / Toakan-Network.
+    Steam Workshop ID: 3006691432
+    https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+    Source: https://github.com/Toakan-Network/SimplePersist
+
+The RHD project uses the published SimplePersist Workshop release as an external dependency and does not claim authorship of SimplePersist.
 
 
 END OF GUIDE
