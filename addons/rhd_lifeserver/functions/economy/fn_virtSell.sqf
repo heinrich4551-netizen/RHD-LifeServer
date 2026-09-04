@@ -18,7 +18,7 @@ private _item = _list lbData _index;
 private _amountText = ctrlText _edit;
 if !([_amountText] call TON_fnc_isnumber) exitWith {hint localize 'STR_Shop_Virt_NoNum'; false};
 private _amount = floor parseNumber _amountText;
-if (_amount <= 0) exitWith {hint 'Enter a valid quantity.'; false};
+if (_amount <= 0 || {_amount > 10000}) exitWith {hint 'Enter a valid quantity.'; false};
 private _owned = ITEM_VALUE(_item);
 if (_amount > _owned) exitWith {hint localize 'STR_Shop_Virt_NotEnough'; false};
 if ((time - life_action_delay) < 0.2) exitWith {hint localize 'STR_NOTF_ActionDelay'; false};
@@ -31,7 +31,7 @@ if !([false,_item,_amount] call life_fnc_handleInv) exitWith {false};
 CASH = CASH + _total;
 [0] call SOCK_fnc_updatePartial;
 [3] call SOCK_fnc_updatePartial;
-[] call life_fnc_virt_update;
+[] call RHD_fnc_virtUpdate;
 
 [_item,0,_amount] remoteExecCall ['RHD_fnc_recordMarket',2];
 private _name = getText (missionConfigFile >> 'VirtualItems' >> _item >> 'displayName');
