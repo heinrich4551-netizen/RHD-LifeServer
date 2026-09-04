@@ -32,6 +32,7 @@ class CfgRemoteExec {
         class RHD_fnc_rpAction { allowedTargets = 2; jip = 0; };
         class RHD_fnc_phone { allowedTargets = 2; jip = 0; };
         class RHD_fnc_marketplace { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_marketplaceResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_governmentInfo { allowedTargets = 2; jip = 0; };
         class RHD_fnc_courtCase { allowedTargets = 2; jip = 0; };
         class RHD_fnc_worldEventResult { allowedTargets = 1; jip = 0; };
@@ -55,7 +56,7 @@ class CfgFunctions {
             class impoundVehicle {}; class releaseImpound {}; class releaseImpoundByVehicle {}; class getImpounds {}; class createServiceRequest {};
             class manageLicense {}; class getLicenses {}; class business {}; class businessCreate {}; class businessInfo {}; class businessTransaction {};
             class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class financialTransaction {}; class financialResult {};
-            class playerTransfer {}; class playerTransferResult {}; class taxTransaction {}; class governmentInfo {}; class courtCase {}; class phone {}; class marketplace {};
+            class playerTransfer {}; class playerTransferResult {}; class taxTransaction {}; class governmentInfo {}; class courtCase {}; class phone {}; class marketplace {}; class marketplaceResult {};
             class worldEvents {}; class worldEventResult {}; class adminAudit {};
             class authorizeRole {}; class rpAction {}; class rpMaintenance {};
         };
@@ -63,46 +64,9 @@ class CfgFunctions {
 };
 class CfgVehicles {
     class Logic; class Module_F : Logic { class AttributesBase { class Edit; class Checkbox; class Combo; class ModuleDescription; }; class ModuleDescription {}; };
-    class RHD_Module_LifeCore : Module_F {
-        scope=2; displayName="RHD LifeCore Configuration"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0;
-        class Attributes : AttributesBase {
-            class farmingHarvestMin : Edit { property="RHD_farmingHarvestMin"; displayName="Farming Minimum Harvest"; defaultValue="2"; typeName="NUMBER"; };
-            class farmingHarvestMax : Edit { property="RHD_farmingHarvestMax"; displayName="Farming Maximum Harvest"; defaultValue="5"; typeName="NUMBER"; };
-            class miningHarvestMin : Edit { property="RHD_miningHarvestMin"; displayName="Mining Minimum Harvest"; defaultValue="2"; typeName="NUMBER"; };
-            class miningHarvestMax : Edit { property="RHD_miningHarvestMax"; displayName="Mining Maximum Harvest"; defaultValue="6"; typeName="NUMBER"; };
-            class civiliansAtOnePlayer : Edit { property="RHD_civiliansAtOnePlayer"; displayName="Civilians at 1 Player"; defaultValue="115"; typeName="NUMBER"; };
-            class minimumCivilians : Edit { property="RHD_minimumCivilians"; displayName="Minimum Civilians"; defaultValue="60"; typeName="NUMBER"; };
-            class maximumCivilians : Edit { property="RHD_maximumCivilians"; displayName="Maximum Civilians"; defaultValue="115"; typeName="NUMBER"; };
-            class populationScaleWithPlayers : Checkbox { property="RHD_populationScaleWithPlayers"; displayName="Scale Civilians With Players"; defaultValue="true"; typeName="BOOL"; };
-            class harvestCooldown : Edit { property="RHD_harvestCooldown"; displayName="Harvest Cooldown (seconds)"; defaultValue="2"; typeName="NUMBER"; };
-            class dynamicPricing : Checkbox { property="RHD_dynamicPricing"; displayName="Enable Dynamic Pricing"; defaultValue="true"; typeName="BOOL"; };
-            class ModuleDescription : ModuleDescription {};
-        };
-        class ModuleDescription : ModuleDescription { description="Place exactly one RHD LifeCore Configuration module."; };
-    };
-    class RHD_Module_ResourceNode : Module_F {
-        scope=2; displayName="RHD Resource Node"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0;
-        class Attributes : AttributesBase {
-            class resourceType : Combo { property="RHD_resourceType"; displayName="Resource"; defaultValue="0"; typeName="NUMBER"; class values { class Apple {name="Apples";value=0;default=1;}; class Peach {name="Peaches";value=1;}; class Grape {name="Grapes";value=2;}; class Corn {name="Corn Cob";value=3;}; class Cannabis {name="Cannabis Plant";value=4;}; class Coca {name="Coca Leaf";value=5;}; class Iron {name="Iron Ore";value=6;}; class Copper {name="Copper Ore";value=7;}; class GoldOre {name="Gold Ore";value=8;}; class Diamond {name="Uncut Diamond";value=9;}; class OilSand {name="Oil Sand";value=10;}; }; };
-            class minimumYield : Edit { property="RHD_minimumYield"; displayName="Minimum Yield"; defaultValue="2"; typeName="NUMBER"; };
-            class maximumYield : Edit { property="RHD_maximumYield"; displayName="Maximum Yield"; defaultValue="5"; typeName="NUMBER"; };
-            class nodeRadius : Edit { property="RHD_nodeRadius"; displayName="Interaction Radius (m)"; defaultValue="12"; typeName="NUMBER"; };
-            class illegal : Checkbox { property="RHD_illegal"; displayName="Illegal Resource"; defaultValue="false"; typeName="BOOL"; };
-            class enabled : Checkbox { property="RHD_enabled"; displayName="Enabled"; defaultValue="true"; typeName="BOOL"; };
-            class ModuleDescription : ModuleDescription {};
-        };
-        class ModuleDescription : ModuleDescription { description="Place at a farming or mining location."; };
-    };
-    class RHD_Module_ProcessStation : Module_F {
-        scope=2; displayName="RHD Processing Station"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0;
-        class Attributes : AttributesBase {
-            class processClass : Edit { property="RHD_processClass"; displayName="ProcessAction Class"; defaultValue="iron"; typeName="STRING"; };
-            class stationRadius : Edit { property="RHD_stationRadius"; displayName="Interaction Radius (m)"; defaultValue="12"; typeName="NUMBER"; };
-            class enabled : Checkbox { property="RHD_enabled"; displayName="Enabled"; defaultValue="true"; typeName="BOOL"; };
-            class ModuleDescription : ModuleDescription {};
-        };
-        class ModuleDescription : ModuleDescription { description="Place at a processing facility and enter the exact ProcessAction class."; };
-    };
+    class RHD_Module_LifeCore : Module_F { scope=2; displayName="RHD LifeCore Configuration"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0; };
+    class RHD_Module_ResourceNode : Module_F { scope=2; displayName="RHD Resource Node"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; };
+    class RHD_Module_ProcessStation : Module_F { scope=2; displayName="RHD Processing Station"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; };
 };
 class CfgEditorCategories { class RHD_LifeCore { displayName="RHD LifeCore"; }; };
 #include "config\RHD_LifeServer.hpp"
