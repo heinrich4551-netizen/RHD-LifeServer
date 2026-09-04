@@ -13,7 +13,7 @@ private _cfg = missionConfigFile >> 'RHD_RP' >> 'Taxes';
 if (getNumber (_cfg >> 'enabled') <= 0) exitWith {true};
 private _rate = switch (_taxType) do {
     case 'BUSINESS': {getNumber (_cfg >> 'businessRate')};
-    case 'INCOME': {getNumber (_cfg >> 'businessRate')};
+    case 'INCOME': {getNumber (_cfg >> 'incomeRate')};
     default {getNumber (_cfg >> 'salesRate')};
 };
 _rate = (_rate max 0) min 1;
@@ -22,7 +22,13 @@ private _minimum = round ((getNumber (_cfg >> 'minimumCharge')) max 0);
 if (_taxableAmount < getNumber (_cfg >> 'transactionMinimum')) exitWith {true};
 if (_tax < _minimum) then {_tax = _minimum;};
 if (_tax <= 0) exitWith {true};
-_source = _source select [0,128];
+
+/* Keep audit text SQL-safe without accepting arbitrary quote characters. */
+private _sourceChars = toArray (_source select [0,128]);
+_sourceChars = _sourceChars select {(_x in [32,45,46,47,58,95]) || {_x >= 48 && {_x <= 57}} || {_x >= 65 && {_x <= 90}} || {_x >= 97 && {_x <= 122}}};
+_source = toString _sourceChars;
+if (_source isEqualTo '') then {_source = 'RHD transaction';};
+
 private _uid = getPlayerUID _player;
 if (_uid isEqualTo '') exitWith {false};
 private _ok = [_player,'CHARGE','CASH',_tax,format ['%1 tax',_taxType]] call RHD_fnc_financialTransaction;
