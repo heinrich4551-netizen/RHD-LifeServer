@@ -50,10 +50,10 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Authenticated police/EMS RP action router
 
 ## Phase 4 — Live Operations
-- [ ] Scheduled world events
+- [x] Scheduled world events
 - [ ] Economy telemetry dashboard
 - [ ] Automated backups/restart notices
-- [ ] Admin tools/audit logs
+- [x] Admin tools/audit logs
 - [ ] Performance profiling
 - [ ] Headless Client support
 
@@ -91,11 +91,15 @@ The RHD financial adapter reads the selected player's Framework `cash` or `banka
 
 Player businesses now have a server-owned registry and persistent business account table. Business owners can use authenticated server transactions to deposit or withdraw cash from their business account, with transaction audit rows and server-side owner validation. Business creation uses the configured startup fee before registration. The F7 Businesses action retrieves the owner's current business accounts. Business creation and account operations remain behind the authenticated RP router; no client-supplied owner UID or business balance is trusted.
 
-Government taxation now has configurable sales and business rates, minimum-charge controls, a server-side tax transaction function, tax audit records and a government revenue ledger. Authorized administrators can request a government tax summary. Court cases have a server-owned registry with authenticated police creation and administrator closure. The RHD phone foundation assigns persistent-in-session numbers and supports authenticated player calls and SMS. Marketplace listings have a server-owned listing registry with owner-controlled cancellation; final item ownership transfer remains gated because the upstream virtual inventory is client-managed and must not be falsely represented as server-verified.
+Government taxation now has configurable sales, business and income rates, minimum-charge controls, a server-side tax transaction function, tax audit records and a government revenue ledger. Authorized administrators can request a government tax summary. Court cases have a server-owned registry with authenticated police creation and administrator closure. The RHD phone foundation assigns persistent-in-session numbers and supports authenticated player calls and SMS. Marketplace listings have a server-owned listing registry with owner-controlled cancellation; final item ownership transfer remains gated because the upstream virtual inventory is client-managed and must not be falsely represented as server-verified.
 
 Delivery contract completion uses a pending server state and a client cargo-removal acknowledgement before the server awards the contract reward, reducing the previous client-side reward duplication path.
 
 Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
+
+Scheduled world events now run from the dedicated-server scheduler and broadcast server-created event notifications to connected clients. The initial event set provides resource, market and civilian-activity events; gameplay-effect expansion remains part of the live-operations backlog.
+
+Authenticated administrator audit summaries now expose bounded recent financial activity and current dispatch, business, marketplace and world-event registry counts through the RP result channel.
 
 The RP layer uses server-side authorization against the upstream `players` table for privileged actions. Client-side rank variables are not trusted for authorization.
 
