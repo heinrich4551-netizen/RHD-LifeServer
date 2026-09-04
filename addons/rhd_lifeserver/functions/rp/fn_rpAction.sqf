@@ -51,6 +51,17 @@ switch (_action) do {
         _args = [_caller] + _args;
         _args call RHD_fnc_vehicleService;
     };
+    case 'BUSINESS_CREATE': {
+        _args = [_caller] + _args;
+        _args call RHD_fnc_businessCreate;
+    };
+    case 'BUSINESS_INFO': {
+        [_caller] call RHD_fnc_businessInfo;
+    };
+    case 'BUSINESS_TRANSACTION': {
+        _args = [_caller] + _args;
+        _args call RHD_fnc_businessTransaction;
+    };
     case 'DISPATCH_ACK': {
         private _authorized = ['COP',1] call RHD_fnc_authorizeRole;
         if (!_authorized) then {_authorized = ['MEDIC',1] call RHD_fnc_authorizeRole;};
