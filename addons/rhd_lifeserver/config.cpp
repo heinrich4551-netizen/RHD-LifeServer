@@ -47,7 +47,7 @@ class CfgFunctions {
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
         class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
-        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class hospitalBill {}; class rpResult {}; class authorizeRole {}; class rpAction {}; };
+        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class hospitalBill {}; class rpResult {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
     };
 };
 class CfgVehicles {
