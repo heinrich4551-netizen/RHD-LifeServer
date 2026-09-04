@@ -8,16 +8,13 @@ if (isNull _caller || {!alive _caller}) exitWith {false};
 if (isNull _vehicle || {!(_vehicle isKindOf 'LandVehicle')}) exitWith {false};
 if (_reason isEqualTo '') exitWith {false};
 if (_caller distance _vehicle > 15) exitWith {false};
-
 private _executorUID = getPlayerUID _caller;
 if (_executorUID isEqualTo '') exitWith {false};
 private _netId = netId _vehicle;
 if (_netId isEqualTo '') exitWith {false};
-
 _reason = _reason select [0,256];
 private _feeSafe = round ((_fee max 0) min 1000000);
 private _owners = _vehicle getVariable ['vehicle_info_owners',[]];
-
 private _impounds = missionNamespace getVariable ['RHD_Impounds',createHashMap];
 private _existing = false;
 {
@@ -27,10 +24,9 @@ private _existing = false;
     };
 } forEach keys _impounds;
 if (_existing) exitWith {false};
-
 private _id = format ['I-%1-%2',floor diag_tickTime,floor random 10000];
 _impounds set [_id,[_id,_netId,_owners,_reason,_feeSafe,diag_tickTime,2,_executorUID]];
 _vehicle setVariable ['RHD_Impounded',true,true];
 missionNamespace setVariable ['RHD_Impounds',_impounds,true];
-[_id,_netId,_feeSafe] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+[['IMPOUNDED',_id,_netId,_feeSafe]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
 true
