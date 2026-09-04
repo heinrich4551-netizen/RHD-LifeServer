@@ -9,9 +9,8 @@ _balance = (_balance max 0) min 2000000000;
 
 if (_success) then {
     if (_account isEqualTo 'BANK') then {
-        BANK = _balance;
+        life_atmbank = _balance;
     } else {
-        CASH = _balance;
         life_cash = _balance;
     };
     private _action = if (_mode isEqualTo 'CHARGE') then {'charged'} else {'credited'};
