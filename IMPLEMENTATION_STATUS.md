@@ -28,7 +28,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Warrant registry foundation
 - [x] Impound registry foundation
 - [x] EMS/service request foundation
-- [ ] Treatment/rescue
+- [x] EMS treatment action with server-side distance/role validation
 - [x] Hospital billing registry foundation
 - [x] Player business registry foundation
 - [x] License registry foundation
@@ -68,7 +68,9 @@ RHD state persistence includes economy state, contracts, RP registries and job p
 
 The standard Framework virtual shop dialog is intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display effective prices in the normal shop lists, and send completed transaction telemetry through a server-side validation endpoint. The endpoint binds the request to the actual remote caller UID, verifies the reported total against the current RHD price, validates tracked items and rate-limits telemetry. Direct client access to the lower-level market mutation function is no longer whitelisted.
 
-Dispatch records now carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
+Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
+
+EMS treatment is routed through the same authenticated RP path. The server derives the medic from the remote owner, requires the configured medic rank, validates the target and a 10m treatment distance, applies the Arma damage interface, and records an optional hospital bill without inventing an upstream revive API.
 
 The RP layer uses server-side authorization against the upstream `players` table for privileged actions. Client-side rank variables are not trusted for authorization.
 
