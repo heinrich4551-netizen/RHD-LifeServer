@@ -18,8 +18,13 @@ if (count _owned >= 3) exitWith {false};
 
 private _feeCfg = missionConfigFile >> 'RHD_RP' >> 'Fees' >> 'businessStartup';
 private _startupFee = round ((getNumber _feeCfg) max 0);
+private _feePaid = true;
 if (_startupFee > 0) then {
-    if !([_caller,'CHARGE','CASH',_startupFee,'Business startup fee'] call RHD_fnc_financialTransaction) exitWith {false};
+    _feePaid = [_caller,'CHARGE','CASH',_startupFee,'Business startup fee'] call RHD_fnc_financialTransaction;
+};
+if (!_feePaid) exitWith {
+    [['BUSINESS_CREATE_DENIED',_name,_startupFee]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+    false
 };
 
 private _id = format ['B-%1-%2',_uid,floor (diag_tickTime * 10)];
@@ -37,7 +42,6 @@ if !(isNil 'DB_fnc_asyncCall') then {
 if (!_dbCreated) then {
     _businesses deleteAt _id;
     missionNamespace setVariable ['RHD_Businesses',_businesses,true];
-    /* Refund only after a failed persistence path; the refund itself is server-authoritative. */
     if (_startupFee > 0) then {[_caller,'REWARD','CASH',_startupFee,'Business startup refund'] call RHD_fnc_financialTransaction;};
     [['BUSINESS_CREATE_DENIED',_name,_startupFee]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
     false
