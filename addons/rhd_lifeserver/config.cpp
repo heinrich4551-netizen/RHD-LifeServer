@@ -42,7 +42,7 @@ class CfgFunctions {
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
         class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
-        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class releaseImpound {}; class releaseImpoundByVehicle {}; class getImpounds {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class businessCreate {}; class businessInfo {}; class businessTransaction {}; class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class financialTransaction {}; class financialResult {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
+        class RP { file = "RHD_LifeServer\functions\rp"; class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {}; class impoundVehicle {}; class releaseImpound {}; class releaseImpoundByVehicle {}; class getImpounds {}; class createServiceRequest {}; class manageLicense {}; class getLicenses {}; class business {}; class businessCreate {}; class businessInfo {}; class businessTransaction {}; class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class financialTransaction {}; class financialResult {}; class taxTransaction {}; class authorizeRole {}; class rpAction {}; class rpMaintenance {}; };
     };
 };
 class CfgVehicles {
@@ -65,7 +65,7 @@ class CfgVehicles {
         class ModuleDescription : ModuleDescription { description="Place exactly one RHD LifeCore Configuration module."; };
     };
     class RHD_Module_ResourceNode : Module_F {
-        scope=2; displayName="RHD Resource Node"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0;
+        scope=2; displayName="RHD Resource Node"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0;
         class Attributes : AttributesBase {
             class resourceType : Combo { property="RHD_resourceType"; displayName="Resource"; defaultValue="0"; typeName="NUMBER"; class values { class Apple {name="Apples";value=0;default=1;}; class Peach {name="Peaches";value=1;}; class Grape {name="Grapes";value=2;}; class Corn {name="Corn Cob";value=3;}; class Cannabis {name="Cannabis Plant";value=4;}; class Coca {name="Coca Leaf";value=5;}; class Iron {name="Iron Ore";value=6;}; class Copper {name="Copper Ore";value=7;}; class GoldOre {name="Gold Ore";value=8;}; class Diamond {name="Uncut Diamond";value=9;}; class OilSand {name="Oil Sand";value=10;}; }; };
             class minimumYield : Edit { property="RHD_minimumYield"; displayName="Minimum Yield"; defaultValue="2"; typeName="NUMBER"; };
