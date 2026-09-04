@@ -1,11 +1,11 @@
 /*
     Server-side vehicle service / inspection registry.
-    [caller,vehicle,serviceType,fee] call RHD_fnc_vehicleService
+    [caller,vehicle,serviceType] call RHD_fnc_vehicleService
 
     serviceType: INSPECTION, REPAIR, OIL, TIRES, FULL
 */
 if (!isServer) exitWith {false};
-params [['_caller',objNull,[objNull]],['_vehicle',objNull,[objNull]],['_service','INSPECTION',['']],['_fee',0,[0]]];
+params [['_caller',objNull,[objNull]],['_vehicle',objNull,[objNull]],['_service','INSPECTION',['']]];
 if (isNull _caller || {!alive _caller}) exitWith {false};
 if (isNull _vehicle || {!(_vehicle isKindOf 'LandVehicle')}) exitWith {false};
 _service = toUpper _service;
@@ -17,8 +17,9 @@ if (_uid isEqualTo '') exitWith {false};
 private _netId = netId _vehicle;
 if (_netId isEqualTo '') exitWith {false};
 
+private _charge = round (getNumber (missionConfigFile >> 'RHD_RP' >> 'Fees' >> toLower _service));
+_charge = (_charge max 0) min 100000;
 private _services = missionNamespace getVariable ['RHD_VehicleServices',createHashMap];
-private _charge = round ((_fee max 0) min 100000);
 
 private _paid = true;
 if (_charge > 0) then {
