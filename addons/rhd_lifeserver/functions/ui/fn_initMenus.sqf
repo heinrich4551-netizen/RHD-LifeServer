@@ -23,27 +23,46 @@ _display displayAddEventHandler ["KeyDown", {
     private _a2 = _menu displayCtrl 1602;
     private _a3 = _menu displayCtrl 1603;
     private _a4 = _menu displayCtrl 1604;
+
+    private _copLevel = missionNamespace getVariable ["life_coplevel",0];
+    private _medicLevel = missionNamespace getVariable ["life_mediclevel",0];
+    private _isCop = _copLevel > 0;
+    private _isMedic = _medicLevel > 0;
+
     switch (_mode) do {
         case 6: {
             _header ctrlSetText "RHD LIFE | CIVILIAN";
             _a1 ctrlSetText "Harvest Nearby Resource";
             _a2 ctrlSetText "Process Resources";
             _a3 ctrlSetText "Jobs / Contracts";
-            _a4 ctrlSetText "Services / Marketplace";
+            _a4 ctrlSetText "Marketplace";
         };
         case 7: {
             _header ctrlSetText "RHD LIFE | JOBS";
             _a1 ctrlSetText "Farming Jobs";
             _a2 ctrlSetText "Mining Jobs";
             _a3 ctrlSetText "Deliveries / Contracts";
-            _a4 ctrlSetText "Businesses";
+            _a4 ctrlSetText "Job Progress";
         };
         case 8: {
-            _header ctrlSetText "RHD LIFE | SERVICES";
-            _a1 ctrlSetText "Request Vehicle Service";
-            _a2 ctrlSetText "View Licenses";
-            _a3 ctrlSetText "Send Dispatch Call";
-            _a4 ctrlSetText "Request Emergency Service";
+            if (_isCop || _isMedic) then {
+                private _role = if (_isCop && _isMedic) then {"PUBLIC SAFETY"} else {if (_isCop) then {"POLICE"} else {"EMS"}};
+                _header ctrlSetText format ["RHD LIFE | %1",_role];
+                _a1 ctrlSetText "Dispatch Console";
+                _a2 ctrlSetText "Acknowledge Latest Call";
+                _a3 ctrlSetText "Close Latest Call";
+                if (_isCop) then {
+                    _a4 ctrlSetText "Police / DMV Services";
+                } else {
+                    _a4 ctrlSetText "EMS Services";
+                };
+            } else {
+                _header ctrlSetText "RHD LIFE | SERVICES";
+                _a1 ctrlSetText "Request Vehicle Service";
+                _a2 ctrlSetText "View Licenses";
+                _a3 ctrlSetText "Send Dispatch Call";
+                _a4 ctrlSetText "Request Emergency Service";
+            };
         };
     };
     true
