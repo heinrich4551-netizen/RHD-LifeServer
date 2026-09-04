@@ -1,0 +1,471 @@
+RHD-LIFESERVER - PLUG-AND-PLAY SERVER SETUP
+================================================
+
+Author / Maintainer: LT. Toad
+Project: RHD-LifeServer
+Map: Altis
+Framework: AsYetUntitled Framework v5.X.X
+
+This file is the single setup checklist for a new RHD-LifeServer deployment.
+It lists the items the server owner must supply or configure manually. Everything
+else should be taken from this repository and installed as documented below.
+
+IMPORTANT LICENSE BOUNDARY
+---------------------------
+The AsYetUntitled Framework remains a separate Git submodule and is not modified
+or redistributed by RHD-LifeServer. SimplePersist is a separate Steam Workshop
+mod and is NOT copied into this repository. Install the published Workshop mod.
+
+SimplePersist:
+  Steam Workshop ID: 3006691432
+  Workshop: https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+  Source: https://github.com/Toakan-Network/SimplePersist
+  Copyright holder: Tom Daykin / Toakan-Network
+
+RHD respects the upstream licenses and attribution requirements.
+
+================================================
+1. REQUIRED SOFTWARE
+================================================
+
+Install these before deploying the server:
+
+[ ] Arma 3 Dedicated Server
+[ ] Arma 3 Tools / AddonBuilder
+[ ] MariaDB or MySQL-compatible database server
+[ ] Database interface required by the selected AsYetUntitled Framework build
+    (for example the Framework's supported extDB3 setup)
+[ ] Git
+[ ] SteamCMD or another supported method for downloading the Arma 3 server
+[ ] SimplePersist from Steam Workshop, ID 3006691432
+
+Recommended Windows server tools:
+[ ] PowerShell 5+ / Windows PowerShell
+[ ] 7-Zip or equivalent archive utility
+
+================================================
+2. DOWNLOAD RHD-LIFESERVER
+================================================
+
+Clone the repository with its upstream Framework submodule:
+
+  git clone --recurse-submodules https://github.com/heinrich4551-netizen/RHD-LifeServer.git
+
+If the repository already exists:
+
+  cd RHD-LifeServer
+  git submodule update --init --recursive
+
+Do NOT delete the framework submodule. RHD expects the upstream Framework to be
+available separately from the RHD overlay.
+
+================================================
+3. INSTALL SIMPLEPERSIST
+================================================
+
+Subscribe/install the published SimplePersist Workshop item:
+
+  https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+
+The server startup must load SimplePersist before RHD-LifeServer:
+
+  -mod=@SimplePersist;@RHD-LifeServer
+
+If your server uses additional mods, keep the required mods in the same -mod=
+list according to your normal server deployment. Do not copy SimplePersist files
+into the RHD repository or into the RHD PBO.
+
+SimplePersist is intended to provide its supported player-state persistence.
+RHD should not replace, duplicate, or overwrite SimplePersist's loadout, health,
+or position persistence.
+
+================================================
+4. BUILD THE RHD PBO
+================================================
+
+Install Arma 3 Tools and locate AddonBuilder.exe.
+
+Run from the RHD repository:
+
+  .\deployment\build.ps1 -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
+
+Expected output:
+
+  dist\RHD_LifeServer.pbo
+
+Create the mod directory on the dedicated server if it does not exist:
+
+  @RHD-LifeServer\addons\
+
+Copy:
+
+  dist\RHD_LifeServer.pbo
+
+into:
+
+  @RHD-LifeServer\addons\
+
+The Framework mission itself remains a mission/deployment dependency; the RHD
+addon is an independent overlay.
+
+================================================
+5. SERVER DIRECTORY LAYOUT
+================================================
+
+A typical deployment should contain approximately:
+
+  Arma 3 Server/
+  |-- arma3server_x64.exe
+  |-- @SimplePersist/
+  |-- @RHD-LifeServer/
+  |   `-- addons/
+  |       `-- RHD_LifeServer.pbo
+  |-- cfg/
+  |-- profiles/
+  |-- mpmissions/
+  |   `-- Altis_Life.Altis/
+  `-- keys/ and other normal Arma server files
+
+The exact directory layout can differ with your host panel/provider.
+
+================================================
+6. SERVER CONFIGURATION - REQUIRED VALUES
+================================================
+
+Start from:
+
+  config/server.cfg
+  config/basic.cfg
+
+The repository server.cfg contains safe placeholders. YOU MUST replace:
+
+  CHANGE_ME_ADMIN_PASSWORD
+  CHANGE_ME_COMMAND_PASSWORD
+
+with your own strong server passwords.
+
+Never commit real passwords, RCON credentials, database credentials, Steam API
+keys, Discord tokens, or other secrets to GitHub.
+
+Recommended production checks:
+
+[ ] hostname is correct
+[ ] admin/command passwords are changed
+[ ] maxPlayers is appropriate for the hardware
+[ ] verifySignatures remains enabled as appropriate for your mod policy
+[ ] allowedFilePatching is disabled for production
+[ ] BattlEye is enabled
+[ ] persistent = 1
+[ ] mission rotation/template points to the intended Altis Life mission
+
+The repository default mission template is:
+
+  Altis_Life.Altis
+
+If your actual mission folder has another name, change the server template to
+match it.
+
+================================================
+7. DATABASE - REQUIRED MANUAL SETUP
+================================================
+
+RHD requires a working database setup for the selected Framework deployment.
+Database passwords and connection strings are intentionally NOT stored in this
+repository.
+
+YOU MUST:
+
+[ ] Create a MariaDB/MySQL database for the server
+[ ] Create a database user
+[ ] Assign that user the required permissions
+[ ] Configure the upstream Framework's database adapter/extDB3 connection
+[ ] Import the upstream Framework SQL/schema required by your selected build
+[ ] Import database/rhd_extensions.sql
+[ ] Verify the RHD state/economy/RP tables exist
+[ ] Test a player connection and save/load cycle
+
+RHD's database extensions cover RHD state such as economy telemetry and RP data.
+SimplePersist is separate and is not an SQL replacement for the Framework.
+
+Do not paste production database credentials into GitHub files.
+
+================================================
+8. MISSION CONFIGURATION - REQUIRED MANUAL SETUP
+================================================
+
+RHD's additional virtual items and processing recipes are mission-side because
+the upstream Framework reads these definitions from missionConfigFile.
+
+Review:
+
+  custom/RHD_vItems.hpp
+  custom/RHD_ProcessAction.hpp
+
+Include those fragments in the actual Altis Life mission configuration where the
+Framework's VirtualItems and ProcessAction classes are defined.
+
+Confirm that the resulting mission contains the RHD item keys and recipes.
+
+Resource item keys used by RHD include:
+
+  apple
+  peach
+  grape
+  corn
+  cannabis
+  coca_leaf
+  iron_unrefined
+  copper_unrefined
+  gold_ore
+  diamond_uncut
+  oil_sand
+
+RHD processing also uses the appropriate refined/output item keys defined by the
+mission configuration.
+
+Do not modify the upstream Framework submodule merely to add RHD content. Keep
+RHD mission additions in the mission/custom configuration layer.
+
+================================================
+9. 3DEN MAP CONFIGURATION
+================================================
+
+Open the Altis mission in Eden/3DEN with the RHD addon loaded.
+
+Place exactly ONE:
+
+  RHD LifeCore Configuration
+
+Then configure:
+
+  Farming Minimum Harvest
+  Farming Maximum Harvest
+  Mining Minimum Harvest
+  Mining Maximum Harvest
+  Civilians at 1 Player
+  Minimum Civilians
+  Maximum Civilians
+  Scale Civilians With Players
+  Harvest Cooldown
+  Dynamic Pricing
+
+Default civilian population target:
+
+  1 player = 115 civilians
+  minimum = 60 civilians
+  maximum = 115 civilians
+
+Place RHD Resource Node modules at desired farming/mining locations.
+Select the resource, yield range, radius, legal/illegal state, and enabled state.
+
+Place RHD Processing Station modules at processing locations. Enter the exact
+ProcessAction class used by the mission recipe, for example:
+
+  iron
+  copper
+  diamond
+
+and the RHD custom processing classes where applicable.
+
+Save the mission after placing/configuring the modules.
+
+================================================
+10. F6 / F7 / F8 CONTROLS
+================================================
+
+RHD provides:
+
+  F6 = harvesting / processing interaction menu
+  F7 = jobs / farming / mining / contracts
+  F8 = civilian RP/service actions
+
+Make sure no other client mod or mission key handler conflicts with F6/F7/F8.
+
+The normal Framework shop dialog remains in use while RHD supplies the dynamic
+price integration and transaction telemetry.
+
+================================================
+11. STEAM WORKSHOP DEPENDENCY LIST
+================================================
+
+RHD supports up to 25 Workshop dependency slots.
+
+Currently required:
+
+  Slot 1 - SimplePersist - Workshop ID 3006691432
+
+Slots 2-25 are reserved until a genuine runtime requirement is implemented.
+Do not install unrelated mods merely because they are listed as future slots.
+
+See:
+
+  STEAM_WORKSHOP_DEPENDENCIES.md
+
+================================================
+12. ANTISTASI ULTIMATE / OTHER MOD INTEGRATIONS
+================================================
+
+Antistasi Ultimate is an integration target, not a mandatory base RHD dependency.
+Do not mark it required unless a future RHD release actually requires it at
+runtime.
+
+Likewise, only add other Workshop dependencies when the code genuinely requires
+them.
+
+================================================
+13. FIRST SERVER START CHECKLIST
+================================================
+
+Before starting:
+
+[ ] Arma 3 Dedicated Server installed
+[ ] Framework submodule initialized
+[ ] SimplePersist Workshop mod installed
+[ ] RHD PBO built and copied to @RHD-LifeServer\addons
+[ ] -mod includes @SimplePersist before @RHD-LifeServer
+[ ] server.cfg passwords changed
+[ ] database created
+[ ] Framework database configured
+[ ] rhd_extensions.sql imported
+[ ] mission contains RHD virtual items
+[ ] mission contains RHD processing recipes
+[ ] Altis mission template is correct
+[ ] 3DEN RHD modules configured
+[ ] BattlEye configured
+[ ] server profiles directory exists
+
+================================================
+14. FIRST IN-GAME TEST
+================================================
+
+Join as a civilian and test in this order:
+
+1. Confirm RHD initializes without script/config errors.
+2. Confirm SimplePersist initializes.
+3. Confirm player position/loadout/health persistence behaves according to the
+   installed SimplePersist release.
+4. Confirm the RHD F6/F7/F8 menus appear.
+5. Place/use a farming node and verify harvest output.
+6. Place/use a mining node and verify harvest output.
+7. Test an illegal resource and confirm illegal job progression.
+8. Test a processing station and verify input/output conversion.
+9. Open a Framework virtual shop and verify RHD pricing is displayed.
+10. Buy and sell a tracked item and verify the economy telemetry changes.
+11. Create and complete a delivery contract.
+12. Test civilian dispatch/service requests.
+13. Test police/EMS authorization with the correct ranks.
+14. Restart the server and verify persistence.
+15. Check server/RPT logs for script errors.
+
+================================================
+15. SECURITY CHECKLIST
+================================================
+
+[ ] No real passwords are committed
+[ ] Database credentials are externalized
+[ ] allowedFilePatching is disabled in production
+[ ] BattlEye is enabled
+[ ] Server-only RHD actions remain server-authorized
+[ ] Client rank variables are not used as privileged authorization
+[ ] SimplePersist is installed from its official Workshop release
+[ ] Upstream Framework source remains a separate dependency
+
+Do not expose admin, RCON, database, or service credentials in screenshots,
+GitHub issues, Discord messages, or public configuration files.
+
+================================================
+16. PERFORMANCE / POPULATION NOTES
+================================================
+
+RHD dynamically manages civilian population based on active players and configured
+limits. The intended default is 115 civilians at one player, with a minimum of 60.
+
+Monitor server FPS, AI count, network traffic, and headless-client requirements
+before increasing population limits on a live server.
+
+================================================
+17. WHAT THE SERVER OWNER MUST SUPPLY
+================================================
+
+Only these categories should normally require manual owner input:
+
+  - Arma 3 server installation/location
+  - Steam Workshop installation of SimplePersist
+  - Database server/database credentials
+  - Framework database adapter configuration
+  - Server/admin/command credentials
+  - Mission-specific configuration/includes
+  - 3DEN placement and tuning of resource/process modules
+  - Final server hostname/branding and operational settings
+  - Any additional optional Workshop mods chosen by the server owner
+
+Everything else should be obtained from this repository or the documented upstream
+Framework/SimplePersist releases.
+
+================================================
+18. TROUBLESHOOTING
+================================================
+
+RHD PBO does not load:
+  - Verify the PBO is in @RHD-LifeServer\addons.
+  - Verify @RHD-LifeServer is in -mod=.
+  - Verify the PBO was built with Arma 3 AddonBuilder.
+  - Check the RPT for config/CfgPatches errors.
+
+SimplePersist missing:
+  - Install Workshop ID 3006691432.
+  - Verify @SimplePersist is present in the server's loaded mod list.
+  - Verify @SimplePersist appears before @RHD-LifeServer.
+  - Check the server RPT for SimplePersist initialization errors.
+
+No farming/mining:
+  - Confirm the 3DEN resource node exists and is enabled.
+  - Confirm the player is within the configured radius.
+  - Confirm the mission has the expected RHD virtual item.
+
+Processing fails:
+  - Confirm the 3DEN processing station's ProcessAction class exactly matches
+the mission recipe class.
+  - Confirm the input/output virtual items exist in missionConfigFile.
+
+Database errors:
+  - Verify the Framework DB adapter/extDB3 configuration.
+  - Verify the database user permissions.
+  - Verify database/rhd_extensions.sql was imported.
+  - Review the server RPT and database adapter logs.
+
+F6/F7/F8 unavailable:
+  - Verify the RHD PBO loaded.
+  - Check for key conflicts with other mods/mission scripts.
+  - Check the RPT for RHD UI initialization errors.
+
+================================================
+19. PRODUCTION READINESS WARNING
+================================================
+
+Repository files provide the deployment structure and configuration, but RHD is
+NOT considered production-validated until it has been tested on an actual Arma 3
+dedicated server with the selected Framework build, database adapter, mission,
+SimplePersist release, and intended mod stack.
+
+================================================
+20. OFFICIAL REFERENCES
+================================================
+
+RHD-LifeServer:
+  https://github.com/heinrich4551-netizen/RHD-LifeServer
+
+AsYetUntitled Framework:
+  https://github.com/AsYetUntitled/Framework/tree/v5.X.X
+
+SimplePersist Workshop:
+  https://steamcommunity.com/sharedfiles/filedetails/?id=3006691432
+
+SimplePersist source:
+  https://github.com/Toakan-Network/SimplePersist
+
+RHD Workshop dependency manifest:
+  STEAM_WORKSHOP_DEPENDENCIES.md
+
+RHD PBO build/install guide:
+  PBO-Info.txt
