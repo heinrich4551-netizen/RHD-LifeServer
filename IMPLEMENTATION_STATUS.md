@@ -26,6 +26,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Persistent business accounts
 - [x] Server-authoritative business deposits/withdrawals
 - [x] Business transaction audit ledger
+- [x] Player-to-player cash/bank transfer foundation with audit ledger
 
 ## Phase 3 — RP Systems
 - [x] Police/EMS dispatch registry and lifecycle state
@@ -41,8 +42,10 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Player business registry and account foundation
 - [x] License registry foundation
 - [x] Vehicle services/inspections with Framework cash charging
-- [ ] Courts/government/taxes
-- [ ] RHD phone
+- [x] Courts/government/taxes foundation
+- [x] Government tax ledger and administrator summary
+- [x] Court case registry with authenticated police/admin creation and admin closure
+- [x] RHD phone foundation: registration, calls and SMS
 - [ ] Marketplace
 - [x] Authenticated police/EMS RP action router
 
@@ -84,11 +87,13 @@ RHD state persistence includes economy state, contracts, RP registries and job p
 
 The standard Framework virtual shop dialog is intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display effective prices in the normal shop lists, and send completed transaction telemetry through a server-side validation endpoint. The endpoint binds the request to the actual remote caller UID, verifies the reported total against the current RHD price, validates tracked items and rate-limits telemetry. Direct client access to the lower-level market mutation function is no longer whitelisted.
 
-The RHD financial adapter reads the selected player's Framework `cash` or `bankacc` balance through the existing database adapter, applies bounded charges/rewards server-side, writes the resulting balance to the upstream `players` table, records an RHD transaction audit row, and synchronizes the resulting account balance to the online client. It is used for EMS treatment, hospital bills, vehicle services, impound release fees and delivery contract rewards. This deliberately does not modify the upstream Framework source.
+The RHD financial adapter reads the selected player's Framework `cash` or `bankacc` balance through the existing database adapter, applies bounded charges/rewards server-side, writes the resulting balance to the upstream `players` table, records an RHD transaction audit row, and synchronizes the resulting account balance to the online client. It is used for EMS treatment, hospital bills, vehicle services, impound release fees, delivery contract rewards and player transfers. This deliberately does not modify the upstream Framework source.
 
-Player businesses now have a server-owned registry and persistent business account table. Business owners can use authenticated server transactions to deposit or withdraw cash from their business account, with transaction audit rows and server-side owner validation. The F7 Businesses action retrieves the owner's current business accounts. Business creation and account operations remain behind the authenticated RP router; no client-supplied owner UID or business balance is trusted.
+Player businesses now have a server-owned registry and persistent business account table. Business owners can use authenticated server transactions to deposit or withdraw cash from their business account, with transaction audit rows and server-side owner validation. Business creation uses the configured startup fee before registration. The F7 Businesses action retrieves the owner's current business accounts. Business creation and account operations remain behind the authenticated RP router; no client-supplied owner UID or business balance is trusted.
 
-Delivery contract completion now uses a pending server state and a client cargo-removal acknowledgement before the server awards the contract reward, reducing the previous client-side reward duplication path.
+Government taxation now has configurable sales and business rates, minimum-charge controls, a server-side tax transaction function, tax audit records and a government revenue ledger. Authorized administrators can request a government tax summary. Court cases have a server-owned registry with authenticated police creation and administrator closure. The RHD phone foundation assigns persistent-in-session numbers and supports authenticated player calls and SMS. Marketplace listings have a server-owned listing registry with owner-controlled cancellation; final item ownership transfer remains gated because the upstream virtual inventory is client-managed and must not be falsely represented as server-verified.
+
+Delivery contract completion uses a pending server state and a client cargo-removal acknowledgement before the server awards the contract reward, reducing the previous client-side reward duplication path.
 
 Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
 
