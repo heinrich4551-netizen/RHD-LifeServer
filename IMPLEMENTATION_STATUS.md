@@ -22,6 +22,10 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Full economy shop price integration
 - [x] Persistent economy telemetry/state
 - [x] Shop transaction caller/price/rate validation
+- [x] Player business registry
+- [x] Persistent business accounts
+- [x] Server-authoritative business deposits/withdrawals
+- [x] Business transaction audit ledger
 
 ## Phase 3 — RP Systems
 - [x] Police/EMS dispatch registry and lifecycle state
@@ -34,7 +38,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] EMS treatment action with server-side distance/role validation
 - [x] Framework cash charging for EMS treatment
 - [x] Hospital billing registry and Framework cash charging
-- [x] Player business registry foundation
+- [x] Player business registry and account foundation
 - [x] License registry foundation
 - [x] Vehicle services/inspections with Framework cash charging
 - [ ] Courts/government/taxes
@@ -81,6 +85,8 @@ RHD state persistence includes economy state, contracts, RP registries and job p
 The standard Framework virtual shop dialog is intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display effective prices in the normal shop lists, and send completed transaction telemetry through a server-side validation endpoint. The endpoint binds the request to the actual remote caller UID, verifies the reported total against the current RHD price, validates tracked items and rate-limits telemetry. Direct client access to the lower-level market mutation function is no longer whitelisted.
 
 The RHD financial adapter reads the selected player's Framework `cash` or `bankacc` balance through the existing database adapter, applies bounded charges/rewards server-side, writes the resulting balance to the upstream `players` table, records an RHD transaction audit row, and synchronizes the resulting account balance to the online client. It is used for EMS treatment, hospital bills, vehicle services, impound release fees and delivery contract rewards. This deliberately does not modify the upstream Framework source.
+
+Player businesses now have a server-owned registry and persistent business account table. Business owners can use authenticated server transactions to deposit or withdraw cash from their business account, with transaction audit rows and server-side owner validation. The F7 Businesses action retrieves the owner's current business accounts. Business creation and account operations remain behind the authenticated RP router; no client-supplied owner UID or business balance is trusted.
 
 Delivery contract completion now uses a pending server state and a client cargo-removal acknowledgement before the server awards the contract reward, reducing the previous client-side reward duplication path.
 
