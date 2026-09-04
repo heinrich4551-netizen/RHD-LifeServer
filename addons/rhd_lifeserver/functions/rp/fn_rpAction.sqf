@@ -14,6 +14,10 @@ switch (_action) do {
     case 'WARRANT': { if !(['COP',2] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_createWarrant; };
     case 'IMPOUND': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_impoundVehicle; };
     case 'RELEASE_IMPOUND': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_releaseImpound; };
+    case 'LIST_IMPOUNDS': {
+        if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
+        [_caller] call RHD_fnc_getImpounds;
+    };
     case 'LICENSE': { if !(['COP',2] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_manageLicense; };
     case 'HOSPITAL_BILL': { if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_hospitalBill; };
     case 'TREAT': { if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_treatPlayer; };
