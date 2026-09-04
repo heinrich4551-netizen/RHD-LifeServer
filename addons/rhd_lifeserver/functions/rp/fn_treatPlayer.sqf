@@ -15,11 +15,13 @@ private _damage = damage _target;
 if (_damage <= 0.01) exitWith {false};
 private _charge = round ((_fee max 0) min 100000);
 
+private _paid = true;
 if (_charge > 0) then {
-    if !([_target,'CHARGE','CASH',_charge,'EMS treatment'] call RHD_fnc_financialTransaction) exitWith {
-        [['TREATMENT_DENIED',_charge]] remoteExecCall ['RHD_fnc_rpResult',owner _medic];
-        false
-    };
+    _paid = [_target,'CHARGE','CASH',_charge,'EMS treatment'] call RHD_fnc_financialTransaction;
+};
+if (!_paid) exitWith {
+    [['TREATMENT_DENIED',_charge]] remoteExecCall ['RHD_fnc_rpResult',owner _medic];
+    false
 };
 
 _target setDamage 0;
