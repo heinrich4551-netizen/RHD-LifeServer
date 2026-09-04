@@ -1,9 +1,9 @@
 /*
     Authenticated server-side impound registration.
-    [caller,vehicle,reason,fee] call RHD_fnc_impoundVehicle
+    [caller,vehicle,reason] call RHD_fnc_impoundVehicle
 */
 if (!isServer) exitWith {false};
-params [['_caller',objNull,[objNull]],['_vehicle',objNull,[objNull]],['_reason',''],['_fee',0,[0]]];
+params [['_caller',objNull,[objNull]],['_vehicle',objNull,[objNull]],['_reason','']];
 if (isNull _caller || {!alive _caller}) exitWith {false};
 if (isNull _vehicle || {!(_vehicle isKindOf 'LandVehicle')}) exitWith {false};
 if (_reason isEqualTo '') exitWith {false};
@@ -13,7 +13,8 @@ if (_executorUID isEqualTo '') exitWith {false};
 private _netId = netId _vehicle;
 if (_netId isEqualTo '') exitWith {false};
 _reason = _reason select [0,256];
-private _feeSafe = round ((_fee max 0) min 1000000);
+private _feeSafe = round (getNumber (missionConfigFile >> 'RHD_RP' >> 'Fees' >> 'impoundRelease'));
+_feeSafe = (_feeSafe max 0) min 1000000;
 private _owners = _vehicle getVariable ['vehicle_info_owners',[]];
 private _impounds = missionNamespace getVariable ['RHD_Impounds',createHashMap];
 private _existing = false;
