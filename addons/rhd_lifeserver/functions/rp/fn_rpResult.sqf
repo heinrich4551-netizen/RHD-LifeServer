@@ -46,7 +46,8 @@ if (_payload isEqualType [] && {count _payload > 0} && {(_payload select 0) isEq
         case 'TREATMENT_DENIED': {hint format ['RHD EMS\n\nTreatment denied.\nCharge required: $%1',_payload param [1,0]];};
         case 'VEHICLE_SERVICE': {hint format ['RHD VEHICLE SERVICE\n\n%1 completed.\nCharge: $%3\nDamage after service: %4',_payload param [2,'Service'],_payload param [1,''],_payload param [3,0],_payload param [4,0]];};
         case 'VEHICLE_SERVICE_DENIED': {hint format ['RHD VEHICLE SERVICE\n\nService denied.\nCharge required: $%3',_payload param [2,'Service'],_payload param [1,''],_payload param [3,0]];};
-        case 'BUSINESS_CREATED': {hint format ['RHD BUSINESS\n\nBusiness created.\nName: %2\nID: %1\nType: %3',_payload param [1,''],_payload param [2,'Business'],_payload param [3,'GENERAL']];};
+        case 'BUSINESS_CREATED': {hint format ['RHD BUSINESS\n\nBusiness created.\nName: %2\nID: %1\nType: %3\nStartup fee: $%4',_payload param [1,''],_payload param [2,'Business'],_payload param [3,'GENERAL'],_payload param [4,0]];};
+        case 'BUSINESS_CREATE_DENIED': {hint format ['RHD BUSINESS\n\nBusiness creation failed.\nStartup fee attempted: $%2\nCheck your cash balance and database connection.',_payload param [1,'Business'],_payload param [2,0]];};
         case 'BUSINESS_TRANSACTION': {hint format ['RHD BUSINESS ACCOUNT\n\n%2: $%3\nNew business balance: $%4',_payload param [1,''],_payload param [2,'TRANSACTION'],_payload param [3,0],_payload param [4,0]];};
         case 'BUSINESS_TRANSACTION_DENIED': {hint format ['RHD BUSINESS ACCOUNT\n\nTransaction denied.\n%2 $%3\nCurrent business balance: $%4',_payload param [1,''],_payload param [2,'TRANSACTION'],_payload param [3,0],_payload param [4,0]];};
         default {hint format ['RHD: %1',_payload];};
