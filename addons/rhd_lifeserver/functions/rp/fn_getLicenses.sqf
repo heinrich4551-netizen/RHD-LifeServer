@@ -1,15 +1,17 @@
 /*
     Server-side read of a player's RHD license registry.
-    Client supplies only the UID; the server returns the authoritative list.
+    A client may only request its own license list. Administrative reads should
+    use a separate authorized server-side path.
 */
-if (!isServer) exitWith {false};
+if (!isServer || {!isRemoteExecuted}) exitWith {false};
 params [['_uid','']];
-if (_uid isEqualTo '') exitWith {false};
+
+private _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull];
+if (isNull _caller) exitWith {false};
+private _callerUID = getPlayerUID _caller;
+if (_callerUID isEqualTo '' || {_uid != _callerUID}) exitWith {false};
 
 private _licenses = missionNamespace getVariable ['RHD_Licenses',createHashMap];
-private _owned = +(_licenses getOrDefault [_uid,[]]);
-private _owner = if (isRemoteExecuted) then {remoteExecutedOwner} else {2};
-if (_owner <= 0) exitWith {false};
-
-[_owned] remoteExecCall ['RHD_fnc_rpResult',_owner];
+private _owned = +(_licenses getOrDefault [_callerUID,[]]);
+[_owned] remoteExecCall ['RHD_fnc_rpResult',remoteExecutedOwner];
 true
