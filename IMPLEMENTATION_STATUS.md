@@ -17,7 +17,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Dynamic supply/demand pricing engine
 - [x] Delivery contract generation/completion framework
 - [x] Legal/illegal job progression
-- [ ] Full economy shop price integration
+- [x] Full economy shop price integration
 - [x] Persistent economy telemetry/state
 
 ## Phase 3 — RP Systems
@@ -56,4 +56,6 @@ Legal and illegal resource activity now maintains per-player progression with se
 
 RHD state persistence now includes economy state, contracts, RP registries and job progression through the upstream Framework database adapter. The server scheduler performs persistence according to the configured save interval.
 
-The F6 marketplace view displays the current RHD dynamic price table. Full interception of the upstream Framework's native virtual-shop buy/sell transactions remains intentionally separate until a mission-side shop hook is installed; the upstream Framework submodule is not modified by RHD.
+The standard Framework virtual shop dialog is now intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display the effective prices in the normal shop lists, and record shop transaction telemetry on the dedicated server. Non-RHD virtual items fall back to their mission-configured Framework prices. Shop buy/sell multipliers are configurable in `config/RHD_LifeServer.hpp`.
+
+The shop hook is implemented in `functions/economy/fn_virtBuy.sqf`, `fn_virtSell.sqf` and `fn_virtUpdate.sqf`, with runtime installation in `functions/core/fn_clientInit.sqf`. Production validation of the full Framework mission, database, banking, inventory and shop path is still required.
