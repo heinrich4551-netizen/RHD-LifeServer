@@ -97,12 +97,11 @@ switch (_action) do {
         private _seller = allPlayers select {getPlayerUID _x isEqualTo _sellerUID} param [0,objNull];
 
         if (!_added) then {
-            private _buyer = _caller;
-            [_buyer,'REWARD','CASH',_total,format ['Marketplace refund %1',_id]] call RHD_fnc_financialTransaction;
+            [_caller,'REWARD','CASH',_total,format ['Marketplace refund %1',_id]] call RHD_fnc_financialTransaction;
             _e set [5,'CANCELLED'];
             _market set [_id,_e];
             missionNamespace setVariable ['RHD_Marketplace',_market,true];
-            [['MARKET_BUY_FAILED',_id,'Inventory could not accept the items; payment refunded.']] remoteExecCall ['RHD_fnc_rpResult',owner _buyer];
+            [['MARKET_BUY_FAILED',_id,'Inventory could not accept the items; payment refunded.']] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
             true
         } else {
             if (isNull _seller || {!alive _seller}) exitWith {
@@ -137,10 +136,28 @@ switch (_action) do {
         private _id = _args param [0,''];
         private _e = _market getOrDefault [_id,[]];
         if (_e isEqualTo [] || {(_e param [1,'']) isNotEqualTo _uid} || {(_e param [5,'']) isNotEqualTo 'OPEN'}) exitWith {false};
-        _e set [5,'CANCELLED'];
+        _e set [5,'PENDING_CANCEL'];
+        _e set [7,remoteExecutedOwner];
         _market set [_id,_e];
         missionNamespace setVariable ['RHD_Marketplace',_market,true];
-        [['MARKET_CANCELLED',_id]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+        [_id,_e param [2,''],_e param [3,0],-1,''] remoteExecCall ['RHD_fnc_marketplaceResult',owner _caller];
+        true
+    };
+    case 'CANCEL_ACK': {
+        private _id = _args param [0,''];
+        private _returned = _args param [1,false];
+        private _e = _market getOrDefault [_id,[]];
+        if (_e isEqualTo [] || {(_e param [5,'']) isNotEqualTo 'PENDING_CANCEL'} || {(_e param [1,'']) isNotEqualTo _uid}) exitWith {false};
+        if (_e param [7,-1] isNotEqualTo remoteExecutedOwner) exitWith {false};
+        if (_returned) then {
+            _e set [5,'CANCELLED'];
+            [['MARKET_CANCELLED',_id]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+        } else {
+            _e set [5,'OPEN'];
+            [['MARKET_CANCEL_FAILED',_id,'The reserved items could not be returned.']] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+        };
+        _market set [_id,_e];
+        missionNamespace setVariable ['RHD_Marketplace',_market,true];
         true
     };
     default {false};
