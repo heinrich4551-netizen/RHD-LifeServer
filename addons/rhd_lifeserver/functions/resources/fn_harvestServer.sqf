@@ -63,9 +63,33 @@ _max = _max max _min;
 private _amount = floor (_min + random (_max - _min + 1));
 missionNamespace setVariable [_cooldownKey,diag_tickTime + (_cooldown max 0.1)];
 
+private _illegal = getNumber (_cfg >> 'illegal') isEqualTo 1;
+private _jobType = if (_isMining) then {'MINING'} else {'FARMING'};
+
 if (_eden getOrDefault ['dynamicPricing',true]) then {
     [_item,_amount,0] call RHD_fnc_recordMarket;
 };
 
-[_item,_amount] remoteExecCall ['RHD_fnc_harvestResult',_player];
+/* Progression is kept server-side and persisted with the other RHD state. */
+private _uid = getPlayerUID _player;
+private _jobs = missionNamespace getVariable ['RHD_JobProgress',createHashMap];
+private _state = _jobs getOrDefault [_uid,[0,0,1,1,0]];
+_state params ['_legalXP','_illegalXP','_legalLevel','_illegalLevel','_harvests'];
+private _xp = (_amount max 1) * if (_illegal) then {2} else {1};
+if (_illegal) then {_illegalXP = _illegalXP + _xp;} else {_legalXP = _legalXP + _xp;};
+_harvests = _harvests + 1;
+private _oldLevel = if (_illegal) then {_illegalLevel} else {_legalLevel};
+_legalLevel = 1 + floor (_legalXP / 100);
+_illegalLevel = 1 + floor (_illegalXP / 100);
+private _level = if (_illegal) then {_illegalLevel} else {_legalLevel};
+private _leveled = _level > _oldLevel;
+_jobs set [_uid,[_legalXP,_illegalXP,_legalLevel,_illegalLevel,_harvests]];
+missionNamespace setVariable ['RHD_JobProgress',_jobs,true];
+
+private _reward = 0;
+if ((_harvests mod 10) isEqualTo 0) then {
+    _reward = 250 + ((_level max 1) * 50);
+};
+
+[_item,_amount,_jobType,_illegal,_legalXP,_illegalXP,_legalLevel,_illegalLevel,_reward,_leveled] remoteExecCall ['RHD_fnc_harvestResult',_player];
 true
