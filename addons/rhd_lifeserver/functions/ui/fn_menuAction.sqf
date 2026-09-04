@@ -58,7 +58,7 @@ if (_mode isEqualTo 8) exitWith {
                             ['RELEASE_IMPOUND_TARGET',[_target]] remoteExecCall ['RHD_fnc_rpAction',2];
                             hint 'RHD: Impound release request sent to server.';
                         } else {
-                            ['IMPOUND',[_target,'Police impound',500]] remoteExecCall ['RHD_fnc_rpAction',2];
+                            ['IMPOUND',[_target,'Police impound']] remoteExecCall ['RHD_fnc_rpAction',2];
                             hint 'RHD: Impound request sent to server.';
                         };
                     } else {
@@ -71,7 +71,7 @@ if (_mode isEqualTo 8) exitWith {
                     if (isNull _target || {!(_target isKindOf 'CAManBase')}) exitWith {hint 'RHD: Look directly at the patient.';};
                     if (_target isEqualTo player) exitWith {hint 'RHD: You cannot treat yourself through this action.';};
                     closeDialog 0;
-                    ['TREAT',[_target,0]] remoteExecCall ['RHD_fnc_rpAction',2];
+                    ['TREAT',[_target]] remoteExecCall ['RHD_fnc_rpAction',2];
                     hint 'RHD: Treatment request sent to the EMS server.';
                 };
             };
@@ -80,7 +80,7 @@ if (_mode isEqualTo 8) exitWith {
     };
 
     switch (_action) do {
-        case 0: { closeDialog 0; ['VEHICLE','Vehicle service requested by civilian.',getPosATL player,2] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Vehicle service request sent.'; };
+        case 0: { closeDialog 0; ['MECHANIC','Vehicle service requested by civilian.',getPosATL player,2] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Vehicle service request sent.'; };
         case 1: { closeDialog 0; [getPlayerUID player] remoteExecCall ['RHD_fnc_getLicenses',2]; };
         case 2: { closeDialog 0; ['GENERAL','Civilian dispatch call.',getPosATL player,2] remoteExecCall ['RHD_fnc_dispatch',2]; hint 'RHD: Dispatch call sent.'; };
         case 3: { closeDialog 0; ['EMS','Emergency assistance requested by civilian.',getPosATL player,1] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Emergency assistance request sent.'; };
