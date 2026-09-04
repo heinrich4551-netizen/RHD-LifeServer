@@ -12,56 +12,23 @@ private _callerUID = getPlayerUID _caller;
 switch (_action) do {
     case 'EVIDENCE': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_createEvidence; };
     case 'WARRANT': { if !(['COP',2] call RHD_fnc_authorizeRole) exitWith {false}; _args call RHD_fnc_createWarrant; };
-    case 'IMPOUND': {
-        if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
-        _args = [_caller] + _args;
-        _args call RHD_fnc_impoundVehicle;
-    };
-    case 'RELEASE_IMPOUND': {
-        if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
-        _args = [_caller] + _args;
-        _args call RHD_fnc_releaseImpound;
-    };
-    case 'RELEASE_IMPOUND_TARGET': {
-        if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
-        _args = [_caller] + _args;
-        _args call RHD_fnc_releaseImpoundByVehicle;
-    };
-    case 'LIST_IMPOUNDS': {
-        if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
-        [_caller] call RHD_fnc_getImpounds;
-    };
-    case 'LICENSE': {
-        if !(['COP',2] call RHD_fnc_authorizeRole) exitWith {false};
-        _args = [_caller] + _args;
-        _args call RHD_fnc_manageLicense;
-    };
-    case 'HOSPITAL_BILL': {
-        if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false};
-        _args = [_caller] + _args;
-        _args call RHD_fnc_hospitalBill;
-    };
-    case 'TREAT': {
-        if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false};
-        _args = [_caller] + _args;
-        _args call RHD_fnc_treatPlayer;
-    };
-    case 'VEHICLE_SERVICE': {
-        if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false};
-        _args = [_caller] + _args;
-        _args call RHD_fnc_vehicleService;
-    };
-    case 'BUSINESS_CREATE': {
-        _args = [_caller] + _args;
-        _args call RHD_fnc_businessCreate;
-    };
-    case 'BUSINESS_INFO': {
-        [_caller] call RHD_fnc_businessInfo;
-    };
-    case 'BUSINESS_TRANSACTION': {
-        _args = [_caller] + _args;
-        _args call RHD_fnc_businessTransaction;
-    };
+    case 'IMPOUND': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_impoundVehicle; };
+    case 'RELEASE_IMPOUND': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_releaseImpound; };
+    case 'RELEASE_IMPOUND_TARGET': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_releaseImpoundByVehicle; };
+    case 'LIST_IMPOUNDS': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; [_caller] call RHD_fnc_getImpounds; };
+    case 'LICENSE': { if !(['COP',2] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_manageLicense; };
+    case 'HOSPITAL_BILL': { if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_hospitalBill; };
+    case 'TREAT': { if !(['MEDIC',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_treatPlayer; };
+    case 'VEHICLE_SERVICE': { if !(['COP',1] call RHD_fnc_authorizeRole) exitWith {false}; _args = [_caller] + _args; _args call RHD_fnc_vehicleService; };
+    case 'BUSINESS_CREATE': { _args = [_caller] + _args; _args call RHD_fnc_businessCreate; };
+    case 'BUSINESS_INFO': { [_caller] call RHD_fnc_businessInfo; };
+    case 'BUSINESS_TRANSACTION': { _args = [_caller] + _args; _args call RHD_fnc_businessTransaction; };
+    case 'PLAYER_TRANSFER': { _args = [_caller] + _args; _args call RHD_fnc_playerTransfer; };
+    case 'PHONE': { _args = [_caller] + _args; _args call RHD_fnc_phone; };
+    case 'MARKETPLACE': { _args = [_caller] + _args; _args call RHD_fnc_marketplace; };
+    case 'GOVERNMENT_INFO': { [_caller] call RHD_fnc_governmentInfo; };
+    case 'COURT_CASE': { _args = [_caller] + _args; _args call RHD_fnc_courtCase; };
+    case 'ADMIN_AUDIT': { [_caller] call RHD_fnc_adminAudit; };
     case 'DISPATCH_ACK': {
         private _authorized = ['COP',1] call RHD_fnc_authorizeRole;
         if (!_authorized) then {_authorized = ['MEDIC',1] call RHD_fnc_authorizeRole;};
