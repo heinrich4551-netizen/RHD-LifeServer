@@ -17,6 +17,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Refining/processing framework
 - [x] Dynamic supply/demand pricing engine
 - [x] Delivery contract generation/completion framework
+- [x] Server-side Framework cash rewards for completed delivery contracts
 - [x] Legal/illegal job progression
 - [x] Full economy shop price integration
 - [x] Persistent economy telemetry/state
@@ -28,12 +29,14 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Evidence registry foundation
 - [x] Warrant registry foundation
 - [x] Impound registry foundation
+- [x] Authenticated impound release with owner fee handling
 - [x] EMS/service request foundation
 - [x] EMS treatment action with server-side distance/role validation
-- [x] Hospital billing registry foundation
+- [x] Framework cash charging for EMS treatment
+- [x] Hospital billing registry and Framework cash charging
 - [x] Player business registry foundation
 - [x] License registry foundation
-- [ ] Vehicle services/inspections
+- [x] Vehicle services/inspections with Framework cash charging
 - [ ] Courts/government/taxes
 - [ ] RHD phone
 - [ ] Marketplace
@@ -77,12 +80,14 @@ RHD state persistence includes economy state, contracts, RP registries and job p
 
 The standard Framework virtual shop dialog is intercepted at runtime by RHD without changing the upstream submodule. Buy and sell transactions use the live RHD market price for tracked resources, display effective prices in the normal shop lists, and send completed transaction telemetry through a server-side validation endpoint. The endpoint binds the request to the actual remote caller UID, verifies the reported total against the current RHD price, validates tracked items and rate-limits telemetry. Direct client access to the lower-level market mutation function is no longer whitelisted.
 
-Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
+The RHD financial adapter reads the selected player's Framework `cash` or `bankacc` balance through the existing database adapter, applies bounded charges/rewards server-side, writes the resulting balance to the upstream `players` table, records an RHD transaction audit row, and synchronizes the resulting account balance to the online client. It is used for EMS treatment, hospital bills, vehicle services, impound release fees and delivery contract rewards. This deliberately does not modify the upstream Framework source.
 
-EMS treatment is routed through the same authenticated RP path. The server derives the medic from the remote owner, requires the configured medic rank, validates the target and a 10m treatment distance, applies the Arma damage interface, and records an optional hospital bill without inventing an upstream revive API.
+Delivery contract completion now uses a pending server state and a client cargo-removal acknowledgement before the server awards the contract reward, reducing the previous client-side reward duplication path.
+
+Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) and authenticated police/EMS state transitions are routed through `RHD_fnc_rpAction`. Direct remote execution of the lower-level dispatch state function is not whitelisted.
 
 The RP layer uses server-side authorization against the upstream `players` table for privileged actions. Client-side rank variables are not trusted for authorization.
 
-The new `SETUP.txt` is the primary server-owner deployment checklist and collects required manual configuration, dependency installation, database setup, mission configuration, 3DEN setup, startup order, first-run tests, security checks and troubleshooting in one place.
+The new `SETUP.txt` is the primary server-owner deployment checklist and collects required manual configuration, dependency installation, database setup, mission configuration, 3DEN setup, startup order, first-run tests, security checks and troubleshooting.
 
 The remaining production gate is still an actual Arma 3 dedicated-server/PBO/in-game validation pass, including database connectivity, the complete upstream mission integration and the selected SimplePersist release.
