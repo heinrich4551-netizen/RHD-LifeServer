@@ -89,6 +89,7 @@ if (_mode isEqualTo 8) exitWith {
         case 2: { closeDialog 0; ['GENERAL','Civilian dispatch call.',getPosATL player,2] remoteExecCall ['RHD_fnc_dispatch',2]; hint 'RHD: Dispatch call sent.'; };
         case 3: { closeDialog 0; ['EMS','Emergency assistance requested by civilian.',getPosATL player,1] remoteExecCall ['RHD_fnc_createServiceRequest',2]; hint 'RHD: Emergency assistance request sent.'; };
         case 4: { closeDialog 0; ['MARKETPLACE',['VIEW']] remoteExecCall ['RHD_fnc_rpAction',2]; };
+        case 5: { closeDialog 0; ['BUSINESS_INFO',[]] remoteExecCall ['RHD_fnc_rpAction',2]; };
     };
     true
 };
@@ -117,5 +118,7 @@ switch (_action) do {
         { private _entry=_prices get _x; if !(_entry isEqualTo []) then {private _display=getText (missionConfigFile >> 'VirtualItems' >> _x >> 'displayName'); if (_display isEqualTo '') then {_display=_x;}; _lines pushBack format ['%1: $%2',_display,round (_entry param [1,0])];}; } forEach keys _prices;
         hint (_lines joinString '\n'); true
     };
+    case 4: { closeDialog 0; ['BUSINESS_INFO',[]] remoteExecCall ['RHD_fnc_rpAction',2]; true };
+    case 5: { closeDialog 0; true };
     default {false};
 };
