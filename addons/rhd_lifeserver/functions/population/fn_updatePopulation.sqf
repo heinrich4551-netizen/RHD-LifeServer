@@ -15,13 +15,15 @@ private _target = if (_players <= 0) then {
     0
 } else {
     if (_scale) then {
-        /* Preserve the requested 115 at one player and reduce by the same
-           amount per additional active player until the configured floor. */
         ((_onePlayer - ((_players max 1) - 1) * 10) max _minimum) min _maximum
     } else {
         _onePlayer
     }
 };
+
+private _civilianEventMultiplier = (missionNamespace getVariable ['RHD_CivilianEventMultiplier',1]) max 0.1;
+_target = round ((_target * _civilianEventMultiplier) min _maximum) max _minimum;
+if (_players <= 0) then {_target = 0;};
 
 private _civilians = missionNamespace getVariable ['RHD_CivilianAgents',[]];
 _civilians = _civilians select {!isNull _x};
