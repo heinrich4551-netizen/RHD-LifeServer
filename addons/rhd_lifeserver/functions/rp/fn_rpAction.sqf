@@ -11,22 +11,22 @@ params [['_action',''],['_args',[],[[]]]];
 _action = toUpper _action;
 private _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull];
 if (isNull _caller) exitWith {false};
-
 private _uid = getPlayerUID _caller;
+if (_uid isEqualTo '') exitWith {false};
+
 private _authorize = {
-    params ['_role','_rank'];
-    ['_role',_role,'rank',_rank] params ['_unusedRole','_roleValue','_unusedRank','_rankValue'];
+    params ['_requiredRole','_requiredRank'];
     if (isNil 'DB_fnc_asyncCall') exitWith {false};
     private _result = [format ["SELECT coplevel, mediclevel, adminlevel FROM players WHERE pid='%1' LIMIT 1",_uid],2] call DB_fnc_asyncCall;
     if !(_result isEqualType []) exitWith {false};
     if (count _result < 3) exitWith {false};
-    private _value = switch (_roleValue) do {
+    private _value = switch (toUpper _requiredRole) do {
         case 'COP': {_result select 0};
         case 'MEDIC': {_result select 1};
         case 'ADMIN': {_result select 2};
         default {0};
     };
-    ([_value] call DB_fnc_numberSafe) >= (_rankValue max 0)
+    ([_value] call DB_fnc_numberSafe) >= (_requiredRank max 0)
 };
 
 switch (_action) do {
