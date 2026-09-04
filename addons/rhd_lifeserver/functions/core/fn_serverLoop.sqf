@@ -6,6 +6,7 @@ while {true} do {
     if (missionNamespace getVariable ['RHD_LifeServer_Enabled',true]) then {
         [] call RHD_fnc_updatePopulation;
         [] call RHD_fnc_economyLoop;
+        [] call RHD_fnc_rpMaintenance;
 
         private _contracts = missionNamespace getVariable ['RHD_ActiveContracts',createHashMap];
         private _expired = [];
@@ -16,9 +17,7 @@ while {true} do {
                 if ((diag_tickTime - _created) > 3600) then {_expired pushBack _x;};
             };
         } forEach keys _contracts;
-        {
-            _contracts deleteAt _x;
-        } forEach _expired;
+        {_contracts deleteAt _x;} forEach _expired;
         if (count _expired > 0) then {
             missionNamespace setVariable ['RHD_ActiveContracts',_contracts,true];
         };
