@@ -86,6 +86,30 @@ CREATE TABLE IF NOT EXISTS rhd_financial_transactions (
     INDEX idx_rhd_fin_created (created_at)
 );
 
+CREATE TABLE IF NOT EXISTS rhd_tax_transactions (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    uid VARCHAR(32) NOT NULL,
+    tax_type VARCHAR(32) NOT NULL,
+    taxable_amount DECIMAL(14,2) NOT NULL,
+    tax_amount DECIMAL(14,2) NOT NULL,
+    source VARCHAR(128) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_rhd_tax_uid (uid),
+    INDEX idx_rhd_tax_created (created_at),
+    INDEX idx_rhd_tax_type (tax_type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS rhd_government_ledger (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    transaction_type VARCHAR(32) NOT NULL,
+    uid VARCHAR(32) NULL,
+    amount DECIMAL(14,2) NOT NULL,
+    description VARCHAR(128) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_rhd_gov_created (created_at),
+    INDEX idx_rhd_gov_uid (uid)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS rhd_state (
     state_key VARCHAR(64) NOT NULL PRIMARY KEY,
     payload LONGTEXT NOT NULL,
