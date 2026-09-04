@@ -16,7 +16,6 @@ class CfgRemoteExec {
         class RHD_fnc_refineServer { allowedTargets = 2; jip = 0; };
         class RHD_fnc_harvestResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_refineResult { allowedTargets = 1; jip = 0; };
-        class RHD_fnc_setPrice { allowedTargets = 2; jip = 0; };
         class RHD_fnc_createContract { allowedTargets = 2; jip = 0; };
         class RHD_fnc_completeContract { allowedTargets = 2; jip = 0; };
         class RHD_fnc_contractResult { allowedTargets = 1; jip = 0; };
