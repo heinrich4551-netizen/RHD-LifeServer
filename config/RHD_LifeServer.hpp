@@ -55,5 +55,6 @@ class RHD_LifeServer
         enabled = 1;
         randomEvents = 1;
         eventIntervalMinutes = 30;
+        eventDurationMinutes = 10;
     };
 };
