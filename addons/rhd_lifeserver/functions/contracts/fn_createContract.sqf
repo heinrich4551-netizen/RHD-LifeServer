@@ -2,9 +2,12 @@
     Creates one server-authoritative delivery contract for the requesting player.
     Contract state is keyed by Steam UID and held server-side.
 */
-if (!isServer) exitWith {false};
+if (!isServer || {!isRemoteExecuted}) exitWith {false};
 params [['_player',objNull,[objNull]]];
-if (isNull _player || {!isPlayer _player} || {!alive _player}) exitWith {false};
+private _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull];
+if (isNull _caller || {_player isNotEqualTo _caller}) exitWith {false};
+_player = _caller;
+if (!isPlayer _player || {!alive _player}) exitWith {false};
 
 private _uid = getPlayerUID _player;
 if (_uid isEqualTo '') exitWith {false};
