@@ -6,6 +6,7 @@
 if (!isServer) exitWith {false};
 private _cfg = missionConfigFile >> 'RHD_LifeServer' >> 'Events';
 if (getNumber (_cfg >> 'enabled') <= 0) exitWith {false};
+if (getNumber (_cfg >> 'randomEvents') <= 0) exitWith {false};
 
 private _duration = (getNumber (_cfg >> 'eventDurationMinutes') max 1) min 120;
 private _interval = (getNumber (_cfg >> 'eventIntervalMinutes') max 5) min 1440;
@@ -21,7 +22,12 @@ if (_activeUntil > 0 && {diag_tickTime >= _activeUntil}) then {
     _active = ['NONE',0,0];
 };
 
-if (_last >= 0 && {(diag_tickTime - _last) < (_interval * 60)}) exitWith {false};
+/* Wait one configured interval after startup before the first event. */
+if (_last < 0) then {
+    missionNamespace setVariable ['RHD_LastWorldEvent',diag_tickTime];
+    exitWith {false};
+};
+if ((diag_tickTime - _last) < (_interval * 60)) exitWith {false};
 if ((_active param [0,'NONE']) != 'NONE') exitWith {false};
 
 private _events = [
