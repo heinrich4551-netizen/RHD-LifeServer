@@ -1,7 +1,7 @@
 /*
     RHD virtual-shop sell transaction.
 
-    Uses the live RHD market price for tracked resources and records demand
+    Uses the live RHD market price for tracked resources and records supply
     telemetry on the dedicated server. The upstream Framework is untouched.
 */
 disableSerialization;
@@ -33,7 +33,7 @@ CASH = CASH + _total;
 [3] call SOCK_fnc_updatePartial;
 [] call RHD_fnc_virtUpdate;
 
-[_item,0,_amount] remoteExecCall ['RHD_fnc_recordMarket',2];
+[_item,_amount,0] remoteExecCall ['RHD_fnc_recordMarket',2];
 private _name = getText (missionConfigFile >> 'VirtualItems' >> _item >> 'displayName');
 if (_name isEqualTo '') then {_name = _item;};
 hint format ['Sold %1 x%2 for $%3.',_name,_amount,[_total] call life_fnc_numberText];
