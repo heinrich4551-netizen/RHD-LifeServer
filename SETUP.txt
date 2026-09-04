@@ -124,7 +124,7 @@ A typical deployment should contain approximately:
   |-- profiles/
   |-- mpmissions/
   |   `-- Altis_Life.Altis/
-  `-- keys/ and other normal Arma server files
+  `-- keys/ and other normal server files
 
 The exact directory layout can differ with your host panel/provider.
 
@@ -383,8 +383,63 @@ limits. The intended default is 115 civilians at one player, with a minimum of 6
 Monitor server FPS, AI count, network traffic, and headless-client requirements
 before increasing population limits on a live server.
 
+The RHD performance profiler is enabled, but full server-loop logging is disabled
+by default to reduce RPT noise. Slow-section logging remains enabled at the
+configured threshold. Server owners can enable full loop logging in
+config/RHD_LifeServer.hpp when diagnosing performance.
+
 ================================================
-17. WHAT THE SERVER OWNER MUST SUPPLY
+17. AUTOMATED BACKUPS - WINDOWS POWERSHELL
+================================================
+
+RHD includes:
+
+  deployment\backup.ps1
+
+The backup script creates a timestamped backup directory containing:
+
+  - a MySQL/MariaDB dump of the configured RHD database
+  - the selected server configuration directory
+  - database/rhd_extensions.sql
+  - a manifest.json describing the backup
+
+The script intentionally does NOT contain database credentials.
+Set these environment variables in the account/context that runs the backup:
+
+  RHD_DB_HOST
+  RHD_DB_NAME
+  RHD_DB_USER
+  RHD_DB_PASSWORD
+
+Example manual invocation from the repository root:
+
+  $env:RHD_DB_HOST = "127.0.0.1"
+  $env:RHD_DB_NAME = "altislife"
+  $env:RHD_DB_USER = "rhd_backup"
+  $env:RHD_DB_PASSWORD = "USE-YOUR-REAL-PASSWORD-HERE"
+  .\deployment\backup.ps1 -BackupRoot "D:\RHD-Backups" -MySqlDumpPath "C:\Program Files\MariaDB 11.0\bin\mysqldump.exe" -ConfigDirectory "C:\Arma3Server\cfg"
+
+Do not put those values into GitHub files or commit them to source control.
+The script passes the password to mysqldump through MYSQL_PWD only for the dump
+process and removes that environment variable afterward.
+
+For Windows Task Scheduler, create a scheduled task running as the dedicated
+server/backup service account and invoke PowerShell with an appropriate command,
+for example:
+
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\RHD-LifeServer\deployment\backup.ps1" -BackupRoot "D:\RHD-Backups" -MySqlDumpPath "C:\Program Files\MariaDB 11.0\bin\mysqldump.exe" -ConfigDirectory "C:\Arma3Server\cfg"
+
+Set the RHD_DB_* environment variables for that service account before enabling
+the schedule. Choose a schedule appropriate to your server; a 30-minute backup
+cadence is consistent with the repository's default operational backup interval,
+but the external scheduler controls when this script actually runs.
+
+The backup script is an operational backup tool; it does not replace testing
+restore procedures. Periodically restore a backup to a separate test database and
+verify that it is usable.
+
+================================================
+18. WHAT THE SERVER OWNER MUST SUPPLY
 ================================================
 
 Only these categories should normally require manual owner input:
@@ -398,12 +453,14 @@ Only these categories should normally require manual owner input:
   - 3DEN placement and tuning of resource/process modules
   - Final server hostname/branding and operational settings
   - Any additional optional Workshop mods chosen by the server owner
+  - Backup destination, mysqldump path, and backup service-account environment
+    variables if automated backups are enabled
 
 Everything else should be obtained from this repository or the documented upstream
 Framework/SimplePersist releases.
 
 ================================================
-18. TROUBLESHOOTING
+19. TROUBLESHOOTING
 ================================================
 
 RHD PBO does not load:
@@ -434,13 +491,21 @@ Database errors:
   - Verify database/rhd_extensions.sql was imported.
   - Review the server RPT and database adapter logs.
 
+Backup script errors:
+  - Verify PowerShell can run deployment\backup.ps1.
+  - Verify mysqldump.exe exists at the path supplied with -MySqlDumpPath.
+  - Verify RHD_DB_HOST, RHD_DB_NAME, RHD_DB_USER, and RHD_DB_PASSWORD are defined
+    for the account running the task.
+  - Verify the backup destination is writable.
+  - Review the generated manifest.json and command output.
+
 F6/F7/F8 unavailable:
   - Verify the RHD PBO loaded.
   - Check for key conflicts with other mods/mission scripts.
   - Check the RPT for RHD UI initialization errors.
 
 ================================================
-19. PRODUCTION READINESS WARNING
+20. PRODUCTION READINESS WARNING
 ================================================
 
 Repository files provide the deployment structure and configuration, but RHD is
@@ -449,7 +514,7 @@ dedicated server with the selected Framework build, database adapter, mission,
 SimplePersist release, and intended mod stack.
 
 ================================================
-20. OFFICIAL REFERENCES
+21. OFFICIAL REFERENCES
 ================================================
 
 RHD-LifeServer:
