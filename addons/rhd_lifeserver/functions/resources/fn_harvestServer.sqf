@@ -3,9 +3,12 @@
     Eden resource modules define position, item, radius and yield.
     Legacy rhd_resource_* markers are converted by RHD_fnc_registerNodes.
 */
-if (!isServer) exitWith {false};
+if (!isServer || {!isRemoteExecuted}) exitWith {false};
 params ['_player','_item'];
-if (isNull _player || {!isPlayer _player} || {!alive _player}) exitWith {false};
+private _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull];
+if (isNull _caller || {_player isNotEqualTo _caller}) exitWith {false};
+_player = _caller;
+if (!isPlayer _player || {!alive _player}) exitWith {false};
 if (_item isEqualTo '') exitWith {false};
 
 private _nodes = missionNamespace getVariable ['RHD_ResourceNodes',[]];
@@ -87,14 +90,9 @@ private _leveled = _level > _oldLevel;
 _jobs set [_uid,[_legalXP,_illegalXP,_legalLevel,_illegalLevel,_harvests]];
 missionNamespace setVariable ['RHD_JobProgress',_jobs,true];
 
-/*
-    Progression rewards are server-side financial transactions. The client
-    receives only the resulting synchronized balance through RHD_fnc_financialResult;
-    it never receives an instruction to add cash locally.
-*/
-private _reward = 0;
+/* Progression rewards are server-side financial transactions. */
 if ((_harvests mod 10) isEqualTo 0) then {
-    _reward = 250 + ((_level max 1) * 50);
+    private _reward = 250 + ((_level max 1) * 50);
     [_player,'REWARD','CASH',_reward,'RHD harvest progression bonus'] call RHD_fnc_financialTransaction;
 };
 
