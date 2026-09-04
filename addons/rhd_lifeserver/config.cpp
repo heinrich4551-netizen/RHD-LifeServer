@@ -32,6 +32,7 @@ class CfgRemoteExec {
         class RHD_fnc_hospitalBill { allowedTargets = 2; jip = 0; };
         class RHD_fnc_rpResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_recordMarket { allowedTargets = 2; jip = 0; };
+        class RHD_fnc_shopTransaction { allowedTargets = 2; jip = 0; };
     };
     class Commands { mode = 0; jip = 0; };
 };
@@ -39,7 +40,7 @@ class CfgFunctions {
     class RHD {
         tag = "RHD";
         class Core { file = "RHD_LifeServer\functions\core"; class preInit { preInit = 1; }; class postInit { postInit = 1; }; class serverLoop {}; class clientInit {}; class log {}; };
-        class Economy { file = "RHD_LifeServer\functions\economy"; class economyLoop {}; class getPrice {}; class shopPrice {}; class setPrice {}; class initPrices {}; class recordMarket {}; class virtBuy {}; class virtSell {}; class virtUpdate {}; };
+        class Economy { file = "RHD_LifeServer\functions\economy"; class economyLoop {}; class getPrice {}; class shopPrice {}; class setPrice {}; class initPrices {}; class recordMarket {}; class shopTransaction {}; class validateShopTransaction {}; class virtBuy {}; class virtSell {}; class virtUpdate {}; };
         class Population { file = "RHD_LifeServer\functions\population"; class populationLoop {}; class updatePopulation {}; class cleanupPopulation {}; };
         class Resources { file = "RHD_LifeServer\functions\resources"; class registerNodes {}; class getResourceConfig {}; class harvestServer {}; class harvestResult {}; class refineServer {}; class refineResult {}; };
         class Contracts { file = "RHD_LifeServer\functions\contracts"; class createContract {}; class completeContract {}; class contractResult {}; };
