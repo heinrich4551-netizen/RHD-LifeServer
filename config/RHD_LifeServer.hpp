@@ -13,6 +13,8 @@ class RHD_LifeServer
         priceUpdateMinutes = 15;
         priceFloorMultiplier = 0.65;
         priceCeilingMultiplier = 1.35;
+        shopBuyMultiplier = 1.00;
+        shopSellMultiplier = 0.80;
     };
 
     class Population
