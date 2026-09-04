@@ -1,13 +1,17 @@
 /*
     Server-internal hospital bill record.
-    [targetUID,amount,description] call RHD_fnc_hospitalBill
+    [caller,targetUID,amount,description] call RHD_fnc_hospitalBill
 */
 if (!isServer || {isRemoteExecuted}) exitWith {false};
-params [['_uid',''],['_amount',0,[0]],['_description','Hospital service']];
+params [['_caller',objNull,[objNull]],['_uid',''],['_amount',0,[0]],['_description','Hospital service']];
+if (isNull _caller || {!alive _caller}) exitWith {false};
 if (_uid isEqualTo '' || {_amount <= 0}) exitWith {false};
 if (count _uid != 17) exitWith {false};
 private _safeUID = _uid select {(_x >= '0') && (_x <= '9')};
 if (_safeUID != _uid) exitWith {false};
+private _target = allPlayers select {getPlayerUID _x isEqualTo _uid} param [0,objNull];
+if (isNull _target || {!alive _target}) exitWith {false};
+if (_caller distance _target > 10) exitWith {false};
 _amount = round ((_amount max 1) min 1000000);
 _description = _description select [0,256];
 
