@@ -54,8 +54,13 @@ if (_mode isEqualTo 8) exitWith {
                     private _target = cursorTarget;
                     if (!isNull _target && {_target isKindOf 'LandVehicle'}) then {
                         closeDialog 0;
-                        ['IMPOUND',[_target,'Police impound',500]] remoteExecCall ['RHD_fnc_rpAction',2];
-                        hint 'RHD: Impound request sent to server.';
+                        if (_target getVariable ['RHD_Impounded',false]) then {
+                            ['RELEASE_IMPOUND_TARGET',[_target]] remoteExecCall ['RHD_fnc_rpAction',2];
+                            hint 'RHD: Impound release request sent to server.';
+                        } else {
+                            ['IMPOUND',[_target,'Police impound',500]] remoteExecCall ['RHD_fnc_rpAction',2];
+                            hint 'RHD: Impound request sent to server.';
+                        };
                     } else {
                         closeDialog 0;
                         ['LIST_IMPOUNDS',[]] remoteExecCall ['RHD_fnc_rpAction',2];
