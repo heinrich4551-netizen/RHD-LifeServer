@@ -61,7 +61,9 @@ if (_mode isEqualTo 8) exitWith {
             };
             case 3: {
                 if (_isCop) then {
-                    hint 'RHD POLICE SERVICES\n\nDispatch management is available from this menu.\nUse the upstream Altis Life police tools for arresting, searching and other core police actions.\n\nRHD adds dispatch, warrants, evidence, impounds and DMV services.';
+                    closeDialog 0;
+                    ['LIST_IMPOUNDS',[]] remoteExecCall ['RHD_fnc_rpAction',2];
+                    hint 'RHD: Requesting current impound registry...';
                 } else {
                     hint 'RHD EMS SERVICES\n\nDispatch management is available from this menu.\nUse the upstream Altis Life medical/revive tools for core treatment.\n\nRHD adds service requests, treatment records and hospital billing.';
                 };
