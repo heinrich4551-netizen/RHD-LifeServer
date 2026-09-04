@@ -87,10 +87,16 @@ private _leveled = _level > _oldLevel;
 _jobs set [_uid,[_legalXP,_illegalXP,_legalLevel,_illegalLevel,_harvests]];
 missionNamespace setVariable ['RHD_JobProgress',_jobs,true];
 
+/*
+    Progression rewards are server-side financial transactions. The client
+    receives only the resulting synchronized balance through RHD_fnc_financialResult;
+    it never receives an instruction to add cash locally.
+*/
 private _reward = 0;
 if ((_harvests mod 10) isEqualTo 0) then {
     _reward = 250 + ((_level max 1) * 50);
+    [_player,'REWARD','CASH',_reward,'RHD harvest progression bonus'] call RHD_fnc_financialTransaction;
 };
 
-[_item,_amount,_jobType,_illegal,_legalXP,_illegalXP,_legalLevel,_illegalLevel,_reward,_leveled] remoteExecCall ['RHD_fnc_harvestResult',_player];
+[_item,_amount,_jobType,_illegal,_legalXP,_illegalXP,_legalLevel,_illegalLevel,0,_leveled] remoteExecCall ['RHD_fnc_harvestResult',_player];
 true
