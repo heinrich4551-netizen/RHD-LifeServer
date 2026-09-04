@@ -51,10 +51,10 @@ A feature is marked implemented only when its code and integration path exist. P
 
 ## Phase 4 — Live Operations
 - [x] Scheduled world events with active gameplay effects
-- [ ] Economy telemetry dashboard
-- [ ] Automated backups/restart notices
+- [x] Economy telemetry dashboard
+- [x] Automated database/configuration backup tooling
 - [x] Admin tools/audit logs
-- [ ] Performance profiling
+- [x] Performance profiling
 - [ ] Headless Client support
 
 ## Steam Workshop dependencies
@@ -91,7 +91,7 @@ The RHD financial adapter reads the selected player's Framework `cash` or `banka
 
 Player businesses now have a server-owned registry and persistent business account table. Business owners can use authenticated server transactions to deposit or withdraw cash from their business account, with transaction audit rows and server-side owner validation. Business creation uses the configured startup fee before registration. The F7 Businesses action retrieves the owner's current business accounts. Business creation and account operations remain behind the authenticated RP router; no client-supplied owner UID or business balance is trusted.
 
-Government taxation now has configurable sales, business and income rates, minimum-charge controls, a server-side tax transaction function, tax audit records and a government revenue ledger. Authorized administrators can request a government tax summary. Court cases have a server-owned registry with authenticated police creation and administrator closure. The RHD phone foundation assigns persistent-in-session numbers and supports authenticated player calls and SMS. Marketplace listings now reserve seller inventory through an upstream `life_fnc_handleInv` acknowledgement, hold listings in explicit pending states, charge buyers before delivery, refund failed inventory delivery, credit sellers only after successful buyer acknowledgement, and return reserved inventory through an acknowledgement-based cancellation path. Because the underlying Framework virtual inventory remains client-managed, these acknowledgements are an integration boundary rather than an independently verifiable server inventory ledger.
+Government taxation now has configurable sales, business and income rates, minimum-charge controls, a server-side tax transaction function, tax audit records and a government revenue ledger. Authorized administrators can request a government tax summary. Court cases have a server-owned registry with authenticated police creation and administrator closure. The RHD phone foundation assigns persistent-in-session numbers and supports authenticated player calls and SMS. Marketplace listings reserve seller inventory through an upstream `life_fnc_handleInv` acknowledgement, hold listings in explicit pending states, charge buyers before delivery, refund failed inventory delivery, credit sellers only after successful buyer acknowledgement, and return reserved inventory through an acknowledgement-based cancellation path. Because the underlying Framework virtual inventory remains client-managed, these acknowledgements are an integration boundary rather than an independently verifiable server inventory ledger.
 
 Delivery contract completion uses a pending server state and a client cargo-removal acknowledgement before the server awards the contract reward, reducing the previous client-side reward duplication path.
 
@@ -100,6 +100,12 @@ Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) an
 Scheduled world events run from the dedicated-server scheduler and now apply bounded effects for their duration: DOUBLE_HARVEST doubles server-calculated harvest quantities, MARKET_BOOM applies a temporary 15% shop-price multiplier, and CIVIL_ALERT increases the civilian population target up to the configured maximum. Event timing and duration are configurable in `config/RHD_LifeServer.hpp`.
 
 Authenticated administrator audit summaries now expose bounded recent financial activity and current dispatch, business, marketplace and world-event registry counts through the RP result channel.
+
+The economy dashboard now returns tracked-item base/current prices, bounded supply/demand telemetry, the active market-event multiplier and current world-event state through the authenticated administrator RP channel.
+
+Server-loop performance instrumentation records section timings for population, economy, RP maintenance, world events, contract expiry and persistence. Configurable slow-section logging is available through `config/RHD_LifeServer.hpp`, while the latest measurements are published as `RHD_PerformanceLast` for future admin tooling.
+
+The deployment folder now includes `deployment/backup.ps1`. It requires database connection values through environment variables rather than storing credentials in the repository, creates timestamped SQL/configuration backups, and records a backup manifest. Windows Task Scheduler or the host's equivalent scheduler can invoke it at the desired interval.
 
 The RP layer uses server-side authorization against the upstream `players` table for privileged actions. Client-side rank variables are not trusted for authorization.
 
