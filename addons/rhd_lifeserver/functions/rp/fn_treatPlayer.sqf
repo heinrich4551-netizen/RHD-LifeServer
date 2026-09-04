@@ -1,9 +1,9 @@
 /*
     Authenticated EMS treatment action.
-    [medic,target,fee] call RHD_fnc_treatPlayer
+    [medic,target] call RHD_fnc_treatPlayer
 */
 if (!isServer) exitWith {false};
-params [['_medic',objNull,[objNull]],['_target',objNull,[objNull]],['_fee',0,[0]]];
+params [['_medic',objNull,[objNull]],['_target',objNull,[objNull]]];
 if (isNull _medic || {isNull _target}) exitWith {false};
 if !(_target isKindOf 'CAManBase') exitWith {false};
 if (!alive _medic || {!alive _target}) exitWith {false};
@@ -13,7 +13,8 @@ private _uid = getPlayerUID _target;
 if (_uid isEqualTo '' || {count _uid != 17}) exitWith {false};
 private _damage = damage _target;
 if (_damage <= 0.01) exitWith {false};
-private _charge = round ((_fee max 0) min 100000);
+private _charge = round (getNumber (missionConfigFile >> 'RHD_RP' >> 'Fees' >> 'treatment'));
+_charge = (_charge max 0) min 100000;
 
 private _paid = true;
 if (_charge > 0) then {
