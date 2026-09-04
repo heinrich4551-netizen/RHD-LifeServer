@@ -1,9 +1,4 @@
-/*
-    RHD virtual-shop sell transaction.
-
-    Uses the live RHD market price for tracked resources and records supply
-    telemetry on the dedicated server. The upstream Framework is untouched.
-*/
+/* RHD market-aware replacement for the Framework virtual sell callback. */
 disableSerialization;
 if (!hasInterface || {isNull player}) exitWith {false};
 private _display = findDisplay 2400;
@@ -33,7 +28,7 @@ CASH = CASH + _total;
 [3] call SOCK_fnc_updatePartial;
 [] call RHD_fnc_virtUpdate;
 
-[_item,_amount,0] remoteExecCall ['RHD_fnc_recordMarket',2];
+[getPlayerUID player,_item,1,_amount,_total] remoteExecCall ['RHD_fnc_shopTransaction',2];
 private _name = getText (missionConfigFile >> 'VirtualItems' >> _item >> 'displayName');
 if (_name isEqualTo '') then {_name = _item;};
 hint format ['Sold %1 x%2 for $%3.',_name,_amount,[_total] call life_fnc_numberText];
