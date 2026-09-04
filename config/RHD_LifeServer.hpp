@@ -57,4 +57,12 @@ class RHD_LifeServer
         eventIntervalMinutes = 30;
         eventDurationMinutes = 10;
     };
+
+    class Performance
+    {
+        enabled = 1;
+        logServerLoop = 1;
+        logSlowSection = 1;
+        slowSectionMilliseconds = 50;
+    };
 };
