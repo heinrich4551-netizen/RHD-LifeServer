@@ -14,8 +14,15 @@ if (isNull _target || {!alive _target}) exitWith {false};
 if (_caller distance _target > 10) exitWith {false};
 _amount = round ((_amount max 1) min 1000000);
 _description = _description select [0,256];
+
+if !([_target,'CHARGE','CASH',_amount,_description] call RHD_fnc_financialTransaction) exitWith {
+    [['HOSPITAL_BILL_DENIED',_amount]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+    false
+};
+
 private _bills = missionNamespace getVariable ['RHD_HospitalBills',createHashMap];
 private _id = format ['HB-%1-%2',floor diag_tickTime,floor random 10000];
-_bills set [_id,[_id,_uid,_amount,_description,diag_tickTime,false,2]];
+_bills set [_id,[_id,_uid,_amount,_description,diag_tickTime,true,2]];
 missionNamespace setVariable ['RHD_HospitalBills',_bills,true];
+[['HOSPITAL_BILL',_amount]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
 true
