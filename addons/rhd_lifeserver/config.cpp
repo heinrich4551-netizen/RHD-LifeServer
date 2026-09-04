@@ -63,10 +63,45 @@ class CfgFunctions {
     };
 };
 class CfgVehicles {
-    class Logic; class Module_F : Logic { class AttributesBase { class Edit; class Checkbox; class Combo; class ModuleDescription; }; class ModuleDescription {}; };
-    class RHD_Module_LifeCore : Module_F { scope=2; displayName="RHD LifeCore Configuration"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; is3DEN=0; };
-    class RHD_Module_ResourceNode : Module_F { scope=2; displayName="RHD Resource Node"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; };
-    class RHD_Module_ProcessStation : Module_F { scope=2; displayName="RHD Processing Station"; category="RHD_LifeCore"; function="RHD_fnc_moduleInit"; isGlobal=1; isTriggerActivated=0; };
+    class Logic;
+    class Module_F : Logic {
+        class AttributesBase { class Edit; class Checkbox; class Combo; class ModuleDescription; };
+        class ModuleDescription {};
+    };
+    class RHD_Module_LifeCore : Module_F {
+        scope = 2; displayName = "RHD LifeCore Configuration"; category = "RHD_LifeCore"; function = "RHD_fnc_moduleInit"; isGlobal = 1; isTriggerActivated = 0; is3DEN = 1;
+        class Attributes {
+            class RHD_farmingHarvestMin { property="RHD_farmingHarvestMin"; displayName="Farming Minimum Yield"; tooltip="Minimum amount awarded from farming nodes."; typeName="NUMBER"; defaultValue="2"; expression="_this setVariable ['RHD_farmingHarvestMin',_value,true]"; };
+            class RHD_farmingHarvestMax { property="RHD_farmingHarvestMax"; displayName="Farming Maximum Yield"; tooltip="Maximum amount awarded from farming nodes."; typeName="NUMBER"; defaultValue="5"; expression="_this setVariable ['RHD_farmingHarvestMax',_value,true]"; };
+            class RHD_miningHarvestMin { property="RHD_miningHarvestMin"; displayName="Mining Minimum Yield"; tooltip="Minimum amount awarded from mining nodes."; typeName="NUMBER"; defaultValue="2"; expression="_this setVariable ['RHD_miningHarvestMin',_value,true]"; };
+            class RHD_miningHarvestMax { property="RHD_miningHarvestMax"; displayName="Mining Maximum Yield"; tooltip="Maximum amount awarded from mining nodes."; typeName="NUMBER"; defaultValue="6"; expression="_this setVariable ['RHD_miningHarvestMax',_value,true]"; };
+            class RHD_civiliansAtOnePlayer { property="RHD_civiliansAtOnePlayer"; displayName="Civilians at 1 Player"; tooltip="Target civilian population with one active player."; typeName="NUMBER"; defaultValue="115"; expression="_this setVariable ['RHD_civiliansAtOnePlayer',_value,true]"; };
+            class RHD_minimumCivilians { property="RHD_minimumCivilians"; displayName="Minimum Civilians"; tooltip="Lowest global civilian population target."; typeName="NUMBER"; defaultValue="60"; expression="_this setVariable ['RHD_minimumCivilians',_value,true]"; };
+            class RHD_maximumCivilians { property="RHD_maximumCivilians"; displayName="Maximum Civilians"; tooltip="Highest global civilian population target."; typeName="NUMBER"; defaultValue="115"; expression="_this setVariable ['RHD_maximumCivilians',_value,true]"; };
+            class RHD_populationScaleWithPlayers { property="RHD_populationScaleWithPlayers"; displayName="Scale Population With Players"; typeName="CHECKBOX"; defaultValue="true"; expression="_this setVariable ['RHD_populationScaleWithPlayers',_value,true]"; };
+            class RHD_harvestCooldown { property="RHD_harvestCooldown"; displayName="Harvest Cooldown (seconds)"; typeName="NUMBER"; defaultValue="2"; expression="_this setVariable ['RHD_harvestCooldown',_value,true]"; };
+            class RHD_dynamicPricing { property="RHD_dynamicPricing"; displayName="Dynamic Pricing"; typeName="CHECKBOX"; defaultValue="true"; expression="_this setVariable ['RHD_dynamicPricing',_value,true]"; };
+        };
+    };
+    class RHD_Module_ResourceNode : Module_F {
+        scope = 2; displayName = "RHD Resource Node"; category = "RHD_LifeCore"; function = "RHD_fnc_moduleInit"; isGlobal = 1; isTriggerActivated = 0; is3DEN = 1;
+        class Attributes {
+            class RHD_resourceType { property="RHD_resourceType"; displayName="Resource Type"; typeName="NUMBER"; defaultValue="0"; expression="_this setVariable ['RHD_resourceType',_value,true]"; };
+            class RHD_minimumYield { property="RHD_minimumYield"; displayName="Minimum Yield"; typeName="NUMBER"; defaultValue="2"; expression="_this setVariable ['RHD_minimumYield',_value,true]"; };
+            class RHD_maximumYield { property="RHD_maximumYield"; displayName="Maximum Yield"; typeName="NUMBER"; defaultValue="5"; expression="_this setVariable ['RHD_maximumYield',_value,true]"; };
+            class RHD_nodeRadius { property="RHD_nodeRadius"; displayName="Node Radius"; typeName="NUMBER"; defaultValue="12"; expression="_this setVariable ['RHD_nodeRadius',_value,true]"; };
+            class RHD_illegal { property="RHD_illegal"; displayName="Illegal Resource"; typeName="CHECKBOX"; defaultValue="false"; expression="_this setVariable ['RHD_illegal',_value,true]"; };
+            class RHD_enabled { property="RHD_enabled"; displayName="Enabled"; typeName="CHECKBOX"; defaultValue="true"; expression="_this setVariable ['RHD_enabled',_value,true]"; };
+        };
+    };
+    class RHD_Module_ProcessStation : Module_F {
+        scope = 2; displayName = "RHD Processing Station"; category = "RHD_LifeCore"; function = "RHD_fnc_moduleInit"; isGlobal = 1; isTriggerActivated = 0; is3DEN = 1;
+        class Attributes {
+            class RHD_processClass { property="RHD_processClass"; displayName="Process Class"; typeName="STRING"; defaultValue="iron"; expression="_this setVariable ['RHD_processClass',_value,true]"; };
+            class RHD_stationRadius { property="RHD_stationRadius"; displayName="Station Radius"; typeName="NUMBER"; defaultValue="12"; expression="_this setVariable ['RHD_stationRadius',_value,true]"; };
+            class RHD_enabled { property="RHD_enabled"; displayName="Enabled"; typeName="CHECKBOX"; defaultValue="true"; expression="_this setVariable ['RHD_enabled',_value,true]"; };
+        };
+    };
 };
 class CfgEditorCategories { class RHD_LifeCore { displayName="RHD LifeCore"; }; };
 #include "config\RHD_LifeServer.hpp"
