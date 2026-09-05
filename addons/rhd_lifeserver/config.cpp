@@ -11,9 +11,7 @@ class CfgPatches {
 
 class CfgFactionClasses {
     class NO_CATEGORY;
-    class RHD_LifeCore : NO_CATEGORY {
-        displayName = "RHD LifeCore";
-    };
+    class RHD_LifeCore : NO_CATEGORY { displayName = "RHD LifeCore"; };
 };
 
 class CfgRemoteExec {
@@ -82,10 +80,10 @@ class CfgVehicles {
     class Logic;
     class Module_F : Logic {
         class AttributesBase {
-            class Edit;
-            class Checkbox;
-            class Combo;
-            class ModuleDescription;
+            class Edit {};
+            class Checkbox {};
+            class Combo {};
+            class ModuleDescription {};
         };
         class ModuleDescription {};
     };
@@ -102,7 +100,7 @@ class CfgVehicles {
         isTriggerActivated = 0;
         isDisposable = 0;
         is3DEN = 1;
-        class Attributes {
+        class Attributes : AttributesBase {
             class RHD_farmingEnabled : Checkbox {
                 property = "RHD_farmingEnabled";
                 displayName = "Farming Enabled";
@@ -255,7 +253,7 @@ class CfgVehicles {
         isTriggerActivated = 0;
         isDisposable = 0;
         is3DEN = 1;
-        class Attributes {
+        class Attributes : AttributesBase {
             class RHD_resourceType : Combo {
                 property = "RHD_resourceType";
                 displayName = "Resource Type";
@@ -333,7 +331,7 @@ class CfgVehicles {
         isTriggerActivated = 0;
         isDisposable = 0;
         is3DEN = 1;
-        class Attributes {
+        class Attributes : AttributesBase {
             class RHD_processClass : Combo {
                 property = "RHD_processClass";
                 displayName = "Process Class";
