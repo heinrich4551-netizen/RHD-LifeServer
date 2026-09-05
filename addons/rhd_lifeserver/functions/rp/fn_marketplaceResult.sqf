@@ -4,17 +4,26 @@ if (!hasInterface || {!isRemoteExecuted} || {remoteExecutedOwner != 2}) exitWith
 params [['_id',''],['_value',''],['_amount',0],['_total',0],['_sellerUID','']];
 if (_id isEqualTo '') exitWith {false};
 
-/* Negative total is the server's cancellation/refund marker. */
-if (_total isEqualTo -1) exitWith {
+/* -1 = normal cancellation/refund, -2 = reconnect/server-restart escrow recovery. */
+if (_total in [-1,-2]) exitWith {
     private _item = _value;
     private _qty = _amount max 0;
     if (_item isEqualTo '' || {_qty < 1}) exitWith {false};
     private _returned = [true,_item,_qty] call life_fnc_handleInv;
+    private _ackAction = if (_total isEqualTo -2) then {'RECOVERY_ACK'} else {'CANCEL_ACK'};
     [_id,_returned] remoteExecCall ['RHD_fnc_marketplace',2];
+    if (_total isEqualTo -2) then {
+        [_id,_returned] remoteExecCall ['RHD_fnc_marketplace',2];
+    };
     if (_returned) then {
-        hint format ['RHD MARKETPLACE\nReturned %1 x%2 from the cancelled listing.',_item,_qty];
+        hint format ['RHD MARKETPLACE\nReturned %1 x%2 from escrow recovery.',_item,_qty];
     } else {
-        hint 'RHD MARKETPLACE\nThe reserved items could not be returned. The listing remains open while the server awaits another attempt.';
+        hint 'RHD MARKETPLACE\nReserved items could not be restored. The server has kept the recovery record for review.';
+    };
+    /* The action name cannot be carried through the legacy four-argument ACK,
+       so send the explicit recovery/cancellation route after the inventory call. */
+    if (_total isEqualTo -2) then {
+        [_ackAction,[_id,_returned]] remoteExecCall ['RHD_fnc_rpAction',2];
     };
     true
 };
