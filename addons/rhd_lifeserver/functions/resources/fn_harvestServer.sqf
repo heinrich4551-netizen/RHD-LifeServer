@@ -11,6 +11,26 @@ _player = _caller;
 if (!isPlayer _player || {!alive _player}) exitWith {false};
 if (_item isEqualTo '') exitWith {false};
 
+private _root = configFile >> 'RHD_Resources';
+private _cfg = configNull;
+private _isMining = false;
+{
+    private _group = _x;
+    {
+        private _candidate = _x;
+        if (isClass _candidate && {(toLower (getText (_candidate >> 'item'))) isEqualTo (toLower _item)}) exitWith {
+            _cfg = _candidate;
+            _isMining = (_group isEqualTo (_root >> 'Mining'));
+        };
+    } forEach configClasses _group;
+    if (isClass _cfg) exitWith {};
+} forEach [_root >> 'Farming',_root >> 'Mining'];
+if (!isClass _cfg) exitWith {false};
+
+private _eden = missionNamespace getVariable ['RHD_EdenConfig',createHashMap];
+if (_isMining && {!(_eden getOrDefault ['miningEnabled',true])}) exitWith {false};
+if (!_isMining && {!(_eden getOrDefault ['farmingEnabled',true])}) exitWith {false};
+
 private _nodes = missionNamespace getVariable ['RHD_ResourceNodes',[]];
 private _best = [];
 private _bestDist = 1e10;
@@ -39,20 +59,6 @@ private _min = _best select 3;
 private _max = _best select 4;
 if (_min <= 0 || {_max < _min}) exitWith {false};
 
-private _root = configFile >> 'RHD_Resources';
-private _cfg = configNull;
-{
-    private _group = _x;
-    {
-        private _candidate = _x;
-        if (isClass _candidate && {(toLower (getText (_candidate >> 'item'))) isEqualTo (toLower _item)}) exitWith {_cfg = _candidate;};
-    } forEach configClasses _group;
-    if (isClass _cfg) exitWith {};
-} forEach [_root >> 'Farming',_root >> 'Mining'];
-if (!isClass _cfg) exitWith {false};
-
-private _eden = missionNamespace getVariable ['RHD_EdenConfig',createHashMap];
-private _isMining = isClass (_root >> 'Mining' >> (configName _cfg));
 if (_isMining && {_min isEqualTo 2 && {_max isEqualTo 6}}) then {
     _min = _eden getOrDefault ['miningHarvestMin',_min];
     _max = _eden getOrDefault ['miningHarvestMax',_max];
@@ -90,7 +96,6 @@ private _leveled = _level > _oldLevel;
 _jobs set [_uid,[_legalXP,_illegalXP,_legalLevel,_illegalLevel,_harvests]];
 missionNamespace setVariable ['RHD_JobProgress',_jobs,true];
 
-/* Progression rewards are server-side financial transactions. */
 if ((_harvests mod 10) isEqualTo 0) then {
     private _reward = 250 + ((_level max 1) * 50);
     [_player,'REWARD','CASH',_reward,'RHD harvest progression bonus'] call RHD_fnc_financialTransaction;
