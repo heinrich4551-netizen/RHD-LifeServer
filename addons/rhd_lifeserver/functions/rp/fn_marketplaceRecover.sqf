@@ -32,7 +32,7 @@ private _sent = false;
             _e set [5,'RECOVERY_SENT'];
             _e set [7,_owner];
             _market set [_id,_e];
-            [_id,_e param [2,''],_e param [3,0],-1,''] remoteExecCall ['RHD_fnc_marketplaceResult',_owner];
+            [_id,_e param [2,''],_e param [3,0],-2,''] remoteExecCall ['RHD_fnc_marketplaceResult',_owner];
             _sent = true;
         };
     };
