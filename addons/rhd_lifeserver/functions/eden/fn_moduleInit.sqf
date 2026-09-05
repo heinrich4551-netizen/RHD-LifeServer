@@ -23,6 +23,13 @@ if (_class isEqualTo 'RHD_Module_LifeCore') then {
     _cfg set ['populationScaleWithPlayers', ['RHD_populationScaleWithPlayers',true] call _get];
     _cfg set ['harvestCooldown', ['RHD_harvestCooldown',2] call _get];
     _cfg set ['dynamicPricing', ['RHD_dynamicPricing',true] call _get];
+    _cfg set ['farmingEnabled', ['RHD_farmingEnabled',true] call _get];
+    _cfg set ['miningEnabled', ['RHD_miningEnabled',true] call _get];
+    _cfg set ['useHeadlessClient', ['RHD_useHeadlessClient',true] call _get];
+    _cfg set ['hcSpawnBatch', ['RHD_hcSpawnBatch',12] call _get];
+    _cfg set ['civilianDespawnDistance', ['RHD_civilianDespawnDistance',2500] call _get];
+    _cfg set ['persistenceEnabled', ['RHD_persistenceEnabled',true] call _get];
+    _cfg set ['worldEventsEnabled', ['RHD_worldEventsEnabled',true] call _get];
 
     missionNamespace setVariable ['RHD_EdenConfig', _cfg, true];
     [] call RHD_fnc_applyConfig;
@@ -62,11 +69,21 @@ if (_class isEqualTo 'RHD_Module_ResourceNode') then {
 };
 
 if (_class isEqualTo 'RHD_Module_ProcessStation') then {
-    private _process = toLower (_logic getVariable ['RHD_processClass','iron']);
+    private _processIndex = _logic getVariable ['RHD_processClass',0];
+    private _processMap = [
+        'iron',
+        'copper',
+        'gold',
+        'oil',
+        'diamond',
+        'cannabis'
+    ];
+    _processIndex = (_processIndex max 0) min ((count _processMap) - 1);
+    private _process = _processMap select _processIndex;
     private _radius = (_logic getVariable ['RHD_stationRadius',12]) max 1;
     private _enabled = _logic getVariable ['RHD_enabled',true];
     private _stations = missionNamespace getVariable ['RHD_ProcessStations',[]];
-    if (_enabled && {_process != ''}) then {
+    if (_enabled) then {
         _stations pushBack [getPosATL _logic, _process, _radius];
     };
     missionNamespace setVariable ['RHD_ProcessStations',_stations,true];
