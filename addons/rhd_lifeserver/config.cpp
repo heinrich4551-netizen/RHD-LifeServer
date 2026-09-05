@@ -17,6 +17,7 @@ class CfgRemoteExec {
         class RHD_fnc_harvestResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_refineResult { allowedTargets = 1; jip = 0; };
         class RHD_fnc_jobResult { allowedTargets = 1; jip = 0; };
+        class RHD_fnc_hcPopulationUpdate { allowedTargets = 1; jip = 0; };
         class RHD_fnc_createContract { allowedTargets = 2; jip = 0; };
         class RHD_fnc_completeContract { allowedTargets = 2; jip = 0; };
         class RHD_fnc_contractCompleteAck { allowedTargets = 2; jip = 0; };
@@ -48,6 +49,7 @@ class CfgFunctions {
         class Population { file = "RHD_LifeServer\functions\population"; class populationLoop {}; class updatePopulation {}; class cleanupPopulation {}; };
         class Resources { file = "RHD_LifeServer\functions\resources"; class registerNodes {}; class getResourceConfig {}; class harvestServer {}; class harvestResult {}; class refineServer {}; class refineResult {}; };
         class Jobs { file = "RHD_LifeServer\functions\jobs"; class jobProgress {}; class jobResult {}; };
+        class HeadlessClient { file = "RHD_LifeServer\functions\headless"; class hcInit { postInit = 1; }; class hcPopulationUpdate {}; };
         class Contracts { file = "RHD_LifeServer\functions\contracts"; class createContract {}; class completeContract {}; class contractCompleteAck {}; class contractResult {}; };
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
