@@ -2,6 +2,12 @@ if (!isServer) exitWith {};
 
 private _players = count (allPlayers select {isPlayer _x && {!(_x isKindOf 'HeadlessClient_F')}});
 private _cfg = missionNamespace getVariable ['RHD_EdenConfig',createHashMap];
+private _enabled = missionNamespace getVariable ['RHD_PopulationEnabled',true];
+if (!_enabled) exitWith {
+    missionNamespace setVariable ['RHD_CivilianPopulationTarget',0,true];
+    [] call RHD_fnc_cleanupPopulation;
+};
+
 private _onePlayer = _cfg getOrDefault ['civiliansAtOnePlayer',115];
 private _minimum = _cfg getOrDefault ['minimumCivilians',60];
 private _maximum = _cfg getOrDefault ['maximumCivilians',115];
@@ -25,26 +31,29 @@ private _civilianEventMultiplier = (missionNamespace getVariable ['RHD_CivilianE
 _target = round ((_target * _civilianEventMultiplier) min _maximum) max _minimum;
 if (_players <= 0) then {_target = 0;};
 
+private _hcEnabled = missionNamespace getVariable ['RHD_UseHeadlessClient',true];
 private _hcCfg = missionConfigFile >> 'RHD_LifeServer' >> 'HeadlessClient';
-private _hcEnabled = isClass _hcCfg && {getNumber (_hcCfg >> 'enabled') isEqualTo 1};
-private _hcUsePopulation = _hcEnabled && {getNumber (_hcCfg >> 'useForPopulation') isEqualTo 1};
+private _missionHCEnabled = isClass _hcCfg && {getNumber (_hcCfg >> 'enabled') isEqualTo 1};
+private _hcUsePopulation = _hcEnabled && {_missionHCEnabled || {_hcEnabled}};
 private _hc = if (_hcUsePopulation) then {
     allPlayers select {isPlayer _x && {_x isKindOf 'HeadlessClient_F'}} param [0,objNull]
 } else {objNull};
 
 if (!isNull _hc && {_players > 0}) then {
-    private _spawnBatch = (getNumber (_hcCfg >> 'spawnBatch') max 1) min 50;
-    private _despawnDistance = getNumber (_hcCfg >> 'despawnDistance');
+    private _spawnBatch = (missionNamespace getVariable ['RHD_HCSpawnBatch',12] max 1) min 50;
+    private _despawnDistance = missionNamespace getVariable ['RHD_CivilianDespawnDistance',2500];
     if (_despawnDistance <= 0) then {_despawnDistance = 1200;};
     [_target,_spawnBatch,_despawnDistance] remoteExecCall ['RHD_fnc_hcPopulationUpdate',owner _hc];
     missionNamespace setVariable ['RHD_CivilianAgents',[]];
     missionNamespace setVariable ['RHD_CivilianPopulationTarget',_target,true];
+    missionNamespace setVariable ['RHD_CivilianPopulationManager','HEADLESS_CLIENT',true];
     exitWith {};
 };
 
 private _civilians = missionNamespace getVariable ['RHD_CivilianAgents',[]];
 _civilians = _civilians select {!isNull _x};
 missionNamespace setVariable ['RHD_CivilianAgents',_civilians];
+missionNamespace setVariable ['RHD_CivilianPopulationManager','SERVER',true];
 
 private _delta = _target - count _civilians;
 if (_delta > 0 && {_players > 0}) then {
