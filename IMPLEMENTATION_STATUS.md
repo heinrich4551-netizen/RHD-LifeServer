@@ -56,7 +56,7 @@ A feature is marked implemented only when its code and integration path exist. P
 - [x] Automated database/configuration backup tooling
 - [x] Admin tools/audit logs
 - [x] Performance profiling
-- [ ] Headless Client support
+- [x] Headless Client population offload foundation
 
 ## Steam Workshop dependencies
 
@@ -80,7 +80,7 @@ The RHD addon is an independent overlay around the upstream AsYetUntitled Framew
 
 Additional RHD-only virtual items are supplied in `custom/RHD_vItems.hpp`, and additional processing recipes are supplied in `custom/RHD_ProcessAction.hpp`. These fragments must be included by the actual Altis Life mission configuration because the Framework inventory system reads `missionConfigFile`.
 
-The F6/F7/F8 UI is wired to server-side harvesting, processing and delivery-contract requests. Resource and processing requests validate the player, location, configured node/station and cooldown on the dedicated server before returning inventory changes to the client. The menus expose all configured actions instead of leaving the fifth/sixth F7/F8 routes inaccessible behind a four-button dialog.
+The F6/F7/F8 UI is wired to server-side harvesting, processing and delivery-contract requests. Resource and processing requests validate the player, location, configured node/station and cooldown on the dedicated server before returning inventory changes to the client. The menus expose all configured actions instead of leaving the fifth/sixth F7/F8 routes inaccessible behind a four-button dialog. The F7 marketplace help action is now local UI guidance rather than an unsupported server `LIST_HELP` action.
 
 Legal and illegal resource activity maintains per-player progression with separate XP/levels. Harvesting contributes progression server-side, with periodic progression bonuses returned through the existing Framework cash/persistence mechanism.
 
@@ -102,7 +102,7 @@ Dispatch records carry an explicit lifecycle status (`OPEN`, `ACK`, `CLOSED`) an
 
 Scheduled world events run from the dedicated-server scheduler and apply bounded effects for their duration: DOUBLE_HARVEST doubles server-calculated harvest quantities, MARKET_BOOM applies a temporary 15% shop-price multiplier, and CIVIL_ALERT increases the civilian population target up to the configured maximum. Event timing and duration are configurable in `config/RHD_LifeServer.hpp`.
 
-Authenticated administrator audit summaries expose bounded recent financial activity and current dispatch, business, marketplace and world-event registry counts through the RP result channel.
+Authenticated administrator audit summaries expose bounded recent financial activity and current dispatch, business, marketplace and world-event registry counts through the authenticated RP result channel.
 
 The economy dashboard returns tracked-item base/current prices, bounded supply/demand telemetry, the active market-event multiplier and current world-event state through the authenticated administrator RP channel. Its result payload is shaped directly for `RHD_fnc_rpResult` so the dashboard is not mistaken for a generic row-list response.
 
@@ -112,6 +112,8 @@ The deployment folder includes `deployment/backup.ps1`. It requires database con
 
 The RP layer uses server-side authorization against the upstream `players` table for privileged actions. Client-side rank variables are not trusted for authorization.
 
+The Headless Client population foundation is opt-in. When enabled, the dedicated server remains authoritative for the civilian target and sends bounded population updates to an authenticated HC. The HC owns its local RHD-managed civilian agents, culls them beyond the configured distance, and reports its local count. Without an eligible HC, the server falls back to its normal civilian population manager. The configured one-player target remains 115 with a minimum target of 60. Actual HC locality, disconnect/failover and AI behavior still require dedicated-server testing.
+
 The new `SETUP.txt` is the primary server-owner deployment checklist and collects required manual configuration, dependency installation, database setup, mission configuration, 3DEN setup, startup order, backup operation, first-run tests, security checks and troubleshooting.
 
-The remaining production gate is still an actual Arma 3 dedicated-server/PBO/in-game validation pass, including database connectivity, the complete upstream mission integration and the selected SimplePersist release.
+The remaining production gate is still an actual Arma 3 dedicated-server/PBO/in-game validation pass, including database connectivity, the complete upstream mission integration, the selected SimplePersist release and an HC connect/disconnect/failover test if HC offload is enabled.
