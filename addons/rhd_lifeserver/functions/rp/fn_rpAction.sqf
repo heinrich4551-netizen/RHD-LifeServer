@@ -26,6 +26,7 @@ switch (_action) do {
     case 'PLAYER_TRANSFER': { _args = [_caller] + _args; _args call RHD_fnc_playerTransfer; };
     case 'PHONE': { _args = [_caller] + _args; _args call RHD_fnc_phone; };
     case 'MARKETPLACE': { _args = [_caller] + _args; _args call RHD_fnc_marketplace; };
+    case 'MARKETPLACE_RECOVER': { [] call RHD_fnc_marketplaceRecover; };
     case 'GOVERNMENT_INFO': { [_caller] call RHD_fnc_governmentInfo; };
     case 'COURT_CASE': { _args = [_caller] + _args; _args call RHD_fnc_courtCase; };
     case 'ADMIN_AUDIT': { [_caller] call RHD_fnc_adminAudit; };
