@@ -1,40 +1,87 @@
 /*
-    Safe bridge for calling an Antistasi Ultimate function from RHD.
+    RHD <-> Antistasi Ultimate compatibility bridge.
 
-    This bridge affects ONLY the Antistasi integration. RHD-LifeServer's own
-    gameplay, economy, jobs, menus, persistence and server services are not
-    faction-gated by this function.
+    RHD-LifeServer remains available to every player.
+    ONLY functions routed through this bridge are Independent-only.
 
-    Usage:
-        ['A3A_fnc_someFunction',[_arg1,_arg2]] call RHD_fnc_antistasiCall;
-
-    Remote calls are accepted only from the player's own network owner and
-    only while that caller is Independent / Antistasi teamPlayer.
+    Antistasi Ultimate remains the source of the A3A/A3U functions. This file
+    does not copy, alter, or replace those functions.
 */
-params [['_function','', ['']],['_args',[],[[]]]];
-
-private _validName = _function find 'A3A_fnc_' isEqualTo 0 || {_function find 'A3U_fnc_' isEqualTo 0};
-if (!_validName) exitWith {false};
+params [
+    ["_function", "", [""]],
+    ["_args", [], [[]]]
+];
 
 private _caller = objNull;
 if (isRemoteExecuted) then {
     if (!isServer) exitWith {false};
-    _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0,objNull];
-    if (isNull _caller) exitWith {false};
-
-    private _allowed = side _caller isEqualTo independent;
-    if (!isNil 'teamPlayer') then {
-        _allowed = _allowed && {teamPlayer isEqualTo independent};
-    };
-    if (!_allowed) exitWith {false};
-} else {
-    if (hasInterface) then {
-        if (side player isNotEqualTo independent) exitWith {false};
-        if (!isNil 'teamPlayer' && {teamPlayer isNotEqualTo independent}) exitWith {false};
-    };
+    _caller = allPlayers select {owner _x isEqualTo remoteExecutedOwner} param [0, objNull];
+    if (isNull _caller || {!isPlayer _caller}) exitWith {false};
 };
 
-private _fn = missionNamespace getVariable [_function,{}];
+private _gate = missionNamespace getVariable ["RHD_fnc_isAntistasiIndependent", {false}];
+if (isRemoteExecuted) then {
+    if !([_caller] call _gate) exitWith {false};
+} else {
+    if (hasInterface && {!([player] call _gate)}) exitWith {false};
+};
+
+if !(isClass (configFile >> "CfgPatches" >> "A3A_core")) exitWith {false};
+
+/*
+    Explicit whitelist. Do not turn this into a generic client-controlled
+    function executor: many Antistasi functions are internal/server systems.
+*/
+private _allowedFunctions = [
+    "A3A_fnc_canInteract",
+    "A3A_fnc_createUnit",
+    "A3A_fnc_spawnGroup",
+    "A3A_fnc_spawnVehicle",
+    "A3A_fnc_revealToPlayer",
+    "A3A_fnc_getVehicleSellPrice",
+    "A3A_fnc_getAggroLevelString",
+    "A3U_fnc_canInteract",
+    "A3U_fnc_revealZone",
+    "A3U_fnc_revealZones",
+    "A3U_fnc_hasAddon"
+];
+
+if !(_function in _allowedFunctions) exitWith {false};
+
+private _fn = missionNamespace getVariable [_function, {}];
 if !(_fn isEqualType {}) exitWith {false};
 
-_args call _fn
+/*
+    RHD-controlled spawn helpers force Independent ownership. This prevents a
+    client from using the compatibility layer to manufacture enemy-side assets.
+*/
+switch (_function) do {
+    case "A3A_fnc_createUnit": {
+        if (count _args < 3) exitWith {false};
+        _args params ["_group", "_type", "_position"];
+        if (isNull _group || {side _group isNotEqualTo independent}) exitWith {false};
+        _args call _fn
+    };
+
+    case "A3A_fnc_spawnGroup": {
+        if (count _args < 3) exitWith {false};
+        _args params ["_position", "_side", "_types"];
+        if (_side isNotEqualTo independent) exitWith {false};
+        _args call _fn
+    };
+
+    case "A3A_fnc_spawnVehicle": {
+        if (count _args < 4) exitWith {false};
+        _args params ["_position", "_azimuth", "_type", "_owner"];
+        if (_owner isEqualType sideUnknown) then {
+            if (_owner isNotEqualTo independent) exitWith {false};
+        } else {
+            if (isNull _owner || {side _owner isNotEqualTo independent}) exitWith {false};
+        };
+        _args call _fn
+    };
+
+    default {
+        _args call _fn
+    };
+};
