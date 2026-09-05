@@ -38,6 +38,7 @@ class CfgRemoteExec {
         class RHD_fnc_governmentInfo { allowedTargets = 2; jip = 0; };
         class RHD_fnc_courtCase { allowedTargets = 2; jip = 0; };
         class RHD_fnc_worldEventResult { allowedTargets = 1; jip = 0; };
+        class RHD_fnc_antistasiCall { allowedTargets = 2; jip = 0; };
     };
     class Commands { mode = 0; jip = 0; };
 };
@@ -54,7 +55,7 @@ class CfgFunctions {
         class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
         class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
         class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
-        class Antistasi { file = "RHD_LifeServer\functions\antistasi"; class antistasiInit { postInit = 1; }; };
+        class Antistasi { file = "RHD_LifeServer\functions\antistasi"; class antistasiInit { postInit = 1; }; class antistasiCall {}; };
         class RP {
             file = "RHD_LifeServer\functions\rp";
             class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {};
