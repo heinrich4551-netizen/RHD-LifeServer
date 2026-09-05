@@ -94,11 +94,13 @@ If already cloned:
 git submodule update --init --recursive
 ```
 
-## RHD addon
+## RHD addon and local mod package
 
 The `addons/rhd_lifeserver` directory is an independent overlay. It uses Arma 3 `CfgFunctions` initialization hooks so RHD systems can be developed without rewriting the upstream framework.
 
-Current systems include dynamic economy, server-validated harvesting/refining, Eden configuration, adaptive civilian population, contracts, legal/illegal progression, shop integration, persistence, and authenticated RP registries/actions.
+Current systems include dynamic economy, server-validated harvesting/refining, Eden configuration, adaptive civilian population, optional Headless Client population offload, contracts, legal/illegal progression, shop integration, persistence, authenticated RP registries/actions, and the Antistasi-specific compatibility bridge.
+
+The Antistasi bridge is the only RHD component scoped to the Antistasi Independent faction. Ordinary RHD server/mod functionality remains available to every player.
 
 ## Building the PBO
 
@@ -109,6 +111,36 @@ Install Arma 3 Tools and run:
 ```
 
 Copy `dist\RHD_LifeServer.pbo` into `@RHD-LifeServer\addons` on the dedicated server.
+
+## Building the complete @RHD-LifeServer local mod
+
+The repository includes `deployment\package-mod.ps1` to produce the standard local-mod directory and ZIP:
+
+```powershell
+.\deployment\package-mod.ps1 -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
+```
+
+Output:
+
+```text
+dist\@RHD-LifeServer\
+├── addons\
+│   └── RHD_LifeServer.pbo
+├── keys\
+│   └── README.txt
+├── mod.cpp
+├── README.md
+├── SETUP.txt
+├── LICENSE-RHD.md
+├── THIRD_PARTY_CREDITS.md
+└── PBO-Info.txt
+
+dist\@RHD-LifeServer.zip
+```
+
+The package intentionally does not contain a fabricated `.bikey`. If signature enforcement is used, generate the real server key pair with Arma 3 DSCreateKey and keep the private `.biprivatekey` secret.
+
+The mission and database configuration remain deployment components rather than being incorrectly embedded into the addon PBO.
 
 ## Recommended server stack
 
@@ -126,4 +158,4 @@ RHD will continue to use compatible upstream APIs where appropriate, while keepi
 
 ## Security
 
-Never commit database passwords, Steam Web API keys, RCON passwords, BattlEye RCon passwords, Discord bot tokens or other credentials.
+Never commit database passwords, Steam Web API keys, RCON passwords, BattlEye RCon passwords, Discord bot tokens, signing private keys or other credentials.
