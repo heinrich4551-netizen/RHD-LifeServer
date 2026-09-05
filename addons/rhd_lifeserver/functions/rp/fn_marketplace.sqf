@@ -22,7 +22,7 @@ switch (_action) do {
         private _prices = missionNamespace getVariable ['RHD_EconomyPrices',createHashMap];
         if (_prices getOrDefault [_item,[]] isEqualTo []) exitWith {false};
         private _id = format ['M-%1-%2',floor (diag_tickTime * 10),floor random 10000];
-        _market set [_id,[_id,_uid,_item,_amount,_unitPrice,'PENDING_LIST',diag_tickTime,0]];
+        _market set [_id,[_id,_uid,_item,_amount,_unitPrice,'PENDING_LIST',diag_tickTime,remoteExecutedOwner]];
         missionNamespace setVariable ['RHD_Marketplace',_market,true];
         [_id,_item,_amount,_unitPrice] remoteExecCall ['RHD_fnc_marketplaceResult',owner _caller];
         true
@@ -31,7 +31,7 @@ switch (_action) do {
         private _id = _args param [0,''];
         private _removed = _args param [1,false];
         private _e = _market getOrDefault [_id,[]];
-        if (_e isEqualTo [] || {(_e param [1,'']) isNotEqualTo _uid} || {(_e param [5,'']) isNotEqualTo 'PENDING_LIST'}) exitWith {false};
+        if (_e isEqualTo [] || {(_e param [1,'']) isNotEqualTo _uid} || {(_e param [5,'']) isNotEqualTo 'PENDING_LIST'} || {(_e param [7,-1]) isNotEqualTo remoteExecutedOwner}) exitWith {false};
         if (!_removed) then {
             _e set [5,'CANCELLED'];
             _market set [_id,_e];
@@ -158,6 +158,24 @@ switch (_action) do {
         };
         _market set [_id,_e];
         missionNamespace setVariable ['RHD_Marketplace',_market,true];
+        true
+    };
+    case 'RECOVERY_ACK': {
+        private _id = _args param [0,''];
+        private _returned = _args param [1,false];
+        private _e = _market getOrDefault [_id,[]];
+        if (_e isEqualTo [] || {(_e param [1,'']) isNotEqualTo _uid} || {(_e param [5,'']) isNotEqualTo 'RECOVERY_SENT'} || {(_e param [7,-1]) isNotEqualTo remoteExecutedOwner}) exitWith {false};
+        if (_returned) then {
+            _e set [5,'RECOVERED'];
+            _market set [_id,_e];
+            missionNamespace setVariable ['RHD_Marketplace',_market,true];
+            [['MARKET_RECOVERED',_id]] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+        } else {
+            _e set [5,'RECOVERY_FAILED'];
+            _market set [_id,_e];
+            missionNamespace setVariable ['RHD_Marketplace',_market,true];
+            [['MARKET_RECOVERY_FAILED',_id,'Reserved inventory could not be restored.']] remoteExecCall ['RHD_fnc_rpResult',owner _caller];
+        };
         true
     };
     default {false};
