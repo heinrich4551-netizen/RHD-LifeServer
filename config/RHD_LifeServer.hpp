@@ -27,6 +27,14 @@ class RHD_LifeServer
         despawnDistance = 1200;
     };
 
+    class HeadlessClient
+    {
+        enabled = 0;
+        useForPopulation = 0;
+        spawnBatch = 20;
+        despawnDistance = 1200;
+    };
+
     class Jobs
     {
         enabled = 1;
