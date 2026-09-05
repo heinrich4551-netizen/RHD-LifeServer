@@ -14,13 +14,12 @@ The check is:
 
 Changing faction causes the Antistasi integration access flag to update automatically. This does **not** disable RHD shops, economy, jobs, resources, RP, persistence, menus, or other RHD functionality.
 
-## Antistasi functions
+## Antistasi functions exposed by the bridge
 
-RHD consumes Antistasi Ultimate's installed A3A/A3U functions rather than modifying the Antistasi source. The current bridge deliberately uses a whitelist instead of exposing an arbitrary client-controlled function executor.
+RHD consumes Antistasi Ultimate's installed A3A/A3U functions rather than modifying the Antistasi source. The bridge deliberately uses a whitelist instead of exposing an arbitrary client-controlled function executor.
 
-The bridge currently permits the following compatibility calls when the caller is Independent:
+The current compatibility whitelist is:
 
-- `A3A_fnc_canInteract`
 - `A3A_fnc_createUnit`
 - `A3A_fnc_spawnGroup`
 - `A3A_fnc_spawnVehicle`
@@ -32,7 +31,9 @@ The bridge currently permits the following compatibility calls when the caller i
 - `A3U_fnc_revealZones`
 - `A3U_fnc_hasAddon`
 
-Spawn calls are additionally forced to Independent ownership so the compatibility layer cannot be used by an Independent caller to manufacture enemy-side assets.
+`A3A_fnc_createUnit`, `A3A_fnc_spawnGroup`, and `A3A_fnc_spawnVehicle` are server-authoritative through the bridge. Their requested group/side/owner is validated as Independent before the original Antistasi function is called.
+
+The bridge intentionally does **not** expose a generic `call`/function-name executor and does not expose internal Antistasi administration, economy, AI-control, persistence, or server-management functions.
 
 ## Standalone behavior
 
