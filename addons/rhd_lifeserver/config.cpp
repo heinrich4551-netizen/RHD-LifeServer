@@ -79,17 +79,6 @@ class CfgFunctions {
 };
 
 class CfgVehicles {
-    class Logic;
-    class Module_F : Logic {
-        class AttributesBase {
-            class Edit;
-            class Checkbox;
-            class Combo;
-            class ModuleDescription;
-        };
-        class ModuleDescription {};
-    };
-
     class RHD_Module_LifeCore : Module_F {
         scope = 2;
         scopeCurator = 2;
