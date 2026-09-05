@@ -10,20 +10,12 @@ if (_total in [-1,-2]) exitWith {
     private _qty = _amount max 0;
     if (_item isEqualTo '' || {_qty < 1}) exitWith {false};
     private _returned = [true,_item,_qty] call life_fnc_handleInv;
-    private _ackAction = if (_total isEqualTo -2) then {'RECOVERY_ACK'} else {'CANCEL_ACK'};
-    [_id,_returned] remoteExecCall ['RHD_fnc_marketplace',2];
-    if (_total isEqualTo -2) then {
-        [_id,_returned] remoteExecCall ['RHD_fnc_marketplace',2];
-    };
+    private _action = if (_total isEqualTo -2) then {'RECOVERY_ACK'} else {'CANCEL_ACK'};
+    [_action,[_id,_returned]] remoteExecCall ['RHD_fnc_marketplace',2];
     if (_returned) then {
-        hint format ['RHD MARKETPLACE\nReturned %1 x%2 from escrow recovery.',_item,_qty];
+        hint format ['RHD MARKETPLACE\nReturned %1 x%2 from escrow.',_item,_qty];
     } else {
         hint 'RHD MARKETPLACE\nReserved items could not be restored. The server has kept the recovery record for review.';
-    };
-    /* The action name cannot be carried through the legacy four-argument ACK,
-       so send the explicit recovery/cancellation route after the inventory call. */
-    if (_total isEqualTo -2) then {
-        [_ackAction,[_id,_returned]] remoteExecCall ['RHD_fnc_rpAction',2];
     };
     true
 };
@@ -34,7 +26,7 @@ if (_sellerUID isEqualTo '') then {
     private _qty = _amount max 0;
     if (_item isEqualTo '' || {_qty < 1}) exitWith {false};
     private _removed = [false,_item,_qty] call life_fnc_handleInv;
-    [_id,_removed] remoteExecCall ['RHD_fnc_marketplace',2];
+    ['LIST_ACK',[_id,_removed]] remoteExecCall ['RHD_fnc_marketplace',2];
     if (_removed) then {
         hint format ['RHD MARKETPLACE\nListed %1 x%2. The items are reserved until sold or the listing is cancelled.',_item,_qty];
     } else {
@@ -47,7 +39,7 @@ if (_sellerUID isEqualTo '') then {
     private _qty = _amount max 0;
     if (_item isEqualTo '' || {_qty < 1}) exitWith {false};
     private _added = [true,_item,_qty] call life_fnc_handleInv;
-    [_id,_added] remoteExecCall ['RHD_fnc_marketplace',2];
+    ['BUY_ACK',[_id,_added]] remoteExecCall ['RHD_fnc_marketplace',2];
     if (_added) then {
         hint format ['RHD MARKETPLACE\nReceived %1 x%2 for $%3.',_item,_qty,_total];
     } else {
