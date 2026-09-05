@@ -16,7 +16,7 @@ if (_mode isEqualTo 7) exitWith {
         case 2: { closeDialog 0; [player] remoteExecCall ['RHD_fnc_createContract',2]; };
         case 3: { closeDialog 0; ['BUSINESS_INFO',[]] remoteExecCall ['RHD_fnc_rpAction',2]; };
         case 4: { closeDialog 0; ['MARKETPLACE',['VIEW']] remoteExecCall ['RHD_fnc_rpAction',2]; };
-        case 5: { closeDialog 0; ['MARKETPLACE',['LIST_HELP']] remoteExecCall ['RHD_fnc_rpAction',2]; };
+        case 5: { hint 'RHD MARKETPLACE\n\nUse Marketplace View to browse listings. Listing and cancellation actions are available through the marketplace interface.'; };
     };
     true
 };
