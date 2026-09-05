@@ -3,7 +3,7 @@ class CfgPatches {
         name = "RHD LifeServer";
         author = "LT. Toad";
         requiredVersion = 2.14;
-        requiredAddons[] = {"A3_Functions_F", "A3_Modules_F", "sp_general", "sp_entities"};
+        requiredAddons[] = {"A3_Functions_F", "A3_Modules_F", "sp_general", "sp_entities", "A3A_core"};
         units[] = {"RHD_Module_LifeCore", "RHD_Module_ResourceNode", "RHD_Module_ProcessStation"};
         weapons[] = {};
     };
