@@ -3,6 +3,15 @@ player setVariable ["RHD_Initialized", true, false];
 [] spawn RHD_fnc_initMenus;
 
 /*
+    Recover any marketplace inventory reserved before a disconnect/restart.
+    The server binds the request to this client's remote owner and UID.
+*/
+[] spawn {
+    sleep 2;
+    ['MARKETPLACE_RECOVER',[]] remoteExecCall ['RHD_fnc_rpAction',2];
+};
+
+/*
     Runtime shop overlay.
 
     The upstream Framework remains a separate submodule and is never edited.
