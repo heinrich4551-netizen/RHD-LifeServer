@@ -1,14 +1,11 @@
 /*
     RHD <-> Antistasi Ultimate compatibility layer.
 
-    IMPORTANT:
-    - This does NOT restrict or replace RHD-LifeServer functionality.
-    - Existing RHD systems remain available to every player exactly as before.
-    - Only the Antistasi Ultimate integration exposed by this layer is scoped
-      to players serving on the Independent faction.
-    - Antistasi source files are not modified by this compatibility layer.
+    RHD-LifeServer itself remains available to every player.
+    ONLY the Antistasi-specific integration exposed by RHD is scoped to the
+    Independent faction used by Antistasi Ultimate.
 
-    Antistasi Ultimate uses the Independent side as the rebel/player faction.
+    The Antistasi source is not modified by this compatibility layer.
 */
 
 private _enabled = isClass (configFile >> 'CfgPatches' >> 'A3A_core') || {isClass (configFile >> 'CfgPatches' >> 'A3A_ultimate')};
@@ -21,22 +18,13 @@ if (isServer) then {
 };
 
 if (hasInterface) then {
-    private _independent = side player isEqualTo independent;
-    if (!isNil 'teamPlayer') then {
-        _independent = _independent && {teamPlayer isEqualTo independent};
-    };
+    private _gate = missionNamespace getVariable ['RHD_fnc_isAntistasiIndependent',{false}];
+    player setVariable ['RHD_AntistasiIndependentAccess',([player] call _gate),false];
 
-    /* This flag controls ONLY Antistasi integration, never RHD core access. */
-    player setVariable ['RHD_AntistasiIndependentAccess',_independent,false];
-
-    /* Keep the state correct if Antistasi changes the player's faction. */
     [] spawn {
         while {!isNull player} do {
-            private _allowed = side player isEqualTo independent;
-            if (!isNil 'teamPlayer') then {
-                _allowed = _allowed && {teamPlayer isEqualTo independent};
-            };
-            player setVariable ['RHD_AntistasiIndependentAccess',_allowed,false];
+            private _gate = missionNamespace getVariable ['RHD_fnc_isAntistasiIndependent',{false}];
+            player setVariable ['RHD_AntistasiIndependentAccess',([player] call _gate),false];
             sleep 3;
         };
     };
