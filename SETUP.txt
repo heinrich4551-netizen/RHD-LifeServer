@@ -80,12 +80,12 @@ RHD should not replace, duplicate, or overwrite SimplePersist's loadout, health,
 or position persistence.
 
 ================================================
-4. BUILD THE RHD PBO
+4. BUILD THE RHD PBO AND LOCAL MOD PACKAGE
 ================================================
 
 Install Arma 3 Tools and locate AddonBuilder.exe.
 
-Run from the RHD repository:
+Build only the RHD addon PBO:
 
   .\deployment\build.ps1 -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
 
@@ -93,17 +93,35 @@ Expected output:
 
   dist\RHD_LifeServer.pbo
 
-Create the mod directory on the dedicated server if it does not exist:
+For the complete Arma 3 local-mod folder, use the packaging script:
 
-  @RHD-LifeServer\addons\
+  .\deployment\package-mod.ps1 -ArmaToolsPath "C:\Program Files (x86)\Steam\steamapps\common\Arma 3 Tools\AddonBuilder"
 
-Copy:
+The package script creates:
 
-  dist\RHD_LifeServer.pbo
+  dist\@RHD-LifeServer\
+  |-- addons\
+  |   `-- RHD_LifeServer.pbo
+  |-- keys\
+  |   `-- README.txt
+  |-- README.md
+  |-- SETUP.txt
+  |-- LICENSE-RHD.md
+  |-- THIRD_PARTY_CREDITS.md
+  |-- PBO-Info.txt
+  `-- mod.cpp
 
-into:
+and also creates:
 
-  @RHD-LifeServer\addons\
+  dist\@RHD-LifeServer.zip
+
+The resulting @RHD-LifeServer directory is the normal Arma 3 local-mod layout.
+Place that folder beside the Arma 3 executable/server root.
+
+The keys directory is intentionally not populated with a fabricated key. If the
+server uses signature enforcement, generate the server's real RHD key pair with
+Arma 3 DSCreateKey and place the generated public .bikey in the server's normal
+keys directory. Keep the private .biprivatekey secure and never commit it.
 
 The Framework mission itself remains a mission/deployment dependency; the RHD
 addon is an independent overlay.
@@ -118,13 +136,16 @@ A typical deployment should contain approximately:
   |-- arma3server_x64.exe
   |-- @SimplePersist/
   |-- @RHD-LifeServer/
-  |   `-- addons/
-  |       `-- RHD_LifeServer.pbo
+  |   |-- addons/
+  |   |   `-- RHD_LifeServer.pbo
+  |   |-- keys/ (optional local package metadata)
+  |   |-- mod.cpp
+  |   `-- README/SETUP documentation
   |-- cfg/
   |-- profiles/
   |-- mpmissions/
   |   `-- Altis_Life.Altis/
-  `-- keys/ and other normal server files
+  `-- keys/
 
 The exact directory layout can differ with your host panel/provider.
 
@@ -309,6 +330,12 @@ Antistasi Ultimate is an integration target, not a mandatory base RHD dependency
 Do not mark it required unless a future RHD release actually requires it at
 runtime.
 
+When Antistasi Ultimate is installed, RHD's Antistasi compatibility bridge is
+limited to the Antistasi-specific integration for the Independent player faction.
+All ordinary RHD server/mod functionality remains available to every player.
+The Antistasi source itself remains a separate licensed project and is not
+modified by the RHD overlay.
+
 Likewise, only add other Workshop dependencies when the code genuinely requires
 them.
 
@@ -357,6 +384,14 @@ Join as a civilian and test in this order:
 14. Restart the server and verify persistence.
 15. Check server/RPT logs for script errors.
 
+If Antistasi Ultimate is installed:
+
+16. Confirm the Antistasi mission initializes normally.
+17. Confirm Independent players can use the Antistasi-specific RHD bridge.
+18. Confirm non-Independent players still retain normal RHD functionality.
+19. Confirm Antistasi AI spawning/reveal helpers work without exposing the bridge
+    to other factions.
+
 ================================================
 15. SECURITY CHECKLIST
 ================================================
@@ -369,8 +404,9 @@ Join as a civilian and test in this order:
 [ ] Client rank variables are not used as privileged authorization
 [ ] SimplePersist is installed from its official Workshop release
 [ ] Upstream Framework source remains a separate dependency
+[ ] RHD signing private key is kept off GitHub
 
-Do not expose admin, RCON, database, or service credentials in screenshots,
+Do not expose admin, RCON, database, signing, or service credentials in screenshots,
 GitHub issues, Discord messages, or public configuration files.
 
 ================================================
@@ -382,6 +418,11 @@ limits. The intended default is 115 civilians at one player, with a minimum of 6
 
 Monitor server FPS, AI count, network traffic, and headless-client requirements
 before increasing population limits on a live server.
+
+The optional Headless Client population manager preserves the same population
+targeting and moves RHD-managed civilian simulation to a configured HC when enabled.
+If no configured HC is available, the server population manager remains the
+fallback.
 
 The RHD performance profiler is enabled, but full server-loop logging is disabled
 by default to reduce RPT noise. Slow-section logging remains enabled at the
@@ -455,6 +496,7 @@ Only these categories should normally require manual owner input:
   - Any additional optional Workshop mods chosen by the server owner
   - Backup destination, mysqldump path, and backup service-account environment
     variables if automated backups are enabled
+  - Optional RHD signing key generation with Arma 3 DSCreateKey
 
 Everything else should be obtained from this repository or the documented upstream
 Framework/SimplePersist releases.
@@ -490,6 +532,14 @@ Database errors:
   - Verify the database user permissions.
   - Verify database/rhd_extensions.sql was imported.
   - Review the server RPT and database adapter logs.
+
+Antistasi integration errors:
+  - Verify the Antistasi Ultimate mission/mod is installed separately.
+  - Verify the RHD addon loads after the Antistasi component that supplies the
+    functions being bridged.
+  - Verify the affected player is Independent for Antistasi-specific bridge calls.
+  - Verify ordinary RHD functionality remains available to all players.
+  - Review ANTISTASI_INTEGRATION.md and the server RPT.
 
 Backup script errors:
   - Verify PowerShell can run deployment\backup.ps1.
