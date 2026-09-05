@@ -8,10 +8,18 @@ class CfgPatches {
         weapons[] = {};
     };
 };
-class CfgFactionClasses { class NO_CATEGORY; class RHD_LifeCore : NO_CATEGORY { displayName = "RHD LifeCore"; }; };
+
+class CfgFactionClasses {
+    class NO_CATEGORY;
+    class RHD_LifeCore : NO_CATEGORY {
+        displayName = "RHD LifeCore";
+    };
+};
+
 class CfgRemoteExec {
     class Functions {
-        mode = 1; jip = 0;
+        mode = 1;
+        jip = 0;
         class RHD_fnc_harvestServer { allowedTargets = 2; jip = 0; };
         class RHD_fnc_refineServer { allowedTargets = 2; jip = 0; };
         class RHD_fnc_harvestResult { allowedTargets = 1; jip = 0; };
@@ -42,6 +50,7 @@ class CfgRemoteExec {
     };
     class Commands { mode = 0; jip = 0; };
 };
+
 class CfgFunctions {
     class RHD {
         tag = "RHD";
@@ -68,48 +77,306 @@ class CfgFunctions {
         };
     };
 };
+
 class CfgVehicles {
     class Logic;
     class Module_F : Logic {
-        class AttributesBase { class Edit; class Checkbox; class Combo; class ModuleDescription; };
+        class AttributesBase {
+            class Edit;
+            class Checkbox;
+            class Combo;
+            class ModuleDescription;
+        };
         class ModuleDescription {};
     };
+
     class RHD_Module_LifeCore : Module_F {
-        scope = 2; displayName = "RHD LifeCore Configuration"; category = "RHD_LifeCore"; function = "RHD_fnc_moduleInit"; isGlobal = 1; isTriggerActivated = 0; is3DEN = 1;
+        scope = 2;
+        scopeCurator = 2;
+        displayName = "RHD LifeCore Configuration";
+        icon = "iconObject_circle";
+        category = "RHD_LifeCore";
+        function = "RHD_fnc_moduleInit";
+        functionPriority = 1;
+        isGlobal = 1;
+        isTriggerActivated = 0;
+        isDisposable = 0;
+        is3DEN = 1;
         class Attributes {
-            class RHD_farmingHarvestMin { property="RHD_farmingHarvestMin"; displayName="Farming Minimum Yield"; tooltip="Minimum amount awarded from farming nodes."; typeName="NUMBER"; defaultValue="2"; expression="_this setVariable ['RHD_farmingHarvestMin',_value,true]"; };
-            class RHD_farmingHarvestMax { property="RHD_farmingHarvestMax"; displayName="Farming Maximum Yield"; tooltip="Maximum amount awarded from farming nodes."; typeName="NUMBER"; defaultValue="5"; expression="_this setVariable ['RHD_farmingHarvestMax',_value,true]"; };
-            class RHD_miningHarvestMin { property="RHD_miningHarvestMin"; displayName="Mining Minimum Yield"; tooltip="Minimum amount awarded from mining nodes."; typeName="NUMBER"; defaultValue="2"; expression="_this setVariable ['RHD_miningHarvestMin',_value,true]"; };
-            class RHD_miningHarvestMax { property="RHD_miningHarvestMax"; displayName="Mining Maximum Yield"; tooltip="Maximum amount awarded from mining nodes."; typeName="NUMBER"; defaultValue="6"; expression="_this setVariable ['RHD_miningHarvestMax',_value,true]"; };
-            class RHD_civiliansAtOnePlayer { property="RHD_civiliansAtOnePlayer"; displayName="Civilians at 1 Player"; tooltip="Target civilian population with one active player."; typeName="NUMBER"; defaultValue="115"; expression="_this setVariable ['RHD_civiliansAtOnePlayer',_value,true]"; };
-            class RHD_minimumCivilians { property="RHD_minimumCivilians"; displayName="Minimum Civilians"; tooltip="Lowest global civilian population target."; typeName="NUMBER"; defaultValue="60"; expression="_this setVariable ['RHD_minimumCivilians',_value,true]"; };
-            class RHD_maximumCivilians { property="RHD_maximumCivilians"; displayName="Maximum Civilians"; tooltip="Highest global civilian population target."; typeName="NUMBER"; defaultValue="115"; expression="_this setVariable ['RHD_maximumCivilians',_value,true]"; };
-            class RHD_populationScaleWithPlayers { property="RHD_populationScaleWithPlayers"; displayName="Scale Population With Players"; typeName="CHECKBOX"; defaultValue="true"; expression="_this setVariable ['RHD_populationScaleWithPlayers',_value,true]"; };
-            class RHD_harvestCooldown { property="RHD_harvestCooldown"; displayName="Harvest Cooldown (seconds)"; typeName="NUMBER"; defaultValue="2"; expression="_this setVariable ['RHD_harvestCooldown',_value,true]"; };
-            class RHD_dynamicPricing { property="RHD_dynamicPricing"; displayName="Dynamic Pricing"; typeName="CHECKBOX"; defaultValue="true"; expression="_this setVariable ['RHD_dynamicPricing',_value,true]"; };
+            class RHD_farmingEnabled : Checkbox {
+                property = "RHD_farmingEnabled";
+                displayName = "Farming Enabled";
+                tooltip = "Enable RHD farming resource harvesting.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_farmingEnabled',_value,true]";
+            };
+            class RHD_farmingHarvestMin : Edit {
+                property = "RHD_farmingHarvestMin";
+                displayName = "Farming Minimum Yield";
+                tooltip = "Minimum amount awarded from farming nodes.";
+                typeName = "NUMBER";
+                defaultValue = "2";
+                expression = "_this setVariable ['RHD_farmingHarvestMin',_value,true]";
+            };
+            class RHD_farmingHarvestMax : Edit {
+                property = "RHD_farmingHarvestMax";
+                displayName = "Farming Maximum Yield";
+                tooltip = "Maximum amount awarded from farming nodes.";
+                typeName = "NUMBER";
+                defaultValue = "5";
+                expression = "_this setVariable ['RHD_farmingHarvestMax',_value,true]";
+            };
+            class RHD_miningEnabled : Checkbox {
+                property = "RHD_miningEnabled";
+                displayName = "Mining Enabled";
+                tooltip = "Enable RHD mining resource harvesting.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_miningEnabled',_value,true]";
+            };
+            class RHD_miningHarvestMin : Edit {
+                property = "RHD_miningHarvestMin";
+                displayName = "Mining Minimum Yield";
+                tooltip = "Minimum amount awarded from mining nodes.";
+                typeName = "NUMBER";
+                defaultValue = "2";
+                expression = "_this setVariable ['RHD_miningHarvestMin',_value,true]";
+            };
+            class RHD_miningHarvestMax : Edit {
+                property = "RHD_miningHarvestMax";
+                displayName = "Mining Maximum Yield";
+                tooltip = "Maximum amount awarded from mining nodes.";
+                typeName = "NUMBER";
+                defaultValue = "6";
+                expression = "_this setVariable ['RHD_miningHarvestMax',_value,true]";
+            };
+            class RHD_harvestCooldown : Edit {
+                property = "RHD_harvestCooldown";
+                displayName = "Harvest Cooldown (seconds)";
+                tooltip = "Minimum delay between successful harvest actions.";
+                typeName = "NUMBER";
+                defaultValue = "2";
+                expression = "_this setVariable ['RHD_harvestCooldown',_value,true]";
+            };
+            class RHD_civiliansAtOnePlayer : Edit {
+                property = "RHD_civiliansAtOnePlayer";
+                displayName = "Civilians at 1 Player";
+                tooltip = "Target global civilian population with one active player.";
+                typeName = "NUMBER";
+                defaultValue = "115";
+                expression = "_this setVariable ['RHD_civiliansAtOnePlayer',_value,true]";
+            };
+            class RHD_minimumCivilians : Edit {
+                property = "RHD_minimumCivilians";
+                displayName = "Minimum Civilians";
+                tooltip = "Lowest global civilian population target.";
+                typeName = "NUMBER";
+                defaultValue = "60";
+                expression = "_this setVariable ['RHD_minimumCivilians',_value,true]";
+            };
+            class RHD_maximumCivilians : Edit {
+                property = "RHD_maximumCivilians";
+                displayName = "Maximum Civilians";
+                tooltip = "Highest global civilian population target.";
+                typeName = "NUMBER";
+                defaultValue = "115";
+                expression = "_this setVariable ['RHD_maximumCivilians',_value,true]";
+            };
+            class RHD_populationScaleWithPlayers : Checkbox {
+                property = "RHD_populationScaleWithPlayers";
+                displayName = "Scale Population With Players";
+                tooltip = "Reduce the civilian target as more players become active.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_populationScaleWithPlayers',_value,true]";
+            };
+            class RHD_useHeadlessClient : Checkbox {
+                property = "RHD_useHeadlessClient";
+                displayName = "Use Headless Client for Civilians";
+                tooltip = "Route civilian population management to a connected Headless Client when available.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_useHeadlessClient',_value,true]";
+            };
+            class RHD_hcSpawnBatch : Edit {
+                property = "RHD_hcSpawnBatch";
+                displayName = "HC Population Spawn Batch";
+                tooltip = "Maximum civilian spawn batch sent to the Headless Client per population update.";
+                typeName = "NUMBER";
+                defaultValue = "12";
+                expression = "_this setVariable ['RHD_hcSpawnBatch',_value,true]";
+            };
+            class RHD_civilianDespawnDistance : Edit {
+                property = "RHD_civilianDespawnDistance";
+                displayName = "Civilian Despawn Distance";
+                tooltip = "Distance used by the civilian population manager when cleaning up agents.";
+                typeName = "NUMBER";
+                defaultValue = "2500";
+                expression = "_this setVariable ['RHD_civilianDespawnDistance',_value,true]";
+            };
+            class RHD_dynamicPricing : Checkbox {
+                property = "RHD_dynamicPricing";
+                displayName = "Dynamic Pricing";
+                tooltip = "Enable RHD dynamic market pricing.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_dynamicPricing',_value,true]";
+            };
+            class RHD_persistenceEnabled : Checkbox {
+                property = "RHD_persistenceEnabled";
+                displayName = "Persistence Enabled";
+                tooltip = "Enable RHD persistent state integration.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_persistenceEnabled',_value,true]";
+            };
+            class RHD_worldEventsEnabled : Checkbox {
+                property = "RHD_worldEventsEnabled";
+                displayName = "World Events Enabled";
+                tooltip = "Enable RHD random world events such as market booms and civilian alerts.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_worldEventsEnabled',_value,true]";
+            };
         };
+        class ModuleDescription : ModuleDescription {};
     };
+
     class RHD_Module_ResourceNode : Module_F {
-        scope = 2; displayName = "RHD Resource Node"; category = "RHD_LifeCore"; function = "RHD_fnc_moduleInit"; isGlobal = 1; isTriggerActivated = 0; is3DEN = 1;
+        scope = 2;
+        scopeCurator = 2;
+        displayName = "RHD Resource Node";
+        icon = "iconObject_circle";
+        category = "RHD_LifeCore";
+        function = "RHD_fnc_moduleInit";
+        functionPriority = 2;
+        isGlobal = 1;
+        isTriggerActivated = 0;
+        isDisposable = 0;
+        is3DEN = 1;
         class Attributes {
-            class RHD_resourceType { property="RHD_resourceType"; displayName="Resource Type"; typeName="NUMBER"; defaultValue="0"; expression="_this setVariable ['RHD_resourceType',_value,true]"; };
-            class RHD_minimumYield { property="RHD_minimumYield"; displayName="Minimum Yield"; typeName="NUMBER"; defaultValue="2"; expression="_this setVariable ['RHD_minimumYield',_value,true]"; };
-            class RHD_maximumYield { property="RHD_maximumYield"; displayName="Maximum Yield"; typeName="NUMBER"; defaultValue="5"; expression="_this setVariable ['RHD_maximumYield',_value,true]"; };
-            class RHD_nodeRadius { property="RHD_nodeRadius"; displayName="Node Radius"; typeName="NUMBER"; defaultValue="12"; expression="_this setVariable ['RHD_nodeRadius',_value,true]"; };
-            class RHD_illegal { property="RHD_illegal"; displayName="Illegal Resource"; typeName="CHECKBOX"; defaultValue="false"; expression="_this setVariable ['RHD_illegal',_value,true]"; };
-            class RHD_enabled { property="RHD_enabled"; displayName="Enabled"; typeName="CHECKBOX"; defaultValue="true"; expression="_this setVariable ['RHD_enabled',_value,true]"; };
+            class RHD_resourceType : Combo {
+                property = "RHD_resourceType";
+                displayName = "Resource Type";
+                tooltip = "Select the resource harvested at this node.";
+                typeName = "NUMBER";
+                defaultValue = "0";
+                expression = "_this setVariable ['RHD_resourceType',_value,true]";
+                class values {
+                    class Apples { name = "Apples"; value = 0; };
+                    class Peaches { name = "Peaches"; value = 1; };
+                    class Grapes { name = "Grapes"; value = 2; };
+                    class CornCob { name = "Corn Cob"; value = 3; };
+                    class CannabisPlant { name = "Cannabis Plant"; value = 4; };
+                    class CocaLeaf { name = "Coca Leaf"; value = 5; };
+                    class IronOre { name = "Iron Ore"; value = 6; };
+                    class CopperOre { name = "Copper Ore"; value = 7; };
+                    class GoldOre { name = "Gold Ore"; value = 8; };
+                    class Diamond { name = "Diamond"; value = 9; };
+                    class OilSand { name = "Oil Sand"; value = 10; };
+                };
+            };
+            class RHD_minimumYield : Edit {
+                property = "RHD_minimumYield";
+                displayName = "Minimum Yield";
+                tooltip = "Minimum amount awarded by this node.";
+                typeName = "NUMBER";
+                defaultValue = "2";
+                expression = "_this setVariable ['RHD_minimumYield',_value,true]";
+            };
+            class RHD_maximumYield : Edit {
+                property = "RHD_maximumYield";
+                displayName = "Maximum Yield";
+                tooltip = "Maximum amount awarded by this node.";
+                typeName = "NUMBER";
+                defaultValue = "5";
+                expression = "_this setVariable ['RHD_maximumYield',_value,true]";
+            };
+            class RHD_nodeRadius : Edit {
+                property = "RHD_nodeRadius";
+                displayName = "Node Radius";
+                tooltip = "Interaction radius around this resource node.";
+                typeName = "NUMBER";
+                defaultValue = "12";
+                expression = "_this setVariable ['RHD_nodeRadius',_value,true]";
+            };
+            class RHD_illegal : Checkbox {
+                property = "RHD_illegal";
+                displayName = "Illegal Resource";
+                tooltip = "Mark this resource as illegal for RP enforcement and job logic.";
+                typeName = "BOOL";
+                defaultValue = "false";
+                expression = "_this setVariable ['RHD_illegal',_value,true]";
+            };
+            class RHD_enabled : Checkbox {
+                property = "RHD_enabled";
+                displayName = "Enabled";
+                tooltip = "Enable this resource node in the mission.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_enabled',_value,true]";
+            };
         };
+        class ModuleDescription : ModuleDescription {};
     };
+
     class RHD_Module_ProcessStation : Module_F {
-        scope = 2; displayName = "RHD Processing Station"; category = "RHD_LifeCore"; function = "RHD_fnc_moduleInit"; isGlobal = 1; isTriggerActivated = 0; is3DEN = 1;
+        scope = 2;
+        scopeCurator = 2;
+        displayName = "RHD Processing Station";
+        icon = "iconObject_circle";
+        category = "RHD_LifeCore";
+        function = "RHD_fnc_moduleInit";
+        functionPriority = 3;
+        isGlobal = 1;
+        isTriggerActivated = 0;
+        isDisposable = 0;
+        is3DEN = 1;
         class Attributes {
-            class RHD_processClass { property="RHD_processClass"; displayName="Process Class"; typeName="STRING"; defaultValue="iron"; expression="_this setVariable ['RHD_processClass',_value,true]"; };
-            class RHD_stationRadius { property="RHD_stationRadius"; displayName="Station Radius"; typeName="NUMBER"; defaultValue="12"; expression="_this setVariable ['RHD_stationRadius',_value,true]"; };
-            class RHD_enabled { property="RHD_enabled"; displayName="Enabled"; typeName="CHECKBOX"; defaultValue="true"; expression="_this setVariable ['RHD_enabled',_value,true]"; };
+            class RHD_processClass : Combo {
+                property = "RHD_processClass";
+                displayName = "Process Class";
+                tooltip = "Select the material processed at this station.";
+                typeName = "STRING";
+                defaultValue = "\"iron\"";
+                expression = "_this setVariable ['RHD_processClass',_value,true]";
+                class values {
+                    class Iron { name = "Iron Ore -> Iron"; value = "iron"; };
+                    class Copper { name = "Copper Ore -> Copper"; value = "copper"; };
+                    class Gold { name = "Gold Ore -> Gold"; value = "gold"; };
+                    class Oil { name = "Oil Sand -> Fuel/Oil"; value = "oil"; };
+                    class Diamond { name = "Uncut Diamond -> Diamond"; value = "diamond"; };
+                    class Cannabis { name = "Cannabis -> Marijuana"; value = "cannabis"; };
+                };
+            };
+            class RHD_stationRadius : Edit {
+                property = "RHD_stationRadius";
+                displayName = "Station Radius";
+                tooltip = "Interaction radius around this processing station.";
+                typeName = "NUMBER";
+                defaultValue = "12";
+                expression = "_this setVariable ['RHD_stationRadius',_value,true]";
+            };
+            class RHD_enabled : Checkbox {
+                property = "RHD_enabled";
+                displayName = "Enabled";
+                tooltip = "Enable this processing station in the mission.";
+                typeName = "BOOL";
+                defaultValue = "true";
+                expression = "_this setVariable ['RHD_enabled',_value,true]";
+            };
         };
+        class ModuleDescription : ModuleDescription {};
     };
 };
-class CfgEditorCategories { class RHD_LifeCore { displayName="RHD LifeCore"; }; };
+
+class CfgEditorCategories {
+    class RHD_LifeCore {
+        displayName = "RHD LifeCore";
+    };
+};
+
 #include "config\RHD_LifeServer.hpp"
 #include "config\RHD_Resources.hpp"
 #include "config\RHD_RP.hpp"
