@@ -11,7 +11,9 @@ class CfgPatches {
 
 class CfgFactionClasses {
     class NO_CATEGORY;
-    class RHD_LifeCore : NO_CATEGORY { displayName = "RHD LifeCore"; };
+    class RHD_LifeCore : NO_CATEGORY {
+        displayName = "RHD LifeCore";
+    };
 };
 
 class CfgRemoteExec {
@@ -52,26 +54,124 @@ class CfgRemoteExec {
 class CfgFunctions {
     class RHD {
         tag = "RHD";
-        class Core { file = "RHD_LifeServer\functions\core"; class preInit { preInit = 1; }; class postInit { postInit = 1; }; class serverLoop {}; class clientInit {}; class log {}; };
-        class Economy { file = "RHD_LifeServer\functions\economy"; class economyLoop {}; class getPrice {}; class shopPrice {}; class setPrice {}; class initPrices {}; class recordMarket {}; class shopTransaction {}; class validateShopTransaction {}; class virtBuy {}; class virtSell {}; class virtUpdate {}; class economyDashboard {}; };
-        class Population { file = "RHD_LifeServer\functions\population"; class populationLoop {}; class updatePopulation {}; class cleanupPopulation {}; };
-        class Resources { file = "RHD_LifeServer\functions\resources"; class registerNodes {}; class getResourceConfig {}; class harvestServer {}; class harvestResult {}; class refineServer {}; class refineResult {}; };
-        class Jobs { file = "RHD_LifeServer\functions\jobs"; class jobProgress {}; class jobResult {}; };
-        class HeadlessClient { file = "RHD_LifeServer\functions\headless"; class hcInit { postInit = 1; }; class hcPopulationUpdate {}; };
-        class Contracts { file = "RHD_LifeServer\functions\contracts"; class createContract {}; class completeContract {}; class contractCompleteAck {}; class contractResult {}; };
-        class UI { file = "RHD_LifeServer\functions\ui"; class initMenus { postInit = 1; }; class menuAction {}; class findNearbyResource {}; };
-        class Eden { file = "RHD_LifeServer\functions\eden"; class moduleInit {}; class applyConfig {}; };
-        class Persistence { file = "RHD_LifeServer\functions\persistence"; class initPersistence {}; class loadState {}; class saveState {}; class persistenceLoop {}; };
-        class Antistasi { file = "RHD_LifeServer\functions\antistasi"; class antistasiInit { postInit = 1; }; class antistasiCall {}; };
+        class Core {
+            file = "RHD_LifeServer\functions\core";
+            class preInit { preInit = 1; };
+            class postInit { postInit = 1; };
+            class serverLoop {};
+            class clientInit {};
+            class log {};
+        };
+        class Economy {
+            file = "RHD_LifeServer\functions\economy";
+            class economyLoop {};
+            class getPrice {};
+            class shopPrice {};
+            class setPrice {};
+            class initPrices {};
+            class recordMarket {};
+            class shopTransaction {};
+            class validateShopTransaction {};
+            class virtBuy {};
+            class virtSell {};
+            class virtUpdate {};
+            class economyDashboard {};
+        };
+        class Population {
+            file = "RHD_LifeServer\functions\population";
+            class populationLoop {};
+            class updatePopulation {};
+            class cleanupPopulation {};
+        };
+        class Resources {
+            file = "RHD_LifeServer\functions\resources";
+            class registerNodes {};
+            class getResourceConfig {};
+            class harvestServer {};
+            class harvestResult {};
+            class refineServer {};
+            class refineResult {};
+        };
+        class Jobs {
+            file = "RHD_LifeServer\functions\jobs";
+            class jobProgress {};
+            class jobResult {};
+        };
+        class HeadlessClient {
+            file = "RHD_LifeServer\functions\headless";
+            class hcInit { postInit = 1; };
+            class hcPopulationUpdate {};
+        };
+        class Contracts {
+            file = "RHD_LifeServer\functions\contracts";
+            class createContract {};
+            class completeContract {};
+            class contractCompleteAck {};
+            class contractResult {};
+        };
+        class UI {
+            file = "RHD_LifeServer\functions\ui";
+            class initMenus { postInit = 1; };
+            class menuAction {};
+            class findNearbyResource {};
+        };
+        class Eden {
+            file = "RHD_LifeServer\functions\eden";
+            class moduleInit {};
+            class applyConfig {};
+        };
+        class Persistence {
+            file = "RHD_LifeServer\functions\persistence";
+            class initPersistence {};
+            class loadState {};
+            class saveState {};
+            class persistenceLoop {};
+        };
+        class Antistasi {
+            file = "RHD_LifeServer\functions\antistasi";
+            class antistasiInit { postInit = 1; };
+            class antistasiCall {};
+        };
         class RP {
             file = "RHD_LifeServer\functions\rp";
-            class initRP {}; class dispatch {}; class dispatchAction {}; class dispatchResult {}; class createEvidence {}; class createWarrant {};
-            class impoundVehicle {}; class releaseImpound {}; class releaseImpoundByVehicle {}; class getImpounds {}; class createServiceRequest {};
-            class manageLicense {}; class getLicenses {}; class business {}; class businessCreate {}; class businessInfo {}; class businessTransaction {};
-            class hospitalBill {}; class treatPlayer {}; class vehicleService {}; class rpResult {}; class financialTransaction {}; class financialResult {};
-            class playerTransfer {}; class playerTransferResult {}; class taxTransaction {}; class governmentInfo {}; class courtCase {}; class phone {}; class marketplace {}; class marketplaceRecover {}; class marketplaceResult {};
-            class worldEvents {}; class worldEventResult {}; class adminAudit {};
-            class authorizeRole {}; class rpAction {}; class rpMaintenance {};
+            class initRP {};
+            class dispatch {};
+            class dispatchAction {};
+            class dispatchResult {};
+            class createEvidence {};
+            class createWarrant {};
+            class impoundVehicle {};
+            class releaseImpound {};
+            class releaseImpoundByVehicle {};
+            class getImpounds {};
+            class createServiceRequest {};
+            class manageLicense {};
+            class getLicenses {};
+            class business {};
+            class businessCreate {};
+            class businessInfo {};
+            class businessTransaction {};
+            class hospitalBill {};
+            class treatPlayer {};
+            class vehicleService {};
+            class rpResult {};
+            class financialTransaction {};
+            class financialResult {};
+            class playerTransfer {};
+            class playerTransferResult {};
+            class taxTransaction {};
+            class governmentInfo {};
+            class courtCase {};
+            class phone {};
+            class marketplace {};
+            class marketplaceRecover {};
+            class marketplaceResult {};
+            class worldEvents {};
+            class worldEventResult {};
+            class adminAudit {};
+            class authorizeRole {};
+            class rpAction {};
+            class rpMaintenance {};
         };
     };
 };
@@ -200,7 +300,7 @@ class CfgVehicles {
             class RHD_hcSpawnBatch : Edit {
                 property = "RHD_hcSpawnBatch";
                 displayName = "HC Population Spawn Batch";
-                tooltip = "Maximum civilian spawn batch sent to the Headless Client per population update.";
+                tooltip = "Maximum civilian spawn batch sent to the Headless Client per update.";
                 typeName = "NUMBER";
                 defaultValue = "12";
                 expression = "_this setVariable ['RHD_hcSpawnBatch',_value,true]";
@@ -232,7 +332,7 @@ class CfgVehicles {
             class RHD_worldEventsEnabled : Checkbox {
                 property = "RHD_worldEventsEnabled";
                 displayName = "World Events Enabled";
-                tooltip = "Enable RHD random world events such as market booms and civilian alerts.";
+                tooltip = "Enable RHD random world events.";
                 typeName = "BOOL";
                 defaultValue = "true";
                 expression = "_this setVariable ['RHD_worldEventsEnabled',_value,true]";
@@ -302,7 +402,7 @@ class CfgVehicles {
             class RHD_illegal : Checkbox {
                 property = "RHD_illegal";
                 displayName = "Illegal Resource";
-                tooltip = "Mark this resource as illegal for RP enforcement and job logic.";
+                tooltip = "Mark this resource as illegal.";
                 typeName = "BOOL";
                 defaultValue = "false";
                 expression = "_this setVariable ['RHD_illegal',_value,true]";
@@ -310,7 +410,7 @@ class CfgVehicles {
             class RHD_enabled : Checkbox {
                 property = "RHD_enabled";
                 displayName = "Enabled";
-                tooltip = "Enable this resource node in the mission.";
+                tooltip = "Enable this resource node.";
                 typeName = "BOOL";
                 defaultValue = "true";
                 expression = "_this setVariable ['RHD_enabled',_value,true]";
@@ -336,16 +436,16 @@ class CfgVehicles {
                 property = "RHD_processClass";
                 displayName = "Process Class";
                 tooltip = "Select the material processed at this station.";
-                typeName = "STRING";
-                defaultValue = "\"iron\"";
+                typeName = "NUMBER";
+                defaultValue = "0";
                 expression = "_this setVariable ['RHD_processClass',_value,true]";
                 class values {
-                    class Iron { name = "Iron Ore -> Iron"; value = "iron"; };
-                    class Copper { name = "Copper Ore -> Copper"; value = "copper"; };
-                    class Gold { name = "Gold Ore -> Gold"; value = "gold"; };
-                    class Oil { name = "Oil Sand -> Fuel/Oil"; value = "oil"; };
-                    class Diamond { name = "Uncut Diamond -> Diamond"; value = "diamond"; };
-                    class Cannabis { name = "Cannabis -> Marijuana"; value = "cannabis"; };
+                    class ProcessIron { name = "Iron Ore -> Iron"; value = 0; };
+                    class ProcessCopper { name = "Copper Ore -> Copper"; value = 1; };
+                    class ProcessGold { name = "Gold Ore -> Gold"; value = 2; };
+                    class ProcessOil { name = "Oil Sand -> Fuel/Oil"; value = 3; };
+                    class ProcessDiamond { name = "Uncut Diamond -> Diamond"; value = 4; };
+                    class ProcessCannabis { name = "Cannabis -> Marijuana"; value = 5; };
                 };
             };
             class RHD_stationRadius : Edit {
@@ -359,7 +459,7 @@ class CfgVehicles {
             class RHD_enabled : Checkbox {
                 property = "RHD_enabled";
                 displayName = "Enabled";
-                tooltip = "Enable this processing station in the mission.";
+                tooltip = "Enable this processing station.";
                 typeName = "BOOL";
                 defaultValue = "true";
                 expression = "_this setVariable ['RHD_enabled',_value,true]";
@@ -378,4 +478,3 @@ class CfgEditorCategories {
 #include "config\RHD_LifeServer.hpp"
 #include "config\RHD_Resources.hpp"
 #include "config\RHD_RP.hpp"
-#include "config\RHD_Menus.hpp"
