@@ -1,15 +1,14 @@
 param(
-    [Parameter(Mandatory=$true)] [string]$ArmaToolsPath,
+    [string]$ArmaToolsPath = "",
     [string]$OutputRoot = "$PSScriptRoot\..\dist\@RHD-LifeServer",
     [switch]$IncludeServerConfig
 )
 
 $ErrorActionPreference = "Stop"
 $repoRoot = Split-Path -Parent $PSScriptRoot
-$addonBuilder = Join-Path $ArmaToolsPath "AddonBuilder.exe"
 $source = Join-Path $repoRoot "addons\rhd_lifeserver"
+$packer = Join-Path $PSScriptRoot "pbo_pack.py"
 
-if (-not (Test-Path $addonBuilder)) { throw "AddonBuilder.exe not found: $addonBuilder" }
 if (-not (Test-Path $source)) { throw "Addon source not found: $source" }
 
 if (Test-Path $OutputRoot) { Remove-Item -Recurse -Force $OutputRoot }
@@ -18,8 +17,23 @@ New-Item -ItemType Directory -Force -Path (Join-Path $OutputRoot "addons") | Out
 New-Item -ItemType Directory -Force -Path (Join-Path $OutputRoot "keys") | Out-Null
 
 $addonOutput = Join-Path $OutputRoot "addons"
-& $addonBuilder $source $addonOutput -clear
-if ($LASTEXITCODE -ne 0) { throw "AddonBuilder failed with exit code $LASTEXITCODE" }
+$addonBuilder = $null
+if ($ArmaToolsPath) {
+    $candidate = Join-Path $ArmaToolsPath "AddonBuilder.exe"
+    if (Test-Path $candidate) { $addonBuilder = $candidate }
+}
+
+if ($addonBuilder) {
+    & $addonBuilder $source $addonOutput -clear
+    if ($LASTEXITCODE -ne 0) { throw "AddonBuilder failed with exit code $LASTEXITCODE" }
+    Write-Host "Built RHD_LifeServer.pbo with Arma 3 AddonBuilder."
+} else {
+    $python = Get-Command python.exe -ErrorAction SilentlyContinue
+    if (-not $python) { throw "AddonBuilder.exe was not found and python.exe is unavailable. Install Arma 3 Tools or Python 3." }
+    & $python.Source $packer $source (Join-Path $addonOutput "RHD_LifeServer.pbo")
+    if ($LASTEXITCODE -ne 0) { throw "PBO fallback packer failed with exit code $LASTEXITCODE" }
+    Write-Warning "Built an uncompressed PBO with the RHD fallback packer. Use Arma 3 AddonBuilder for the preferred production build." 
+}
 
 # Local-mod metadata and deployment documentation.
 $rootFiles = @("README.md", "SETUP.txt", "LICENSE-RHD.md", "THIRD_PARTY_CREDITS.md", "PBO-Info.txt")
