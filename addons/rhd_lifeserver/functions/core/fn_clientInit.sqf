@@ -3,7 +3,24 @@ player setVariable ["RHD_Initialized", true, false];
 [] spawn RHD_fnc_initMenus;
 
 /*
+    Antistasi compatibility is intentionally separate from RHD access.
+    Every player keeps normal RHD menus, economy, jobs and RP systems.
+    Only Antistasi-specific integration is exposed to Independent players.
+*/
+[] spawn {
+    waitUntil {time > 0};
+    if (isNil "RHD_fnc_isAntistasiIndependent") exitWith {};
+
+    while {!isNull player} do {
+        private _allowed = [player] call (missionNamespace getVariable ["RHD_fnc_isAntistasiIndependent",{false}]);
+        player setVariable ["RHD_AntistasiIndependentAccess",_allowed,false];
+        sleep 3;
+    };
+};
+
+/*
     Recover any marketplace inventory reserved before a disconnect/restart.
+    This is ordinary RHD functionality and is available to every player.
     The server binds the request to this client's remote owner and UID.
 */
 [] spawn {
@@ -14,9 +31,8 @@ player setVariable ["RHD_Initialized", true, false];
 /*
     Runtime shop overlay.
 
-    The upstream Framework remains a separate submodule and is never edited.
-    Once its CfgFunctions are available, RHD swaps the virtual shop callbacks
-    with the RHD market-aware handlers for this client.
+    The upstream Framework remains untouched. RHD replaces the virtual shop
+    callbacks for all players; Antistasi faction state does not affect this.
 */
 [] spawn {
     waitUntil {
