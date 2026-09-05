@@ -26,14 +26,14 @@ if (isRemoteExecuted) then {
     if (hasInterface && {!([player] call _gate)}) exitWith {false};
 };
 
-if !(isClass (configFile >> "CfgPatches" >> "A3A_core")) exitWith {false};
+if !(isClass (configFile >> "CfgPatches" >> "A3A_core") || {isClass (configFile >> "CfgPatches" >> "A3A_ultimate")}) exitWith {false};
 
 /*
     Explicit whitelist. Do not turn this into a generic client-controlled
-    function executor: many Antistasi functions are internal/server systems.
+    function executor. These are the Antistasi functions RHD exposes to its
+    compatibility layer.
 */
 private _allowedFunctions = [
-    "A3A_fnc_canInteract",
     "A3A_fnc_createUnit",
     "A3A_fnc_spawnGroup",
     "A3A_fnc_spawnVehicle",
@@ -52,11 +52,13 @@ private _fn = missionNamespace getVariable [_function, {}];
 if !(_fn isEqualType {}) exitWith {false};
 
 /*
-    RHD-controlled spawn helpers force Independent ownership. This prevents a
-    client from using the compatibility layer to manufacture enemy-side assets.
+    Server-side creation helpers must execute on the server. Independent
+    validation is performed both for the remote caller and for the requested
+    owner/side/group so the bridge cannot manufacture enemy-side assets.
 */
 switch (_function) do {
     case "A3A_fnc_createUnit": {
+        if !isServer exitWith {false};
         if (count _args < 3) exitWith {false};
         _args params ["_group", "_type", "_position"];
         if (isNull _group || {side _group isNotEqualTo independent}) exitWith {false};
@@ -64,6 +66,7 @@ switch (_function) do {
     };
 
     case "A3A_fnc_spawnGroup": {
+        if !isServer exitWith {false};
         if (count _args < 3) exitWith {false};
         _args params ["_position", "_side", "_types"];
         if (_side isNotEqualTo independent) exitWith {false};
@@ -71,6 +74,7 @@ switch (_function) do {
     };
 
     case "A3A_fnc_spawnVehicle": {
+        if !isServer exitWith {false};
         if (count _args < 4) exitWith {false};
         _args params ["_position", "_azimuth", "_type", "_owner"];
         if (_owner isEqualType sideUnknown) then {
