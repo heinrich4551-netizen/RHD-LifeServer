@@ -9,7 +9,7 @@ class RHD_RP {
     vehicleServices = 1;
     courts = 1;
     government = 1;
-    taxes = 1;
+    taxesEnabled = 1;
     phone = 1;
     marketplace = 1;
     serviceRequests = 1;
